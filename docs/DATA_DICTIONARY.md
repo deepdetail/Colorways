@@ -11,7 +11,8 @@ gray headers are calculated.
 
 - Hotel_ID: city code + short name, e.g. `NSH-NOEL`.
 - Space_ID: Hotel_ID + space code, e.g. `NSH-NOEL-LOB`; a number is added when a hotel has two spaces of one type (`LV-FONT-LOB1`, `LV-FONT-LOB2`). Spaces measured in the app get `-M1`, `-M2`.
-- Swatch_ID: Space_ID + `-C` + rank, e.g. `NSH-NOEL-LOB-C1`.
+- Swatch_ID: Space_ID + `-C` + rank, e.g. `NSH-NOEL-LOB-C1`; for spot palettes, Spot_ID + `-C` + rank.
+- Spot_ID: Hotel_ID + `-SP` + number, e.g. `NSH-NOEL-SP1`. Motif_ID: Hotel_ID + `-MO` + number.
 
 ## Hotels
 
@@ -50,6 +51,9 @@ gray headers are calculated.
 | Colors_Logged | Calculated | Calculated: rows on the Swatches tab for this hotel. |
 | Measured_Colors | Calculated | Calculated: swatches with Color_Source = Measured. |
 | Top_Family_by_Area | Calculated | Calculated from Stripes_Area: the color family covering the most documented area. |
+| Spots_Logged | Calculated | Calculated: photo spots on the Spots tab. |
+| Public_Spots | Calculated | Calculated: spots anyone can reach without booking. |
+| Motifs_Logged | Calculated | Calculated: rows on the Motifs tab. |
 | Documented_Share_Area | Calculated | Calculated: share of the hotel's logged spaces (by area) that sourced colors describe. Read Top_Family_by_Area with this: a top family at 30% documented is a weak signal. |
 
 ## Spaces
@@ -79,19 +83,26 @@ gray headers are calculated.
 | Journey_Order | Calculated | Calculated from the space type: left-to-right position in the stripe. |
 | Area_Used_sqft | Calculated | Calculated: Area_sqft if given, else the type default from Lists. |
 | Dwell_Used_h | Calculated | Calculated: Dwell_Hours if given, else the type default from Lists. |
-| Colors_Logged | Calculated | Calculated. |
+| Colors_Logged | Calculated | Calculated: colors in this space's overall palette (spot palettes not counted). |
 | Key_Swatch_Hex | Calculated | Calculated: first swatch marked Key_Swatch = Y. |
+| Zone | Calculated | Calculated from the space type: Public, Patron, Event or Guest. |
+| Liminal | Calculated | Calculated: Y for in-between spaces (entrances, stairs, elevator lobbies, corridors, restrooms, pre-function). |
+| Spots_Logged | Calculated | Calculated: photo spots in this space. |
 
 ## Swatches
 
 | Column | Type | Notes |
 |---|---|---|
-| Swatch_ID | Input | Space_ID + -C + rank. |
+| Swatch_ID | Input | Space_ID (or Spot_ID) + -C + rank. |
 | Space_ID | Input |  |
-| Rank | Input | 1 = largest share in the space. |
+| Spot_ID | Input | Blank for a space's overall palette. Fill it when the color belongs to a photo spot's palette (Spots tab). Spot colors do not count toward the stripes. |
+| Rank | Input | 1 = largest share in its group. |
 | Hex | Input | Format #RRGGBB. |
 | Color_Name | Input |  |
-| Share_Pct | Input | Share of this space's logged colors, 0-100. Normalized per space, so they need not total 100. |
+| Shade | Input | Nearest named shade (CIEDE2000) within the color's family, filled by the app and the build. Pick from the list if you add rows by hand. |
+| Material | Input |  |
+| Finish | Input |  |
+| Share_Pct | Input | Share of this group's logged colors, 0-100. Normalized per group, so they need not total 100. |
 | Key_Swatch | Input | Y if this color belongs in the simplified key swatch (photo-op or signature). |
 | Key_Reason | Input |  |
 | Color_Source | Input | Measured, Described or Estimated. See README. |
@@ -104,12 +115,13 @@ gray headers are calculated.
 | b* | Calculated | CIELAB blue (-) to yellow (+). Calculated. |
 | C* | Calculated | Chroma: how colorful. Calculated. |
 | Hue_deg | Calculated | Hue angle in CIELAB, 0-360. Calculated. |
-| Share_in_Space | Calculated | Calculated: Share_Pct / total Share_Pct of the space's logged colors. |
+| Share_in_Group | Calculated | Calculated: Share_Pct / total Share_Pct of the same space palette or spot palette. |
 | Coverage | Calculated | Calculated from Spaces: Coverage_Pct / 100 (blank = 100%). |
 | Area_Used_sqft | Calculated | Calculated from Spaces. |
-| Weighted_sqft | Calculated | Calculated: Share_in_Space x Coverage x Area_Used_sqft. Feeds Stripes_Area. |
+| Weighted_sqft | Calculated | Calculated: Share_in_Group x Coverage x Area_Used_sqft for space palettes (0 for spot colors). Feeds Stripes_Area. |
 | Dwell_Used_h | Calculated | Calculated from Spaces. |
-| Weighted_hours | Calculated | Calculated: Share_in_Space x Coverage x Dwell_Used_h. Feeds Stripes_Time. |
+| Weighted_hours | Calculated | Calculated: Share_in_Group x Coverage x Dwell_Used_h for space palettes (0 for spot colors). Feeds Stripes_Time. |
+| Chroma_x_Share | Calculated | Calculated for spot colors: Share_in_Group x C*. Feeds the spot's Mean_Chroma. |
 | R | Hidden helper |  |
 | G | Hidden helper |  |
 | B | Hidden helper |  |
@@ -123,6 +135,70 @@ gray headers are calculated.
 | f_y | Hidden helper |  |
 | f_z | Hidden helper |  |
 | Lookup_Key | Hidden helper |  |
+| Group_Key | Hidden helper |  |
+
+## Spots
+
+Photo-worthy features inside a space. Their palettes live on the Swatches tab (rows with a Spot_ID) and do not count
+toward the stripes. The hidden helper columns hold the spot's share of each color family.
+
+| Column | Type | Notes |
+|---|---|---|
+| Spot_ID | Input | Hotel_ID + -SP + number, e.g. NSH-NOEL-SP1. |
+| Hotel_ID | Input |  |
+| Space_ID | Input | The space the spot is in (Spaces tab). |
+| Spot_Name | Input | What to look for, e.g. 'Pink marble staircase'. |
+| Spot_Type | Input |  |
+| Access | Input | Who can reach it without special arrangements. Public spots are the core of the product. |
+| Best_Time | Input |  |
+| Photo_Op_1to5 | Input |  |
+| Photo_Tip | Input |  |
+| Confidence | Input |  |
+| Source_Evidence | Input |  |
+| Rights_Status | Input |  |
+| Capture_Status | Input |  |
+| Notes | Input |  |
+| Hotel_Name | Calculated | Calculated. |
+| Space_Type | Calculated | Calculated. |
+| Zone | Calculated | Calculated from the space type (Lists). |
+| Colors_Logged | Calculated | Calculated: swatches with this Spot_ID. |
+| Mean_Chroma | Calculated | Calculated: share-weighted average chroma of the spot's colors. Under 12 reads as neutral. |
+| Top_Family | Calculated | Calculated: the color family with the largest share of the spot. |
+| Top_Share | Calculated | Calculated. |
+| Second_Share | Calculated | Calculated. |
+| Families_10pct | Calculated | Calculated: color families with 10% or more. |
+| Color_Character | Calculated | Calculated: Tonal neutral, Monochromatic, Two-tone, Rich multicolor, Dominant color or Balanced (rules on the Lists tab). |
+| Black | Hidden helper |  |
+| Gray | Hidden helper |  |
+| White | Hidden helper |  |
+| Cream & Ivory | Hidden helper |  |
+| Beige & Taupe | Hidden helper |  |
+| Brown & Wood | Hidden helper |  |
+| Red & Burgundy | Hidden helper |  |
+| Pink & Blush | Hidden helper |  |
+| Orange & Terracotta | Hidden helper |  |
+| Yellow & Gold | Hidden helper |  |
+| Green | Hidden helper |  |
+| Teal & Aqua | Hidden helper |  |
+| Blue | Hidden helper |  |
+| Navy | Hidden helper |  |
+| Purple & Plum | Hidden helper |  |
+
+## Motifs
+
+| Column | Type | Notes |
+|---|---|---|
+| Motif_ID | Input | Hotel_ID + -MO + number. |
+| Hotel_ID | Input |  |
+| Motif_Name | Input | A recurring color, material or pattern pairing, e.g. 'Brass and off-white'. |
+| Motif_Type | Input |  |
+| Colors | Input | Hex codes separated by commas. |
+| Archetype | Input | Suggested by the build when the colors match a palette archetype (Lists) at 65% or more. Edit freely. |
+| Archetype_Match_Pct | Input | How closely the colors match the archetype (filled by the build). |
+| Where_It_Repeats | Input |  |
+| Source_Evidence | Input |  |
+| Notes | Input |  |
+| Hotel_Name | Calculated | Calculated. |
 
 ## Stripes_Area and Stripes_Time
 
@@ -133,7 +209,8 @@ the spreadsheet version of the hotel stripe, by family.
 
 ## How a family share is computed
 
-For each swatch: Share_in_Space = Share_Pct / (sum of Share_Pct in that space); Weighted = Share_in_Space x Coverage x
+For each swatch: Share_in_Group = Share_Pct / (sum of Share_Pct in the same space palette or spot palette); for space
+palettes, Weighted = Share_in_Group x Coverage x
 weight of the space (Area_Used_sqft or Dwell_Used_h). A hotel's family share = sum of Weighted for that family / sum of
 the weights of its spaces that have colors. The web app computes exactly the same thing (app/js/model.js), and
 tests/test_build.py plus the LibreOffice recalculation check confirm the two agree.
@@ -164,31 +241,52 @@ Navy is a blue with L* under 30). Full rules: tools/colorlib.py `family_lch`.
 | Navy | `#1F2A4A` | Deep blues with lightness under 30 |
 | Purple & Plum | `#6E3B73` | Violet, plum, aubergine, lilac, magenta |
 
+## Color character (spots)
+
+Family shares and the share-weighted mean chroma are rounded to 6 decimals, then: mean chroma under 12 is Tonal neutral;
+a top family of 75% or more is Monochromatic; a second family of 30% or more with the top two at 80% or more is Two-tone;
+three or more families at 10% or more with mean chroma 20 or more is Rich multicolor; a top family of 50% or more is
+Dominant color; anything else is Balanced. The same rules run in app/js/model.js and tools/colorlib.py.
+
+## Shades and archetypes
+
+Every color also gets the nearest of the named shades in its family (CIEDE2000), for example Sage, Celadon, Emerald,
+Malachite, Forest or Racing Green within Green. Shade names are Colorways reference colors, not Pantone. Motifs are
+compared with palette archetypes (Lists tab); a match of 65% or more is suggested on the Motifs tab.
+
 ## Space types and defaults
 
 Defaults are planning assumptions, used only when a space has no published or measured value.
 
-| Space type | Code | Journey order | Default sq ft | Default hours | Covers |
-|---|---|---|---|---|---|
-| Arrival & Facade | ARR | 1 | 3,000 | 0.1 | Porte-cochere, entrance, exterior read from the street |
-| Lobby | LOB | 2 | 5,000 | 0.3 | Check-in hall, living room |
-| Lobby Bar | LBR | 3 | 1,500 | 0.75 | Bar that opens onto the lobby |
-| Corridor & Elevator | COR | 4 | 1,500 | 0.1 | Guest floor corridors, elevator cabs and lobbies |
-| Guest Room | ROOM | 5 | 450 | 9.0 | Standard king or queen room |
-| Suite | STE | 6 | 1,100 | 9.0 | Signature or standard suite |
-| Bathroom | BATH | 7 | 90 | 1.0 | Guest bathroom |
-| Cafe & Breakfast | CAFE | 8 | 1,500 | 0.5 | Coffee bar, breakfast room |
-| Pool | POOL | 9 | 8,000 | 2.0 | Pool deck, cabanas, swim club |
-| Garden & Grounds | GRD | 10 | 20,000 | 0.75 | Courtyards, lawns, terraces |
-| Spa | SPA | 11 | 8,000 | 1.5 | Treatment rooms, relaxation lounge, thermal suite |
-| Fitness | FIT | 12 | 2,500 | 0.75 | Gym, studio |
-| Signature Restaurant | REST | 13 | 4,000 | 1.5 | Main dinner restaurant |
-| Bar & Lounge | BAR | 14 | 2,000 | 1.0 | Cocktail bar, speakeasy, lounge (not the lobby bar) |
-| Rooftop | ROOF | 15 | 4,000 | 1.0 | Rooftop bar or terrace |
-| Casino | CAS | 16 | 60,000 | 2.0 | Gaming floor |
-| Nightclub | CLUB | 17 | 10,000 | 2.0 | Club, live music room |
-| Ballroom & Events | EVT | 18 | 15,000 | 0.25 | Ballrooms, pre-function, meeting rooms |
-| Retail & Other | OTH | 19 | 1,500 | 0.25 | Shops, library, game room, anything else |
+| Space type | Code | Order | Zone | Liminal | Default sq ft | Default hours | Covers |
+|---|---|---|---|---|---|---|---|
+| Exterior & Facade | EXT | 1 | Public | N | 4,000 | 0.1 | Building exterior read from the street; signage |
+| Entrance & Arrival | ENT | 2 | Public | Y | 1,500 | 0.1 | Porte-cochere, vestibule, revolving doors |
+| Lobby | LOB | 3 | Public | N | 5,000 | 0.3 | Check-in hall, living room |
+| Stairs & Atrium | STR | 4 | Public | Y | 2,000 | 0.1 | Grand staircases, atriums, mezzanines |
+| Lobby Bar | LBR | 5 | Patron | N | 1,500 | 0.75 | Bar that opens onto the lobby |
+| Elevator Lobby | ELB | 6 | Public | Y | 400 | 0.05 | Elevator waiting areas (ground floor and guest floors) |
+| Elevator Cab | ELV | 7 | Guest | Y | 60 | 0.05 | Inside the elevator: doors, panels, ceilings |
+| Corridor & Hallway | COR | 8 | Guest | Y | 1,500 | 0.1 | Guest-floor corridors; carpets and wallcoverings |
+| Guest Room | ROOM | 9 | Guest | N | 450 | 9.0 | Standard king or queen room |
+| Suite | STE | 10 | Guest | N | 1,100 | 9.0 | Signature or standard suite |
+| Bathroom | BATH | 11 | Guest | N | 90 | 1.0 | Guest bathroom |
+| Cafe & Breakfast | CAFE | 12 | Patron | N | 1,500 | 0.5 | Coffee bar, breakfast room, food hall |
+| Library & Living Room | LIB | 13 | Public | N | 1,500 | 0.5 | Library, game room, parlor |
+| Pool | POOL | 14 | Guest | N | 8,000 | 2.0 | Pool deck, cabanas, swim club |
+| Garden & Terrace | GRD | 15 | Public | N | 10,000 | 0.5 | Courtyards, lawns, terraces, outdoor rooms |
+| Spa | SPA | 16 | Patron | N | 8,000 | 1.5 | Treatment rooms, relaxation lounge, thermal suite |
+| Fitness | FIT | 17 | Guest | N | 2,500 | 0.75 | Gym, studio |
+| Signature Restaurant | REST | 18 | Patron | N | 4,000 | 1.5 | Main dinner restaurant |
+| Bar & Lounge | BAR | 19 | Patron | N | 2,000 | 1.0 | Cocktail bar, speakeasy, lounge (not the lobby bar) |
+| Rooftop | ROOF | 20 | Patron | N | 4,000 | 1.0 | Rooftop bar or terrace |
+| Public Restroom | WC | 21 | Public | Y | 300 | 0.05 | Lobby, restaurant and meeting-level restrooms |
+| Pre-function & Foyer | PRE | 22 | Event | Y | 3,000 | 0.1 | Pre-function corridors and foyers outside meeting rooms |
+| Ballroom | BALL | 23 | Event | N | 12,000 | 0.25 | Ballrooms and large function rooms |
+| Meeting Rooms | MTG | 24 | Event | N | 4,000 | 0.25 | Meeting rooms, boardrooms, salons |
+| Casino | CAS | 25 | Public | N | 60,000 | 2.0 | Gaming floor |
+| Nightclub | CLUB | 26 | Patron | N | 10,000 | 2.0 | Club, live music room |
+| Retail & Other | OTH | 27 | Public | N | 1,500 | 0.25 | Shops and anything else |
 
 ## Vocabularies
 
@@ -198,5 +296,6 @@ data/vocab.json later.
 
 ## Capacity
 
-Formulas are pre-filled for 150 hotels, 800 spaces and 600 swatches. To go further,
+Formulas are pre-filled for 150 hotels, 900 spaces, 700 swatches, 300 spots and
+200 motifs. To go further,
 copy the last row's gray cells down, or raise the CAP_* constants in tools/build.py and rebuild.

@@ -177,3 +177,69 @@ def family_lch(L, C, h):
 
 def family_of_hex(hex_str):
     return family_lch(*lab_to_lch(hex_to_lab(hex_str)))
+
+
+def nearest_shade(lab, family, shades):
+    """Closest named shade (CIEDE2000) within the color's own family.
+
+    shades: {family: [[name, hex], ...]} from data/vocab.json. Returns (name, delta_e, hex) or None.
+    Keep in sync with nearestShade in app/js/color.js.
+    """
+    best = None
+    for name, hx in shades.get(family, []):
+        d = delta_e_2000(lab, hex_to_lab(hx))
+        if best is None or d < best[1]:
+            best = (name, d, hx)
+    return best
+
+
+def color_character(colors):
+    """Classify a scene's palette. colors: [(hex, share)]. Same rules as app/js/model.js and the Spots tab.
+
+    Shares are normalized, summed by color family and rounded to 6 decimals before the thresholds,
+    so Python, JavaScript and Excel agree exactly at the boundaries.
+    """
+    if not colors:
+        return None
+    total = sum(max(0.0, s or 0.0) for _, s in colors)
+    weights = [(max(0.0, s or 0.0) / total) if total > 0 else 1 / len(colors) for _, s in colors]
+    fam, mean_c = {}, 0.0
+    for (hx, _), w in zip(colors, weights):
+        L, C, h = lab_to_lch(hex_to_lab(hx))
+        f = family_lch(L, C, h)
+        fam[f] = fam.get(f, 0.0) + w
+        mean_c += w * C
+    fam = {k: round(v, 6) for k, v in fam.items()}
+    mean_c = round(mean_c, 6)
+    ranked = sorted(fam.values(), reverse=True)
+    top, second = ranked[0], (ranked[1] if len(ranked) > 1 else 0.0)
+    n10 = sum(1 for v in fam.values() if v >= 0.1)
+    if mean_c < 12:
+        ch = "Tonal neutral"
+    elif top >= 0.75:
+        ch = "Monochromatic"
+    elif second >= 0.3 and top + second >= 0.8:
+        ch = "Two-tone"
+    elif n10 >= 3 and mean_c >= 20:
+        ch = "Rich multicolor"
+    elif top >= 0.5:
+        ch = "Dominant color"
+    else:
+        ch = "Balanced"
+    top_family = next(f for f in FAMILY_NAMES if fam.get(f, -1) == top)
+    return {"character": ch, "top_family": top_family, "top_share": top, "second_share": second,
+            "families_10pct": n10, "mean_chroma": mean_c, "families": fam}
+
+
+def archetype_match(hexes, archetypes):
+    """Best palette archetype for a set of colors: average, over the archetype's colors, of how close the
+    nearest palette color is (1 at Delta E 0, 0 at Delta E 15 or more). Returns (name, score) or (None, 0)."""
+    labs = [hex_to_lab(h) for h in hexes]
+    best = (None, 0.0)
+    if not labs:
+        return best
+    for a in archetypes:
+        sc = sum(max(0.0, 1 - min(delta_e_2000(hex_to_lab(t), l) for l in labs) / 15) for t in a["hexes"]) / len(a["hexes"])
+        if sc > best[1]:
+            best = (a["name"], sc)
+    return best

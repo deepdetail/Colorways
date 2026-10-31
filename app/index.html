@@ -14,7 +14,9 @@
     </div>
     <nav class="tabs" aria-label="Sections">
       <a href="#index" data-view="index">Index</a>
+      <a href="#spots" data-view="spots">Photo spots</a>
       <a href="#search" data-view="search">Search by color</a>
+      <a href="#game" data-view="game">Guess the hotel</a>
       <a href="#analyze" data-view="analyze">Analyze photos</a>
       <a href="#barcode" data-view="barcode">Walkthrough barcode</a>
       <a href="#method" data-view="method">Method</a>
@@ -54,6 +56,23 @@
       <div class="grid" id="hotel-grid"></div>
     </section>
 
+    <!-- SPOTS -->
+    <section id="view-spots" class="view" hidden aria-labelledby="h-spots">
+      <h1 id="h-spots">Photo spots worth shooting</h1>
+      <p class="lede">The murals, staircases, carpets, banquettes, chandeliers and liminal corners that make a hotel recognizable,
+        mostly in public spaces anyone can walk into. Each spot's palette is classified as monochromatic, two-tone,
+        rich multicolor, dominant, balanced or tonal.</p>
+      <div class="filters">
+        <label class="grow">Search <input type="search" id="s-q" placeholder="Hotel, city, spot"></label>
+        <label>Character <select id="s-char"></select></label>
+        <label>Type <select id="s-type"></select></label>
+        <label>Access <select id="s-access"></select></label>
+        <label>Color family <select id="s-fam"></select></label>
+      </div>
+      <p class="count" id="spots-count" aria-live="polite"></p>
+      <div class="grid spots-grid" id="spots-grid"></div>
+    </section>
+
     <!-- SEARCH -->
     <section id="view-search" class="view" hidden aria-labelledby="h-search">
       <h1 id="h-search">Search by color</h1>
@@ -69,10 +88,34 @@
         </div>
         <h2 class="small">Or tap a family</h2>
         <div class="family-chips" id="family-chips"></div>
+        <div class="shade-chips" id="shade-chips" hidden></div>
+        <h2 class="small">Or start from a palette</h2>
+        <div class="family-chips" id="preset-chips"></div>
         <h2 class="small">In these spaces</h2>
         <div class="space-filter" id="space-filter"></div>
       </div>
       <ol class="results" id="results" aria-live="polite"></ol>
+    </section>
+
+    <!-- GAME -->
+    <section id="view-game" class="view" hidden aria-labelledby="h-game">
+      <h1 id="h-game">Guess the hotel</h1>
+      <p class="lede">Like guessing a film from its color palette: here is a hotel's full spectrum, or one photo spot's palette.
+        Which hotel is it?</p>
+      <div class="panel game" id="game">
+        <div class="game-top">
+          <span id="g-kind" class="badge"></span>
+          <span id="g-score" class="muted"></span>
+        </div>
+        <div id="g-palette" class="g-palette" role="img" aria-label="Palette to identify"></div>
+        <p id="g-hint" class="muted"></p>
+        <div id="g-options" class="g-options"></div>
+        <div id="g-result" class="g-result" aria-live="polite"></div>
+        <div class="row">
+          <button type="button" class="btn primary" id="g-next">Next palette</button>
+          <button type="button" class="btn ghost" id="g-new">New game</button>
+        </div>
+      </div>
     </section>
 
     <!-- ANALYZE -->
@@ -92,14 +135,14 @@
         <label>Area source <select id="an-sqft-src"></select></label>
         <label>Photo-op score <select id="an-photo"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></label>
         <label>Lighting <select id="an-light"></select></label>
-        <label>Detail <input id="an-k" type="range" min="4" max="12" value="8"> <output id="an-k-out">8 colors</output></label>
+        <label>Detail <input id="an-k" type="range" min="4" max="16" value="10"> <output id="an-k-out">10 colors</output></label>
         <label class="check"><input type="checkbox" id="an-extremes" checked> Ignore blown highlights and deep shadows</label>
       </div>
       <div class="dropzone" id="an-drop">
         <p>Drop photos of one space here, or</p>
         <label class="btn file">Choose photos <input type="file" id="an-files" accept="image/*" multiple></label>
       </div>
-      <p class="hint">Drag across a photo to mark a photo-op region. Its colors become key swatches.</p>
+      <p class="hint">Drag across a photo to mark a photo spot (a mural, staircase, carpet, banquette...). Each marked region becomes a spot with its own palette.</p>
       <div class="an-images" id="an-images"></div>
       <div class="row">
         <button type="button" class="btn primary" id="an-run" disabled>Extract palette</button>
@@ -113,6 +156,7 @@
           <button type="button" class="btn" id="exp-hotels">Hotels CSV</button>
           <button type="button" class="btn" id="exp-spaces">Spaces CSV</button>
           <button type="button" class="btn" id="exp-swatches">Swatches CSV</button>
+          <button type="button" class="btn" id="exp-spots">Spots CSV</button>
           <button type="button" class="btn" id="exp-json">JSON backup</button>
           <label class="btn file">Import JSON <input type="file" id="imp-json" accept="application/json,.json"></label>
           <button type="button" class="btn ghost danger" id="clear-user">Clear my data</button>
@@ -178,6 +222,19 @@
           by lightness (L*), chroma (C*, how colorful) and hue angle (h). The same rules run in this app and
           in the Excel workbook.</p>
         <div class="table-wrap"><table class="data" id="m-families"></table></div>
+        <h2>Shades: many greens, many whites</h2>
+        <p>Families keep search simple; shades keep it honest. Every color also gets the nearest of the named shades in its
+          family (CIEDE2000), so a lobby can show sage, emerald and forest instead of just "green". Shade names are Colorways
+          reference colors, not Pantone.</p>
+        <div id="m-shades" class="m-shades"></div>
+        <h2>Photo spots and color character</h2>
+        <p>A photo spot is a feature worth shooting: a mural, a staircase, a carpet, a bar counter, a chandelier, elevator doors,
+          a restroom. Its palette is classified from its color-family shares and average chroma (how colorful):</p>
+        <div class="table-wrap"><table class="data" id="m-chars"></table></div>
+        <h2>Motifs and palette archetypes</h2>
+        <p>Motifs are the recurring pairings that define a hotel (brass and off-white, pink and green marble). Each is compared
+          with these archetypes; 65% or more counts as a match.</p>
+        <div class="table-wrap"><table class="data" id="m-arch"></table></div>
         <h2>Space types and default assumptions</h2>
         <p>Defaults are planning assumptions used only when a space has no published or measured area or
           dwell time. They are labeled "Type default" everywhere.</p>

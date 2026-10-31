@@ -69,3 +69,26 @@ Your idea combines famous magazine shoots, destination promo material, and your 
 - **Described colors are a bootstrap, not a product.** They are sourced and labeled, but the hexes are approximations of words. Rank on Measured data as soon as a city has enough of it.
 - **The key swatch weights are judgment calls** (chroma boost, photo-op boost). They should be tuned against what people actually pick in a quick preference test.
 - **Families are a convenience, not a truth.** Fifteen buckets with fixed boundaries will misfile edge cases (a dusty pink can land in Beige). The exact Lab values are always kept underneath.
+
+## 8. v0.3: from swatches to spots (after founder review, Oct 31, 2026)
+
+The first pass treated each space as a handful of swatches. Real hotels are richer than that: the Lafayette's photos show complex marbles and many greens, and older hotels keep returning to brass and off-white. Four changes follow from that.
+
+**1. The multitude, not just the summary.** Every hotel now has a **spectrum**: every distinct color across all its spaces and spots, grouped by family and sorted light to dark. Within each family, colors get the nearest of **116 named shades** (CIEDE2000), so greens stay distinct as mint, celadon, sage, pistachio, olive, moss, fern, kelly, jade, emerald, malachite, verde marble, forest, hunter, pine, bottle green and racing green. Colors also carry a **material** (marble and stone, terrazzo, brass and gold metal, velvet, carpet, wallpaper, tile, lacquer, mural...) and a **finish** (veined, speckled, patterned, metallic, gloss...), so a marble is logged as a base plus its veins and brass reads as metal, not just yellow.
+
+**2. Public and liminal spaces first.** The capture plan now starts where anyone can walk in: exterior, entrance, lobby, stairs and atrium, elevator lobbies, corridors and their carpets, public restrooms, and meeting-level pre-function foyers, then bars, restaurants, ballrooms and meeting rooms. Every space type carries a zone (Public, Patron, Event, Guest) and a liminal flag. Since most of the shareable color lives in these spaces, the product can be useful even to people who are not booking a night.
+
+**3. Photo spots.** A spot is the specific thing worth shooting inside a space: a mural, a staircase, a carpet, a banquette, a chandelier, elevator doors, a restroom, a room-scale scene. Each spot has a type, access, best time, a tip, a source, and its own palette. Its palette gets a **color character**: Monochromatic (one family, 75%+), Two-tone, Rich multicolor, Dominant color, Balanced, or Tonal neutral (low chroma, like marble and stone). That is how the product surfaces "colorful, dominant, monochromatic and rich color scenic spots": filter the Photo spots tab by character and access. The seed has 24 sourced spots (19 with palettes), from Noelle's pink marble staircase to the TY Bar's red velvet banquette.
+
+**4. Motifs and archetypes.** A motif is a recurring pairing that defines a hotel (pink and green marble with brass at Noelle; Calacatta and ebony at The Post Oak). Motifs are matched against nine palette archetypes, including **Gilded Classic** (brass and off-white, the grand-hotel signature), Jewel Box, Deco Pink and Green, Black and White Graphic, Moody Club and **Garden Greens** (many greens). The archetypes double as one-click searches.
+
+### Guess the hotel
+
+The Tom Cruise moment you mentioned, where he names his own films from their color palettes, was covered by Upworthy ([article](https://www.upworthy.com/tom-cruise-had-to-guess-movies-based-purely-on-color-palettes-he-nailed-every-single-one/?nb=1)); I could not play the clip itself from here. The prototype now has the hotel version: a hotel's spectrum, or one photo spot's palette, and four hotels to choose from, with a hint button. A useful counterpoint for tuning difficulty: a University of Missouri study suggests viewers may not pick up on mathematically chosen color cues ([Missouri Engineering](https://engineering.missouri.edu/early-study-finds-viewers-may-not-pick-up-on-mathematical-analytical-color-cues)), so the game should lean on signature spots (a pink staircase, a red velvet bar) more than on averaged palettes.
+
+### Where v0.3 could be better
+
+- **Measured data is still the bottleneck.** Shades, spots and characters are only as good as the palettes behind them; 19 seed spot palettes are Described approximations of cited text.
+- **Character thresholds (75%, 30%, chroma 12 and 20) are first guesses.** Tune them against twenty measured spots you consider iconic.
+- **Shade names are reference colors, not a standard.** Good for search and captions; do not present them as paint matches.
+- **The game has ten hotels with colors.** It needs about fifty measured hotels before it is fun for more than a few rounds.

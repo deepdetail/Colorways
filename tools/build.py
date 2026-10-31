@@ -31,14 +31,14 @@ XLSX = ROOT / "deliverables" / "Colorways_Hotel_Color_Index.xlsx"
 SEED_JS = ROOT / "app" / "data" / "seed.js"
 
 # Rows pre-filled with formulas. Copy the last row's gray cells down to extend.
-CAP_HOTELS, CAP_SPACES, CAP_SWATCHES = 150, 800, 600
+CAP_HOTELS, CAP_SPACES, CAP_SWATCHES, CAP_SPOTS, CAP_MOTIFS = 150, 900, 700, 300, 200
 
 HOTEL_DEFAULTS = {
     "brand": "", "city": "", "state": "", "region": "", "status": "Unverified", "opened": "", "redesign": "",
     "architect": "", "interiorDesigner": "", "primaryStyle": "", "secondaryStyle": "", "era": "", "genre": "",
     "palette": "", "keyFamilies": [], "photoOp": "", "media": "", "rooms": None, "stdRoomSqft": None,
     "meetingSqft": None, "distinctiveness": None, "researchStatus": "Not started", "wave": "Backlog", "notes": "",
-    "sources": [], "spaces": [],
+    "sources": [], "spaces": [], "spots": [], "motifs": [],
 }
 SPACE_DEFAULTS = {
     "venue": "", "sqft": None, "sqftSource": "", "coverage": None, "dwell": None, "style": "", "era": "", "genre": "", "mood": [],
@@ -56,6 +56,68 @@ def check(value, allowed, what, ctx):
         return
     if value not in allowed:
         raise SeedError(f"{ctx}: {what} {value!r} is not in the vocabulary")
+
+
+def norm_color(c, vocab, sources, ctx):
+    c = {"name": "", "share": None, "key": False, "reason": "", "source": "Described", "material": "", "finish": "", **c}
+    colorlib.hex_to_rgb(c["hex"])  # raises on a bad hex
+    c["hex"] = "#" + c["hex"].strip().lstrip("#").upper()
+    check(c["source"], sources, "color source", ctx)
+    if c["key"] and not c["reason"]:
+        c["reason"] = "Photo-op"
+    check(c["reason"], vocab["keyReasons"], "key reason", ctx)
+    check(c["material"], vocab["materials"], "material", ctx)
+    check(c["finish"], vocab["finishes"], "finish", ctx)
+    lab = colorlib.hex_to_lab(c["hex"])
+    fam = colorlib.family_lch(*colorlib.lab_to_lch(lab))
+    shade = colorlib.nearest_shade(lab, fam, vocab["shades"])
+    c.setdefault("shade", shade[0] if shade else "")
+    return c
+
+
+ARCHETYPE_MIN = 0.65  # same threshold as the app (app/js/app.js)
+
+SPOT_DEFAULTS = {"type": "", "spaceType": "", "spaceVenue": "", "access": "", "bestTime": "Any", "photoOp": None, "tip": "",
+                 "confidence": "", "evidence": "", "url": "", "captureStatus": "Not shot", "rights": "Reference only (link)",
+                 "notes": "", "colors": []}
+
+
+def norm_spot(raw, n, h, vocab, sources):
+    sp = {**SPOT_DEFAULTS, **raw}
+    ctx = f"{h['id']} spot {n} ({sp.get('name', '')})"
+    if not sp.get("name"):
+        raise SeedError(f"{ctx}: spot needs a name")
+    check(sp["type"], vocab["spotTypes"], "spot type", ctx)
+    check(sp["access"], vocab["access"], "access", ctx)
+    check(sp["bestTime"], vocab["bestTime"], "best time", ctx)
+    check(sp["confidence"], vocab["confidence"], "confidence", ctx)
+    check(sp["captureStatus"], vocab["captureStatus"], "capture status", ctx)
+    check(sp["rights"], vocab["rightsStatus"], "rights", ctx)
+    match = [s for s in h["spaces"] if s["type"] == sp["spaceType"] and (not sp["spaceVenue"] or s["venue"] == sp["spaceVenue"])]
+    if not match:
+        raise SeedError(f"{ctx}: no space {sp['spaceType']!r} / {sp['spaceVenue']!r} in this hotel")
+    sp["spaceId"] = match[0]["id"]
+    sp["id"] = f"{h['id']}-SP{n}"
+    sp["colors"] = [norm_color(c, vocab, sources, ctx) for c in sp["colors"]]
+    for r, c in enumerate(sp["colors"], start=1):
+        c["rank"] = r
+        c["id"] = f"{sp['id']}-C{r}"
+        c["key"] = True
+        c["reason"] = c["reason"] or "Photo-op"
+    return sp
+
+
+def norm_motif(raw, n, h, vocab):
+    m = {"type": "", "hexes": [], "where": "", "evidence": "", "url": "", "notes": "", **raw}
+    ctx = f"{h['id']} motif {n}"
+    check(m["type"], vocab["motifTypes"], "motif type", ctx)
+    m["hexes"] = ["#" + x.strip().lstrip("#").upper() for x in m["hexes"]]
+    for x in m["hexes"]:
+        colorlib.hex_to_rgb(x)
+    m["id"] = f"{h['id']}-MO{n}"
+    name, score = colorlib.archetype_match(m["hexes"], vocab["archetypes"])
+    m["archetype"], m["archetypeScore"] = (name, round(score, 3)) if score >= ARCHETYPE_MIN else ("", round(score, 3))
+    return m
 
 
 def normalize(vocab, seed):
@@ -91,17 +153,7 @@ def normalize(vocab, seed):
             check(sp["lighting"], vocab["lighting"], "lighting", sctx)
             if sp["coverage"] is not None and not 0 <= sp["coverage"] <= 100:
                 raise SeedError(f"{sctx}: coverage must be 0-100")
-            cols = []
-            for c in sp["colors"]:
-                c = {"name": "", "share": None, "key": False, "reason": "", "source": "Described", **c}
-                colorlib.hex_to_rgb(c["hex"])  # raises on a bad hex
-                c["hex"] = "#" + c["hex"].strip().lstrip("#").upper()
-                check(c["source"], sources, "color source", sctx)
-                if c["key"] and not c["reason"]:
-                    c["reason"] = "Photo-op"
-                check(c["reason"], vocab["keyReasons"], "key reason", sctx)
-                cols.append(c)
-            sp["colors"] = cols
+            sp["colors"] = [norm_color(c, vocab, sources, sctx) for c in sp["colors"]]
             sp["_i"] = i
             present.add(sp["type"])
             spaces.append(sp)
@@ -125,6 +177,8 @@ def normalize(vocab, seed):
                 c["id"] = f"{s['id']}-C{r}"
             del s["_i"]
         h["spaces"] = spaces
+        h["spots"] = [norm_spot(rs, n, h, vocab, sources) for n, rs in enumerate(h["spots"], start=1)]
+        h["motifs"] = [norm_motif(rm, n, h, vocab) for n, rm in enumerate(h["motifs"], start=1)]
         hotels.append(h)
     wave_rank = {w: i for i, w in enumerate(vocab["waves"])}
 
@@ -267,6 +321,9 @@ HOTEL_COLS = [
     ("Colors_Logged", "auto", 9, "Calculated: rows on the Swatches tab for this hotel."),
     ("Measured_Colors", "auto", 10, "Calculated: swatches with Color_Source = Measured."),
     ("Top_Family_by_Area", "auto", 16, "Calculated from Stripes_Area: the color family covering the most documented area."),
+    ("Spots_Logged", "auto", 8, "Calculated: photo spots on the Spots tab."),
+    ("Public_Spots", "auto", 8, "Calculated: spots anyone can reach without booking."),
+    ("Motifs_Logged", "auto", 8, "Calculated: rows on the Motifs tab."),
     ("Documented_Share_Area", "auto", 11, "Calculated: share of the hotel's logged spaces (by area) that sourced colors describe. Read Top_Family_by_Area with this: a top family at 30% documented is a weak signal."),
 ]
 
@@ -294,17 +351,24 @@ SPACE_COLS = [
     ("Journey_Order", "auto", 8, "Calculated from the space type: left-to-right position in the stripe."),
     ("Area_Used_sqft", "auto", 10, "Calculated: Area_sqft if given, else the type default from Lists."),
     ("Dwell_Used_h", "auto", 9, "Calculated: Dwell_Hours if given, else the type default from Lists."),
-    ("Colors_Logged", "auto", 8, "Calculated."),
+    ("Colors_Logged", "auto", 8, "Calculated: colors in this space's overall palette (spot palettes not counted)."),
     ("Key_Swatch_Hex", "auto", 10, "Calculated: first swatch marked Key_Swatch = Y."),
+    ("Zone", "auto", 9, "Calculated from the space type: Public, Patron, Event or Guest."),
+    ("Liminal", "auto", 8, "Calculated: Y for in-between spaces (entrances, stairs, elevator lobbies, corridors, restrooms, pre-function)."),
+    ("Spots_Logged", "auto", 8, "Calculated: photo spots in this space."),
 ]
 
 SWATCH_COLS = [
-    ("Swatch_ID", "in", 22, "Space_ID + -C + rank."),
+    ("Swatch_ID", "in", 22, "Space_ID (or Spot_ID) + -C + rank."),
     ("Space_ID", "in", 18, None),
-    ("Rank", "in", 6, "1 = largest share in the space."),
+    ("Spot_ID", "in", 14, "Blank for a space's overall palette. Fill it when the color belongs to a photo spot's palette (Spots tab). Spot colors do not count toward the stripes."),
+    ("Rank", "in", 6, "1 = largest share in its group."),
     ("Hex", "in", 9, "Format #RRGGBB."),
     ("Color_Name", "in", 26, None),
-    ("Share_Pct", "in", 8, "Share of this space's logged colors, 0-100. Normalized per space, so they need not total 100."),
+    ("Shade", "in", 13, "Nearest named shade (CIEDE2000) within the color's family, filled by the app and the build. Pick from the list if you add rows by hand."),
+    ("Material", "in", 16, None),
+    ("Finish", "in", 10, None),
+    ("Share_Pct", "in", 8, "Share of this group's logged colors, 0-100. Normalized per group, so they need not total 100."),
     ("Key_Swatch", "in", 7, "Y if this color belongs in the simplified key swatch (photo-op or signature)."),
     ("Key_Reason", "in", 14, None),
     ("Color_Source", "in", 11, "Measured, Described or Estimated. See README."),
@@ -317,17 +381,59 @@ SWATCH_COLS = [
     ("b*", "auto", 6, "CIELAB blue (-) to yellow (+). Calculated."),
     ("C*", "auto", 6, "Chroma: how colorful. Calculated."),
     ("Hue_deg", "auto", 7, "Hue angle in CIELAB, 0-360. Calculated."),
-    ("Share_in_Space", "auto", 8, "Calculated: Share_Pct / total Share_Pct of the space's logged colors."),
+    ("Share_in_Group", "auto", 8, "Calculated: Share_Pct / total Share_Pct of the same space palette or spot palette."),
     ("Coverage", "auto", 8, "Calculated from Spaces: Coverage_Pct / 100 (blank = 100%)."),
     ("Area_Used_sqft", "auto", 9, "Calculated from Spaces."),
-    ("Weighted_sqft", "auto", 10, "Calculated: Share_in_Space x Coverage x Area_Used_sqft. Feeds Stripes_Area."),
+    ("Weighted_sqft", "auto", 10, "Calculated: Share_in_Group x Coverage x Area_Used_sqft for space palettes (0 for spot colors). Feeds Stripes_Area."),
     ("Dwell_Used_h", "auto", 8, "Calculated from Spaces."),
-    ("Weighted_hours", "auto", 9, "Calculated: Share_in_Space x Coverage x Dwell_Used_h. Feeds Stripes_Time."),
+    ("Weighted_hours", "auto", 9, "Calculated: Share_in_Group x Coverage x Dwell_Used_h for space palettes (0 for spot colors). Feeds Stripes_Time."),
+    ("Chroma_x_Share", "auto", 8, "Calculated for spot colors: Share_in_Group x C*. Feeds the spot's Mean_Chroma."),
     ("R", "helper", 5, None), ("G", "helper", 5, None), ("B", "helper", 5, None),
     ("R_lin", "helper", 7, None), ("G_lin", "helper", 7, None), ("B_lin", "helper", 7, None),
     ("X_n", "helper", 7, None), ("Y_n", "helper", 7, None), ("Z_n", "helper", 7, None),
     ("f_x", "helper", 7, None), ("f_y", "helper", 7, None), ("f_z", "helper", 7, None),
-    ("Lookup_Key", "helper", 18, None),
+    ("Lookup_Key", "helper", 18, None), ("Group_Key", "helper", 18, None),
+]
+
+SPOT_COLS = [
+    ("Spot_ID", "in", 14, "Hotel_ID + -SP + number, e.g. NSH-NOEL-SP1."),
+    ("Hotel_ID", "in", 12, None),
+    ("Space_ID", "in", 18, "The space the spot is in (Spaces tab)."),
+    ("Spot_Name", "in", 34, "What to look for, e.g. 'Pink marble staircase'."),
+    ("Spot_Type", "in", 20, None),
+    ("Access", "in", 13, "Who can reach it without special arrangements. Public spots are the core of the product."),
+    ("Best_Time", "in", 11, None),
+    ("Photo_Op_1to5", "in", 9, None),
+    ("Photo_Tip", "in", 30, None),
+    ("Confidence", "in", 10, None),
+    ("Source_Evidence", "in", 48, None),
+    ("Rights_Status", "in", 18, None),
+    ("Capture_Status", "in", 11, None),
+    ("Notes", "in", 26, None),
+    ("Hotel_Name", "auto", 24, "Calculated."),
+    ("Space_Type", "auto", 16, "Calculated."),
+    ("Zone", "auto", 9, "Calculated from the space type (Lists)."),
+    ("Colors_Logged", "auto", 8, "Calculated: swatches with this Spot_ID."),
+    ("Mean_Chroma", "auto", 8, "Calculated: share-weighted average chroma of the spot's colors. Under 12 reads as neutral."),
+    ("Top_Family", "auto", 16, "Calculated: the color family with the largest share of the spot."),
+    ("Top_Share", "auto", 8, "Calculated."),
+    ("Second_Share", "auto", 8, "Calculated."),
+    ("Families_10pct", "auto", 8, "Calculated: color families with 10% or more."),
+    ("Color_Character", "auto", 16, "Calculated: Tonal neutral, Monochromatic, Two-tone, Rich multicolor, Dominant color or Balanced (rules on the Lists tab)."),
+] + [(name, "helper", 7, None) for name, _, _ in colorlib.FAMILIES]
+
+MOTIF_COLS = [
+    ("Motif_ID", "in", 14, "Hotel_ID + -MO + number."),
+    ("Hotel_ID", "in", 12, None),
+    ("Motif_Name", "in", 34, "A recurring color, material or pattern pairing, e.g. 'Brass and off-white'."),
+    ("Motif_Type", "in", 16, None),
+    ("Colors", "in", 36, "Hex codes separated by commas."),
+    ("Archetype", "in", 20, "Suggested by the build when the colors match a palette archetype (Lists) at 65% or more. Edit freely."),
+    ("Archetype_Match_Pct", "in", 10, "How closely the colors match the archetype (filled by the build)."),
+    ("Where_It_Repeats", "in", 28, None),
+    ("Source_Evidence", "in", 48, None),
+    ("Notes", "in", 24, None),
+    ("Hotel_Name", "auto", 24, "Calculated."),
 ]
 
 
@@ -335,7 +441,8 @@ def letters(cols):
     return {name: get_column_letter(i) for i, (name, *_) in enumerate(cols, start=1)}
 
 
-H, SP, SW = letters(HOTEL_COLS), letters(SPACE_COLS), letters(SWATCH_COLS)
+H, SP, SW, SPT, MOT = (letters(HOTEL_COLS), letters(SPACE_COLS), letters(SWATCH_COLS), letters(SPOT_COLS),
+                       letters(MOTIF_COLS))
 
 
 def rng(sheet, col, cap):
@@ -354,58 +461,93 @@ def write_inputs(ws, r, cols, values, wrap=()):
 def build_lists(wb, vocab):
     ws = wb.create_sheet("Lists")
     refs = {}
-    ws["A1"], ws["B1"], ws["C1"], ws["D1"], ws["E1"] = "Space_Type", "Journey_Order", "Default_sqft", "Default_Dwell_h", "Code"
-    for c in "ABCDE":
-        ws[f"{c}1"].font = F_HEAD
-        ws[f"{c}1"].fill = FILL_IN
+    heads = ["Space_Type", "Journey_Order", "Default_sqft", "Default_Dwell_h", "Code", "Zone", "Liminal"]
+    for i, t in enumerate(heads, start=1):
+        c = ws.cell(row=1, column=i, value=t)
+        c.font, c.fill = F_HEAD, FILL_IN
     ws["C1"].comment = Comment("Planning assumptions, not facts about any hotel. Used only when a space has no published or measured area.", "Colorways")
     ws["D1"].comment = Comment("Planning assumptions for a typical one-night leisure stay. Used only when a space has no measured dwell time.", "Colorways")
     for r, t in enumerate(vocab["spaceTypes"], start=2):
-        ws.cell(row=r, column=1, value=t["name"])
-        ws.cell(row=r, column=2, value=t["order"])
-        ws.cell(row=r, column=3, value=t["sqft"]).number_format = "#,##0"
-        ws.cell(row=r, column=4, value=t["dwell"])
-        ws.cell(row=r, column=5, value=t["code"])
+        for i, v in enumerate([t["name"], t["order"], t["sqft"], t["dwell"], t["code"], t["zone"], "Y" if t["liminal"] else "N"], start=1):
+            ws.cell(row=r, column=i, value=v)
+        ws.cell(row=r, column=3).number_format = "#,##0"
     n = len(vocab["spaceTypes"]) + 1
-    refs["space"] = f"Lists!$A$2:$A${n}"
-    refs["space_order"] = f"Lists!$B$2:$B${n}"
-    refs["space_sqft"] = f"Lists!$C$2:$C${n}"
-    refs["space_dwell"] = f"Lists!$D$2:$D${n}"
+    for key, L in (("space", "A"), ("space_order", "B"), ("space_sqft", "C"), ("space_dwell", "D"), ("space_zone", "F"), ("space_liminal", "G")):
+        refs[key] = f"Lists!${L}$2:${L}${n}"
 
-    ws["G1"], ws["H1"], ws["I1"] = "Color_Family", "Swatch_Hex", "Range (CIELAB rules, same as the web app)"
-    for c in "GHI":
-        ws[f"{c}1"].font = F_HEAD
-        ws[f"{c}1"].fill = FILL_AUTO
-    for r, (name, hx, rng) in enumerate(colorlib.FAMILIES, start=2):
-        ws.cell(row=r, column=7, value=name)
-        c = ws.cell(row=r, column=8, value=hx)
+    for i, t in enumerate(["Color_Family", "Swatch_Hex", "Range (CIELAB rules, same as the web app)"]):
+        c = ws.cell(row=1, column=9 + i, value=t)
+        c.font, c.fill = F_HEAD, FILL_AUTO
+    for r, (name, hx, rng_text) in enumerate(colorlib.FAMILIES, start=2):
+        ws.cell(row=r, column=9, value=name)
+        c = ws.cell(row=r, column=10, value=hx)
         c.fill = PatternFill("solid", start_color=hx[1:], end_color=hx[1:])
         c.font = Font(name=ARIAL, size=10, color=ink(hx))
-        ws.cell(row=r, column=9, value=rng)
-    refs["family"] = f"Lists!$G$2:$G${len(colorlib.FAMILIES) + 1}"
+        ws.cell(row=r, column=11, value=rng_text)
+    refs["family"] = f"Lists!$I$2:$I${len(colorlib.FAMILIES) + 1}"
+    rules_row = len(colorlib.FAMILIES) + 3
+    ws.cell(row=rules_row, column=9, value="Color character rules (Spots tab)").font = F_HEAD
+    for k, ch in enumerate(vocab["colorCharacters"], start=1):
+        ws.cell(row=rules_row + k, column=9, value=ch["name"])
+        ws.cell(row=rules_row + k, column=11, value=ch["meaning"])
 
     simple = [
         ("styles", "Styles"), ("eras", "Design_Eras"), ("genres", "Genres"), ("moods", "Moods"), ("lighting", "Lighting"),
         ("colorSources", "Color_Source"), ("confidence", "Confidence"), ("regions", "Region"), ("hotelStatus", "Hotel_Status"),
         ("researchStatus", "Research_Status"), ("areaSources", "Area_Source"), ("captureStatus", "Capture_Status"),
         ("keyReasons", "Key_Reason"), ("mediaTypes", "Media_Type"), ("rightsStatus", "Rights_Status"), ("waves", "Wave"),
-        ("yesno", "Yes_No"),
+        ("yesno", "Yes_No"), ("spotTypes", "Spot_Type"), ("access", "Access"), ("bestTime", "Best_Time"),
+        ("materials", "Material"), ("finishes", "Finish"), ("motifTypes", "Motif_Type"), ("archetypeNames", "Archetype"),
     ]
-    col = 11
+    col = 13
     for key, title in simple:
-        values = ["Y", "N"] if key == "yesno" else vocab[key]
-        if key == "colorSources":
-            values = [s["name"] for s in values]
+        if key == "yesno":
+            values = ["Y", "N"]
+        elif key == "colorSources":
+            values = [x["name"] for x in vocab[key]]
+        elif key == "archetypeNames":
+            values = [x["name"] for x in vocab["archetypes"]]
+        else:
+            values = vocab[key]
         L = get_column_letter(col)
         ws[f"{L}1"] = title
-        ws[f"{L}1"].font = F_HEAD
-        ws[f"{L}1"].fill = FILL_IN
+        ws[f"{L}1"].font, ws[f"{L}1"].fill = F_HEAD, FILL_IN
         for r, val in enumerate(values, start=2):
             ws.cell(row=r, column=col, value=val)
-        refs[key] = f"Lists!${L}$2:${L}${len(values) + 1}"
-        ws.column_dimensions[L].width = max(12, min(34, max(len(str(v)) for v in values) + 2))
+        refs[key] = f"Lists!${L}${2}:${L}${len(values) + 1}"
+        ws.column_dimensions[L].width = max(12, min(34, max(len(str(x)) for x in values) + 2))
         col += 1
-    for L, w in {"A": 20, "B": 9, "C": 11, "D": 11, "E": 7, "G": 20, "H": 11, "I": 60}.items():
+
+    col += 1
+    for i, t in enumerate(["Shade_Family", "Shade", "Shade_Hex"]):
+        c = ws.cell(row=1, column=col + i, value=t)
+        c.font, c.fill = F_HEAD, FILL_AUTO
+    r = 2
+    for fam, lst in vocab["shades"].items():
+        for name, hx in lst:
+            ws.cell(row=r, column=col, value=fam)
+            ws.cell(row=r, column=col + 1, value=name)
+            c = ws.cell(row=r, column=col + 2, value=hx)
+            c.fill = PatternFill("solid", start_color=hx[1:], end_color=hx[1:])
+            c.font = Font(name=ARIAL, size=10, color=ink(hx))
+            r += 1
+    SL = get_column_letter(col + 1)
+    refs["shade"] = f"Lists!${SL}$2:${SL}${r - 1}"
+    for i, w in enumerate((18, 16, 10)):
+        ws.column_dimensions[get_column_letter(col + i)].width = w
+
+    col += 4
+    for i, t in enumerate(["Archetype", "What it is", "Core colors"]):
+        c = ws.cell(row=1, column=col + i, value=t)
+        c.font, c.fill = F_HEAD, FILL_AUTO
+    for r, a_ in enumerate(vocab["archetypes"], start=2):
+        ws.cell(row=r, column=col, value=a_["name"])
+        ws.cell(row=r, column=col + 1, value=a_["hint"])
+        ws.cell(row=r, column=col + 2, value=", ".join(a_["hexes"]))
+    for i, w in enumerate((22, 44, 40)):
+        ws.column_dimensions[get_column_letter(col + i)].width = w
+
+    for L, w in {"A": 20, "B": 9, "C": 11, "D": 11, "E": 7, "F": 9, "G": 8, "I": 20, "J": 11, "K": 60}.items():
         ws.column_dimensions[L].width = w
     ws.freeze_panes = "A2"
     return refs
@@ -434,10 +576,15 @@ def build_hotels(wb, hotels, refs):
     sp_hotel = rng("Spaces", SP["Hotel_ID"], CAP_SPACES)
     sw_hotel = rng("Swatches", SW["Hotel_ID"], CAP_SWATCHES)
     sw_src = rng("Swatches", SW["Color_Source"], CAP_SWATCHES)
+    spt_hotel, spt_access = rng("Spots", SPT["Hotel_ID"], CAP_SPOTS), rng("Spots", SPT["Access"], CAP_SPOTS)
+    mot_hotel = rng("Motifs", MOT["Hotel_ID"], CAP_MOTIFS)
     for r in range(2, CAP_HOTELS + 2):
         ws[f"{c['Spaces_Logged']}{r}"] = f'=IF($A{r}="","",COUNTIF({sp_hotel},$A{r}))'
         ws[f"{c['Colors_Logged']}{r}"] = f'=IF($A{r}="","",COUNTIF({sw_hotel},$A{r}))'
         ws[f"{c['Measured_Colors']}{r}"] = f'=IF($A{r}="","",COUNTIFS({sw_hotel},$A{r},{sw_src},"Measured"))'
+        ws[f"{c['Spots_Logged']}{r}"] = f'=IF($A{r}="","",COUNTIF({spt_hotel},$A{r}))'
+        ws[f"{c['Public_Spots']}{r}"] = f'=IF($A{r}="","",COUNTIFS({spt_hotel},$A{r},{spt_access},"Public"))'
+        ws[f"{c['Motifs_Logged']}{r}"] = f'=IF($A{r}="","",COUNTIF({mot_hotel},$A{r}))'
         ws[f"{c['Top_Family_by_Area']}{r}"] = (
             f'=IF(OR($A{r}="",Stripes_Area!$S{r}="",Stripes_Area!$S{r}=0),"",IF(MAX(Stripes_Area!$C{r}:$Q{r})=0,"",'
             f'INDEX(Stripes_Area!$C$1:$Q$1,MATCH(MAX(Stripes_Area!$C{r}:$Q{r}),Stripes_Area!$C{r}:$Q{r},0))))')
@@ -489,6 +636,7 @@ def build_spaces(wb, hotels, refs):
     h_id, h_name = rng("Hotels", H["Hotel_ID"], CAP_HOTELS), rng("Hotels", H["Hotel_Name"], CAP_HOTELS)
     sw_space, sw_hex = rng("Swatches", SW["Space_ID"], CAP_SWATCHES), rng("Swatches", SW["Hex"], CAP_SWATCHES)
     sw_key = rng("Swatches", SW["Lookup_Key"], CAP_SWATCHES)
+    sw_group = rng("Swatches", SW["Group_Key"], CAP_SWATCHES)
     t, a, d = c["Space_Type"], c["Area_sqft"], c["Dwell_Hours"]
     for r in range(2, CAP_SPACES + 2):
         ws[f"{c['Hotel_Name']}{r}"] = f'=IF($B{r}="","",IFERROR(INDEX({h_name},MATCH($B{r},{h_id},0)),"(unknown hotel)"))'
@@ -497,8 +645,11 @@ def build_spaces(wb, hotels, refs):
                                            f'IFERROR(INDEX({refs["space_sqft"]},MATCH(${t}{r},{refs["space"]},0)),"")))')
         ws[f"{c['Dwell_Used_h']}{r}"] = (f'=IF(${t}{r}="","",IF(ISNUMBER(${d}{r}),${d}{r},'
                                          f'IFERROR(INDEX({refs["space_dwell"]},MATCH(${t}{r},{refs["space"]},0)),"")))')
-        ws[f"{c['Colors_Logged']}{r}"] = f'=IF($A{r}="","",COUNTIF({sw_space},$A{r}))'
+        ws[f"{c['Colors_Logged']}{r}"] = f'=IF($A{r}="","",COUNTIF({sw_group},"S|"&$A{r}))'
         ws[f"{c['Key_Swatch_Hex']}{r}"] = f'=IF($A{r}="","",IFERROR(INDEX({sw_hex},MATCH($A{r}&"|Y",{sw_key},0)),""))'
+        ws[f"{c['Zone']}{r}"] = f'=IF(${t}{r}="","",IFERROR(INDEX({refs["space_zone"]},MATCH(${t}{r},{refs["space"]},0)),""))'
+        ws[f"{c['Liminal']}{r}"] = f'=IF(${t}{r}="","",IFERROR(INDEX({refs["space_liminal"]},MATCH(${t}{r},{refs["space"]},0)),""))'
+        ws[f"{c['Spots_Logged']}{r}"] = f'=IF($A{r}="","",COUNTIF({rng("Spots", SPT["Space_ID"], CAP_SPOTS)},$A{r}))'
         ws[f"{a}{r}"].number_format = "#,##0"
         ws[f"{c['Area_Used_sqft']}{r}"].number_format = "#,##0"
     end = CAP_SPACES + 1
@@ -524,50 +675,63 @@ def build_spaces(wb, hotels, refs):
     return last
 
 
+def swatch_row(color, space_id, spot_id, fallback_evidence):
+    return {
+        "Swatch_ID": color["id"], "Space_ID": space_id, "Spot_ID": spot_id, "Rank": color["rank"], "Hex": color["hex"],
+        "Color_Name": color["name"], "Shade": color.get("shade", ""), "Material": color.get("material", ""),
+        "Finish": color.get("finish", ""), "Share_Pct": color["share"], "Key_Swatch": "Y" if color["key"] else "N",
+        "Key_Reason": color["reason"], "Color_Source": color["source"],
+        "Evidence": color.get("evidence") or (fallback_evidence[:120] if fallback_evidence else ""),
+    }
+
+
 def build_swatches(wb, hotels, refs):
     ws = wb.create_sheet("Swatches", 3)
     header(ws, SWATCH_COLS)
     r = 2
     for h in hotels:
-        for s in h["spaces"]:
-            for col in s["colors"]:
-                write_inputs(ws, r, SWATCH_COLS, {
-                    "Swatch_ID": col["id"], "Space_ID": s["id"], "Rank": col["rank"], "Hex": col["hex"],
-                    "Color_Name": col["name"], "Share_Pct": col["share"], "Key_Swatch": "Y" if col["key"] else "N",
-                    "Key_Reason": col["reason"], "Color_Source": col["source"],
-                    "Evidence": col.get("evidence") or (s["evidence"][:120] if s["evidence"] else ""),
-                })
+        for sp in h["spaces"]:
+            for col in sp["colors"]:
+                write_inputs(ws, r, SWATCH_COLS, swatch_row(col, sp["id"], "", sp["evidence"]))
+                r += 1
+        for spot in h["spots"]:
+            for col in spot["colors"]:
+                write_inputs(ws, r, SWATCH_COLS, swatch_row(col, spot["spaceId"], spot["id"], spot["evidence"]))
                 r += 1
     last = r - 1
     S = CAP_SWATCHES + 1
     w = SW
     sp_id = rng("Spaces", SP["Space_ID"], CAP_SPACES)
 
-    def lookup(name, default):
-        return f'IFERROR(INDEX({rng("Spaces", SP[name], CAP_SPACES)},MATCH($B{{r}},{sp_id},0)),{default})'
+    def lookup(name, default, r):
+        return f'IFERROR(INDEX({rng("Spaces", SP[name], CAP_SPACES)},MATCH($B{r},{sp_id},0)),{default})'
 
     for r in range(2, S + 1):
         x = {k: f"{v}{r}" for k, v in w.items()}
-        hexc = f"${w['Hex']}{r}"
+        hexc, spot = f"${w['Hex']}{r}", f"${w['Spot_ID']}{r}"
+        share = f"${w['Share_Pct']}{r}"
+        gk = x["Group_Key"]
         f = {
-            "Hotel_ID": f'=IF($B{r}="","",' + lookup("Hotel_ID", '"(unknown space)"').format(r=r) + ")",
-            "Space_Type": f'=IF($B{r}="","",' + lookup("Space_Type", '""').format(r=r) + ")",
+            "Hotel_ID": f'=IF($B{r}="","",' + lookup("Hotel_ID", '"(unknown space)"', r) + ")",
+            "Space_Type": f'=IF($B{r}="","",' + lookup("Space_Type", '""', r) + ")",
             "Family": family_formula(x["L*"], x["C*"], x["Hue_deg"]),
             "L*": f'=IF({x["f_y"]}="","",116*{x["f_y"]}-16)',
             "a*": f'=IF({x["f_x"]}="","",500*({x["f_x"]}-{x["f_y"]}))',
             "b*": f'=IF({x["f_y"]}="","",200*({x["f_y"]}-{x["f_z"]}))',
             "C*": f'=IF({x["L*"]}="","",SQRT({x["a*"]}^2+{x["b*"]}^2))',
             "Hue_deg": f'=IF({x["L*"]}="","",IF({x["C*"]}<0.0001,0,MOD(DEGREES(ATAN2({x["a*"]},{x["b*"]})),360)))',
-            "Share_in_Space": (f'=IF(OR($B{r}="",${w["Share_Pct"]}{r}=""),"",IFERROR(${w["Share_Pct"]}{r}/'
-                               f'SUMIF($B$2:$B${S},$B{r},${w["Share_Pct"]}$2:${w["Share_Pct"]}${S}),""))'),
-            "Coverage": (f'=IF($B{r}="","",IFERROR(IF(ISNUMBER(' + lookup("Coverage_Pct", '""').format(r=r) + '),'
-                         + lookup("Coverage_Pct", '""').format(r=r) + '/100,1),1))'),
-            "Area_Used_sqft": f'=IF($B{r}="","",' + lookup("Area_Used_sqft", '""').format(r=r) + ")",
-            "Weighted_sqft": (f'=IF(OR({x["Share_in_Space"]}="",{x["Coverage"]}="",{x["Area_Used_sqft"]}=""),0,'
-                              f'{x["Share_in_Space"]}*{x["Coverage"]}*{x["Area_Used_sqft"]})'),
-            "Dwell_Used_h": f'=IF($B{r}="","",' + lookup("Dwell_Used_h", '""').format(r=r) + ")",
-            "Weighted_hours": (f'=IF(OR({x["Share_in_Space"]}="",{x["Coverage"]}="",{x["Dwell_Used_h"]}=""),0,'
-                               f'{x["Share_in_Space"]}*{x["Coverage"]}*{x["Dwell_Used_h"]})'),
+            "Group_Key": f'=IF($B{r}="","",IF({spot}="","S|"&$B{r},"P|"&{spot}))',
+            "Share_in_Group": (f'=IF(OR({gk}="",{share}=""),"",IFERROR({share}/'
+                               f'SUMIF(${w["Group_Key"]}$2:${w["Group_Key"]}${S},{gk},${w["Share_Pct"]}$2:${w["Share_Pct"]}${S}),""))'),
+            "Coverage": (f'=IF($B{r}="","",IFERROR(IF(ISNUMBER(' + lookup("Coverage_Pct", '""', r) + '),'
+                         + lookup("Coverage_Pct", '""', r) + '/100,1),1))'),
+            "Area_Used_sqft": f'=IF($B{r}="","",' + lookup("Area_Used_sqft", '""', r) + ")",
+            "Weighted_sqft": (f'=IF(OR({spot}<>"",{x["Share_in_Group"]}="",{x["Coverage"]}="",{x["Area_Used_sqft"]}=""),0,'
+                              f'{x["Share_in_Group"]}*{x["Coverage"]}*{x["Area_Used_sqft"]})'),
+            "Dwell_Used_h": f'=IF($B{r}="","",' + lookup("Dwell_Used_h", '""', r) + ")",
+            "Weighted_hours": (f'=IF(OR({spot}<>"",{x["Share_in_Group"]}="",{x["Coverage"]}="",{x["Dwell_Used_h"]}=""),0,'
+                               f'{x["Share_in_Group"]}*{x["Coverage"]}*{x["Dwell_Used_h"]})'),
+            "Chroma_x_Share": f'=IF(OR({spot}="",{x["Share_in_Group"]}="",{x["C*"]}=""),0,{x["Share_in_Group"]}*{x["C*"]})',
             "R": f'=IF(LEN({hexc})<>7,"",HEX2DEC(MID({hexc},2,2)))',
             "G": f'=IF(LEN({hexc})<>7,"",HEX2DEC(MID({hexc},4,2)))',
             "B": f'=IF(LEN({hexc})<>7,"",HEX2DEC(MID({hexc},6,2)))',
@@ -585,9 +749,9 @@ def build_swatches(wb, hotels, refs):
         f["Lookup_Key"] = f'=IF($B{r}="","",$B{r}&"|"&${w["Key_Swatch"]}{r})'
         for name, formula in f.items():
             ws[x[name]] = formula
-        for name in ("L*", "a*", "b*", "C*", "Hue_deg"):
+        for name in ("L*", "a*", "b*", "C*", "Hue_deg", "Chroma_x_Share"):
             ws[x[name]].number_format = "0.0"
-        for name in ("Share_in_Space", "Coverage"):
+        for name in ("Share_in_Group", "Coverage"):
             ws[x[name]].number_format = "0%"
         for name in ("Area_Used_sqft", "Weighted_sqft"):
             ws[x[name]].number_format = "#,##0"
@@ -597,6 +761,10 @@ def build_swatches(wb, hotels, refs):
             ws.column_dimensions[w[name]].outlineLevel = 1
             ws.column_dimensions[w[name]].hidden = True
     list_dv(ws, f"{w['Space_ID']}2:{w['Space_ID']}{S}", sp_id)
+    list_dv(ws, f"{w['Spot_ID']}2:{w['Spot_ID']}{S}", rng("Spots", SPT["Spot_ID"], CAP_SPOTS))
+    list_dv(ws, f"{w['Shade']}2:{w['Shade']}{S}", refs["shade"])
+    list_dv(ws, f"{w['Material']}2:{w['Material']}{S}", refs["materials"])
+    list_dv(ws, f"{w['Finish']}2:{w['Finish']}{S}", refs["finishes"])
     list_dv(ws, f"{w['Key_Swatch']}2:{w['Key_Swatch']}{S}", refs["yesno"])
     list_dv(ws, f"{w['Key_Reason']}2:{w['Key_Reason']}{S}", refs["keyReasons"])
     list_dv(ws, f"{w['Color_Source']}2:{w['Color_Source']}{S}", refs["colorSources"])
@@ -611,8 +779,98 @@ def build_swatches(wb, hotels, refs):
     ws.add_data_validation(sharedv)
     sharedv.add(f"{w['Share_Pct']}2:{w['Share_Pct']}{S}")
     family_cf(ws, f"{w['Family']}2:{w['Family']}{S}")
-    ws.auto_filter.ref = f"A1:{w['Weighted_hours']}{last}"
+    ws.auto_filter.ref = f"A1:{w['Chroma_x_Share']}{last}"
     return last
+
+
+def character_formula(colors, mean_c, top, second, fam10):
+    return (f'=IF(OR($A{{r}}="",{colors}=0),"",IF({mean_c}<12,"Tonal neutral",IF({top}>=0.75,"Monochromatic",'
+            f'IF(AND({second}>=0.3,{top}+{second}>=0.8),"Two-tone",IF(AND({fam10}>=3,{mean_c}>=20),"Rich multicolor",'
+            f'IF({top}>=0.5,"Dominant color","Balanced"))))))')
+
+
+def build_spots(wb, hotels, refs):
+    ws = wb.create_sheet("Spots", 4)
+    header(ws, SPOT_COLS)
+    c = SPT
+    r = 2
+    for h in hotels:
+        for spot in h["spots"]:
+            write_inputs(ws, r, SPOT_COLS, {
+                "Spot_ID": spot["id"], "Hotel_ID": h["id"], "Space_ID": spot["spaceId"], "Spot_Name": spot["name"],
+                "Spot_Type": spot["type"], "Access": spot["access"], "Best_Time": spot["bestTime"],
+                "Photo_Op_1to5": spot["photoOp"], "Photo_Tip": spot["tip"], "Confidence": spot["confidence"],
+                "Source_Evidence": spot["evidence"] + (("  " + spot["url"]) if spot["url"] else ""),
+                "Rights_Status": spot["rights"], "Capture_Status": spot["captureStatus"], "Notes": spot["notes"],
+            }, wrap={"Spot_Name", "Photo_Tip", "Source_Evidence", "Notes"})
+            r += 1
+    last = r - 1
+    fam_cols = [SPT[name] for name, _, _ in colorlib.FAMILIES]
+    first_fam, last_fam = fam_cols[0], fam_cols[-1]
+    sw_spot, sw_fam = rng("Swatches", SW["Spot_ID"], CAP_SWATCHES), rng("Swatches", SW["Family"], CAP_SWATCHES)
+    sw_share, sw_cx = rng("Swatches", SW["Share_in_Group"], CAP_SWATCHES), rng("Swatches", SW["Chroma_x_Share"], CAP_SWATCHES)
+    sp_id = rng("Spaces", SP["Space_ID"], CAP_SPACES)
+    h_id, h_name = rng("Hotels", H["Hotel_ID"], CAP_HOTELS), rng("Hotels", H["Hotel_Name"], CAP_HOTELS)
+    for r in range(2, CAP_SPOTS + 2):
+        block = f"${first_fam}{r}:${last_fam}{r}"
+        ws[f"{c['Hotel_Name']}{r}"] = f'=IF($B{r}="","",IFERROR(INDEX({h_name},MATCH($B{r},{h_id},0)),"(unknown hotel)"))'
+        ws[f"{c['Space_Type']}{r}"] = f'=IF($C{r}="","",IFERROR(INDEX({rng("Spaces", SP["Space_Type"], CAP_SPACES)},MATCH($C{r},{sp_id},0)),"(unknown space)"))'
+        st = f"{c['Space_Type']}{r}"
+        ws[f"{c['Zone']}{r}"] = f'=IF({st}="","",IFERROR(INDEX({refs["space_zone"]},MATCH({st},{refs["space"]},0)),""))'
+        ws[f"{c['Colors_Logged']}{r}"] = f'=IF($A{r}="","",COUNTIF({sw_spot},$A{r}))'
+        n = f"{c['Colors_Logged']}{r}"
+        for col_letter in fam_cols:
+            ws[f"{col_letter}{r}"] = f'=IF(OR($A{r}="",{n}=0),"",ROUND(SUMIFS({sw_share},{sw_spot},$A{r},{sw_fam},{col_letter}$1),6))'
+            ws[f"{col_letter}{r}"].number_format = "0%"
+        ws[f"{c['Mean_Chroma']}{r}"] = f'=IF(OR($A{r}="",{n}=0),"",ROUND(SUMIFS({sw_cx},{sw_spot},$A{r}),6))'
+        ws[f"{c['Top_Share']}{r}"] = f'=IF(OR($A{r}="",{n}=0),"",MAX({block}))'
+        ws[f"{c['Second_Share']}{r}"] = f'=IF(OR($A{r}="",{n}=0),"",IF(COUNT({block})<2,0,LARGE({block},2)))'
+        ws[f"{c['Families_10pct']}{r}"] = f'=IF(OR($A{r}="",{n}=0),"",COUNTIF({block},">=0.1"))'
+        ws[f"{c['Top_Family']}{r}"] = (f'=IF(OR($A{r}="",{n}=0),"",INDEX(${first_fam}$1:${last_fam}$1,'
+                                       f'MATCH(MAX({block}),{block},0)))')
+        ws[f"{c['Color_Character']}{r}"] = character_formula(
+            n, f"{c['Mean_Chroma']}{r}", f"{c['Top_Share']}{r}", f"{c['Second_Share']}{r}", f"{c['Families_10pct']}{r}").format(r=r)
+        ws[f"{c['Mean_Chroma']}{r}"].number_format = "0.0"
+        for k in ("Top_Share", "Second_Share"):
+            ws[f"{c[k]}{r}"].number_format = "0%"
+    for name, _, _ in colorlib.FAMILIES:
+        ws.column_dimensions[SPT[name]].outlineLevel = 1
+        ws.column_dimensions[SPT[name]].hidden = True
+    end = CAP_SPOTS + 1
+    list_dv(ws, f"{c['Hotel_ID']}2:{c['Hotel_ID']}{end}", h_id)
+    list_dv(ws, f"{c['Space_ID']}2:{c['Space_ID']}{end}", sp_id)
+    list_dv(ws, f"{c['Spot_Type']}2:{c['Spot_Type']}{end}", refs["spotTypes"])
+    list_dv(ws, f"{c['Access']}2:{c['Access']}{end}", refs["access"])
+    list_dv(ws, f"{c['Best_Time']}2:{c['Best_Time']}{end}", refs["bestTime"])
+    list_dv(ws, f"{c['Confidence']}2:{c['Confidence']}{end}", refs["confidence"])
+    list_dv(ws, f"{c['Rights_Status']}2:{c['Rights_Status']}{end}", refs["rightsStatus"])
+    list_dv(ws, f"{c['Capture_Status']}2:{c['Capture_Status']}{end}", refs["captureStatus"])
+    family_cf(ws, f"{c['Top_Family']}2:{c['Top_Family']}{end}")
+    ws.auto_filter.ref = f"A1:{c['Color_Character']}{max(2, last)}"
+
+
+def build_motifs(wb, hotels, refs):
+    ws = wb.create_sheet("Motifs", 5)
+    header(ws, MOTIF_COLS)
+    c = MOT
+    r = 2
+    for h in hotels:
+        for m in h["motifs"]:
+            write_inputs(ws, r, MOTIF_COLS, {
+                "Motif_ID": m["id"], "Hotel_ID": h["id"], "Motif_Name": m["name"], "Motif_Type": m["type"],
+                "Colors": ", ".join(m["hexes"]), "Archetype": m["archetype"],
+                "Archetype_Match_Pct": m["archetypeScore"] if m["hexes"] else None, "Where_It_Repeats": m["where"],
+                "Source_Evidence": m["evidence"] + (("  " + m["url"]) if m["url"] else ""), "Notes": m["notes"],
+            }, wrap={"Motif_Name", "Source_Evidence", "Where_It_Repeats"})
+            ws[f"{c['Archetype_Match_Pct']}{r}"].number_format = "0%"
+            r += 1
+    h_id, h_name = rng("Hotels", H["Hotel_ID"], CAP_HOTELS), rng("Hotels", H["Hotel_Name"], CAP_HOTELS)
+    for r in range(2, CAP_MOTIFS + 2):
+        ws[f"{c['Hotel_Name']}{r}"] = f'=IF($B{r}="","",IFERROR(INDEX({h_name},MATCH($B{r},{h_id},0)),"(unknown hotel)"))'
+    end = CAP_MOTIFS + 1
+    list_dv(ws, f"{c['Hotel_ID']}2:{c['Hotel_ID']}{end}", h_id)
+    list_dv(ws, f"{c['Motif_Type']}2:{c['Motif_Type']}{end}", refs["motifTypes"])
+    list_dv(ws, f"{c['Archetype']}2:{c['Archetype']}{end}", refs["archetypeNames"])
 
 
 def family_cf(ws, rng_):
@@ -780,13 +1038,16 @@ def build_readme(wb, vocab, hotels, n_spaces, n_swatches):
         ("What this is", "A log of hotels split into their key spaces, with each space's colors, styles, eras and genres. "
                          "It feeds the hotel stripe: a band per stay where each space is a block sized by area (or time) "
                          "and filled with its colors.", None),
-        ("Current contents", f"{len(hotels)} hotels, {n_spaces} spaces, {n_swatches} color swatches. "
+        ("Current contents", f"{len(hotels)} hotels, {n_spaces} spaces, {sum(len(h['spots']) for h in hotels)} photo spots, "
+                             f"{sum(len(h['motifs']) for h in hotels)} motifs, {n_swatches} color swatches. "
                              f"{with_colors} hotels have colors so far.", None),
         (None, None, None),
         ("How to use it", None, F_H2),
         ("1. Hotels", "One row per property. Add new hotels at the bottom. Status is Open only when a 2025-2026 source confirms it.", None),
         ("2. Spaces", "One row per key space (lobby, bar, room...). Every hotel starts with a default capture plan; delete rows that do not exist.", None),
-        ("3. Swatches", "One row per color per space. Type the Hex and Share_Pct; the gray columns compute CIELAB values and the color family.", None),
+        ("3. Swatches", "One row per color. A row with no Spot_ID is part of a space's overall palette; a row with a Spot_ID is part of a photo spot's palette. Type the Hex and Share_Pct; gray columns compute CIELAB values and the color family. Shade names the nearest of 116 named shades (e.g. sage, emerald, forest for greens).", None),
+        ("3b. Spots", "Photo-worthy features: murals, staircases, carpets, banquettes, chandeliers, elevator doors, restrooms. Access says who can reach it (Public first). Color_Character calculates: Monochromatic, Two-tone, Rich multicolor, Dominant color, Balanced or Tonal neutral.", None),
+        ("3c. Motifs", "Recurring pairings that define a hotel, such as brass and off-white or pink and green marble, with the closest palette archetype.", None),
         ("4. Stripes_Area / _Time", "Color-family share of each hotel's stay, weighted by square feet or by hours. The chart is the spreadsheet version of the stripe.", None),
         ("5. Capture_Log", "Log every shoot: files, lighting, white balance, rights. Needed before a color can be marked Measured.", None),
         ("6. Media_Sources", "Magazine shoots, films and promo material per hotel, with rights status. Reference only means link, do not republish.", None),
@@ -822,9 +1083,14 @@ def build_readme(wb, vocab, hotels, n_spaces, n_swatches):
             cb = ws.cell(row=r, column=2, value=b)
             cb.font = F_BODY
             cb.alignment = WRAP
-    ws["A16"].fill = FILL_IN
-    ws["A17"].fill = FILL_AUTO
-    ws["A18"].fill = FILL_EXAMPLE
+    for r in range(1, ws.max_row + 1):
+        label = ws.cell(row=r, column=1).value
+        if label == "Yellow header":
+            ws.cell(row=r, column=1).fill = FILL_IN
+        elif label == "Gray header":
+            ws.cell(row=r, column=1).fill = FILL_AUTO
+        elif label == "Green row":
+            ws.cell(row=r, column=1).fill = FILL_EXAMPLE
 
 
 def build_workbook(vocab, hotels, media):
@@ -833,14 +1099,19 @@ def build_workbook(vocab, hotels, media):
     wb._fonts = IndexedList([Font(name=ARIAL, size=10)])
     wb._named_styles["Normal"].font = Font(name=ARIAL, size=10)
     n_spaces = sum(len(h["spaces"]) for h in hotels)
-    n_swatches = sum(len(s["colors"]) for h in hotels for s in h["spaces"])
-    if len(hotels) > CAP_HOTELS or n_spaces > CAP_SPACES or n_swatches > CAP_SWATCHES:
+    n_swatches = sum(len(s["colors"]) for h in hotels for s in h["spaces"] + h["spots"])
+    n_spots = sum(len(h["spots"]) for h in hotels)
+    n_motifs = sum(len(h["motifs"]) for h in hotels)
+    if (len(hotels) > CAP_HOTELS or n_spaces > CAP_SPACES or n_swatches > CAP_SWATCHES or n_spots > CAP_SPOTS
+            or n_motifs > CAP_MOTIFS):
         raise SeedError("seed is larger than the pre-filled workbook capacity; raise the CAP_* constants")
     build_readme(wb, vocab, hotels, n_spaces, n_swatches)
     refs = build_lists(wb, vocab)
     build_hotels(wb, hotels, refs)
     build_spaces(wb, hotels, refs)
     build_swatches(wb, hotels, refs)
+    build_spots(wb, hotels, refs)
+    build_motifs(wb, hotels, refs)
     build_stripes(wb, len(hotels), "Hotel stripes by color family, weighted by square feet", "Stripes_Area",
                   "Weighted_sqft", "Documented_sqft", "Total area (Area_Used_sqft) of this hotel's spaces that have colors logged.",
                   "Area_Used_sqft")
@@ -870,8 +1141,9 @@ def write_dictionary(vocab):
 
     fam_rows = ["| Family | Swatch hex | Range |", "|---|---|---|"]
     fam_rows += [f"| {n} | `{h}` | {r} |" for n, h, r in colorlib.FAMILIES]
-    sp_rows = ["| Space type | Code | Journey order | Default sq ft | Default hours | Covers |", "|---|---|---|---|---|---|"]
-    sp_rows += [f"| {t['name']} | {t['code']} | {t['order']} | {t['sqft']:,} | {t['dwell']} | {t['hint']} |" for t in vocab["spaceTypes"]]
+    sp_rows = ["| Space type | Code | Order | Zone | Liminal | Default sq ft | Default hours | Covers |", "|---|---|---|---|---|---|---|---|"]
+    sp_rows += [f"| {t['name']} | {t['code']} | {t['order']} | {t['zone']} | {'Y' if t['liminal'] else 'N'} | {t['sqft']:,} | {t['dwell']} | {t['hint']} |"
+                for t in vocab["spaceTypes"]]
     text = f"""# Data dictionary
 
 _Generated by tools/build.py on {TODAY} from the same column definitions that build the workbook. Edit tools/build.py or data/vocab.json, not this file._
@@ -885,7 +1157,8 @@ gray headers are calculated.
 
 - Hotel_ID: city code + short name, e.g. `NSH-NOEL`.
 - Space_ID: Hotel_ID + space code, e.g. `NSH-NOEL-LOB`; a number is added when a hotel has two spaces of one type (`LV-FONT-LOB1`, `LV-FONT-LOB2`). Spaces measured in the app get `-M1`, `-M2`.
-- Swatch_ID: Space_ID + `-C` + rank, e.g. `NSH-NOEL-LOB-C1`.
+- Swatch_ID: Space_ID + `-C` + rank, e.g. `NSH-NOEL-LOB-C1`; for spot palettes, Spot_ID + `-C` + rank.
+- Spot_ID: Hotel_ID + `-SP` + number, e.g. `NSH-NOEL-SP1`. Motif_ID: Hotel_ID + `-MO` + number.
 
 ## Hotels
 
@@ -899,6 +1172,17 @@ gray headers are calculated.
 
 {table(SWATCH_COLS)}
 
+## Spots
+
+Photo-worthy features inside a space. Their palettes live on the Swatches tab (rows with a Spot_ID) and do not count
+toward the stripes. The hidden helper columns hold the spot's share of each color family.
+
+{table(SPOT_COLS)}
+
+## Motifs
+
+{table(MOTIF_COLS)}
+
 ## Stripes_Area and Stripes_Time
 
 One row per hotel (same row order as Hotels). Columns C to Q hold each color family's share of the hotel's documented
@@ -908,7 +1192,8 @@ the spreadsheet version of the hotel stripe, by family.
 
 ## How a family share is computed
 
-For each swatch: Share_in_Space = Share_Pct / (sum of Share_Pct in that space); Weighted = Share_in_Space x Coverage x
+For each swatch: Share_in_Group = Share_Pct / (sum of Share_Pct in the same space palette or spot palette); for space
+palettes, Weighted = Share_in_Group x Coverage x
 weight of the space (Area_Used_sqft or Dwell_Used_h). A hotel's family share = sum of Weighted for that family / sum of
 the weights of its spaces that have colors. The web app computes exactly the same thing (app/js/model.js), and
 tests/test_build.py plus the LibreOffice recalculation check confirm the two agree.
@@ -922,6 +1207,19 @@ mid-chroma warm darks are Brown & Wood; everything else is assigned by hue angle
 Navy is a blue with L* under 30). Full rules: tools/colorlib.py `family_lch`.
 
 {chr(10).join(fam_rows)}
+
+## Color character (spots)
+
+Family shares and the share-weighted mean chroma are rounded to 6 decimals, then: mean chroma under 12 is Tonal neutral;
+a top family of 75% or more is Monochromatic; a second family of 30% or more with the top two at 80% or more is Two-tone;
+three or more families at 10% or more with mean chroma 20 or more is Rich multicolor; a top family of 50% or more is
+Dominant color; anything else is Balanced. The same rules run in app/js/model.js and tools/colorlib.py.
+
+## Shades and archetypes
+
+Every color also gets the nearest of the named shades in its family (CIEDE2000), for example Sage, Celadon, Emerald,
+Malachite, Forest or Racing Green within Green. Shade names are Colorways reference colors, not Pantone. Motifs are
+compared with palette archetypes (Lists tab); a match of 65% or more is suggested on the Motifs tab.
 
 ## Space types and defaults
 
@@ -937,7 +1235,8 @@ data/vocab.json later.
 
 ## Capacity
 
-Formulas are pre-filled for {CAP_HOTELS} hotels, {CAP_SPACES} spaces and {CAP_SWATCHES} swatches. To go further,
+Formulas are pre-filled for {CAP_HOTELS} hotels, {CAP_SPACES} spaces, {CAP_SWATCHES} swatches, {CAP_SPOTS} spots and
+{CAP_MOTIFS} motifs. To go further,
 copy the last row's gray cells down, or raise the CAP_* constants in tools/build.py and rebuild.
 """
     DICT_MD.write_text(text, encoding="utf-8")

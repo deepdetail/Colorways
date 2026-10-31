@@ -181,6 +181,20 @@
     return '#999999';
   }
 
+  /* Closest named shade (CIEDE2000) within the color's own family. shades: {family: [[name, hex], ...]}.
+   * Keep in sync with nearest_shade in tools/colorlib.py. */
+  var shadeLabCache = {};
+  function nearestShade(lab, family, shades) {
+    var list = (shades && shades[family]) || [], best = null;
+    for (var i = 0; i < list.length; i++) {
+      var hx = list[i][1];
+      var sl = shadeLabCache[hx] || (shadeLabCache[hx] = hexToLab(hx));
+      var d = deltaE2000(lab, sl);
+      if (!best || d < best.dE) best = { name: list[i][0], dE: d, hex: hx };
+    }
+    return best;
+  }
+
   /* WCAG relative luminance, used to pick readable ink on top of a swatch. */
   function luminance(hex) {
     var rgb = hexToRgb(hex).map(lin);
@@ -208,6 +222,7 @@
     familyOfLab: familyOfLab,
     familyOfHex: familyOfHex,
     familyHex: familyHex,
+    nearestShade: nearestShade,
     luminance: luminance,
     inkOn: inkOn
   };

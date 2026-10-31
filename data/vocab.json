@@ -1,36 +1,66 @@
 {
-  "_note": "Controlled vocabularies shared by the web app and the Excel workbook. Space-type sqft and dwell values are planning assumptions (labeled 'Type default'), not facts about any hotel. Edit here, then run: python3 tools/build.py",
+  "_note": "Controlled vocabularies shared by the web app and the Excel workbook. Space-type sqft and dwell values are planning assumptions (labeled 'Type default'), not facts about any hotel. Shade hexes are Colorways reference colors (approximate, not Pantone). Edit here, then run: python3 tools/build.py",
   "spaceTypes": [
-    { "name": "Arrival & Facade", "code": "ARR", "order": 1, "sqft": 3000, "dwell": 0.1, "hint": "Porte-cochere, entrance, exterior read from the street" },
-    { "name": "Lobby", "code": "LOB", "order": 2, "sqft": 5000, "dwell": 0.3, "hint": "Check-in hall, living room" },
-    { "name": "Lobby Bar", "code": "LBR", "order": 3, "sqft": 1500, "dwell": 0.75, "hint": "Bar that opens onto the lobby" },
-    { "name": "Corridor & Elevator", "code": "COR", "order": 4, "sqft": 1500, "dwell": 0.1, "hint": "Guest floor corridors, elevator cabs and lobbies" },
-    { "name": "Guest Room", "code": "ROOM", "order": 5, "sqft": 450, "dwell": 9.0, "hint": "Standard king or queen room" },
-    { "name": "Suite", "code": "STE", "order": 6, "sqft": 1100, "dwell": 9.0, "hint": "Signature or standard suite" },
-    { "name": "Bathroom", "code": "BATH", "order": 7, "sqft": 90, "dwell": 1.0, "hint": "Guest bathroom" },
-    { "name": "Cafe & Breakfast", "code": "CAFE", "order": 8, "sqft": 1500, "dwell": 0.5, "hint": "Coffee bar, breakfast room" },
-    { "name": "Pool", "code": "POOL", "order": 9, "sqft": 8000, "dwell": 2.0, "hint": "Pool deck, cabanas, swim club" },
-    { "name": "Garden & Grounds", "code": "GRD", "order": 10, "sqft": 20000, "dwell": 0.75, "hint": "Courtyards, lawns, terraces" },
-    { "name": "Spa", "code": "SPA", "order": 11, "sqft": 8000, "dwell": 1.5, "hint": "Treatment rooms, relaxation lounge, thermal suite" },
-    { "name": "Fitness", "code": "FIT", "order": 12, "sqft": 2500, "dwell": 0.75, "hint": "Gym, studio" },
-    { "name": "Signature Restaurant", "code": "REST", "order": 13, "sqft": 4000, "dwell": 1.5, "hint": "Main dinner restaurant" },
-    { "name": "Bar & Lounge", "code": "BAR", "order": 14, "sqft": 2000, "dwell": 1.0, "hint": "Cocktail bar, speakeasy, lounge (not the lobby bar)" },
-    { "name": "Rooftop", "code": "ROOF", "order": 15, "sqft": 4000, "dwell": 1.0, "hint": "Rooftop bar or terrace" },
-    { "name": "Casino", "code": "CAS", "order": 16, "sqft": 60000, "dwell": 2.0, "hint": "Gaming floor" },
-    { "name": "Nightclub", "code": "CLUB", "order": 17, "sqft": 10000, "dwell": 2.0, "hint": "Club, live music room" },
-    { "name": "Ballroom & Events", "code": "EVT", "order": 18, "sqft": 15000, "dwell": 0.25, "hint": "Ballrooms, pre-function, meeting rooms" },
-    { "name": "Retail & Other", "code": "OTH", "order": 19, "sqft": 1500, "dwell": 0.25, "hint": "Shops, library, game room, anything else" }
+    { "name": "Exterior & Facade", "code": "EXT", "order": 1, "zone": "Public", "liminal": false, "sqft": 4000, "dwell": 0.1, "hint": "Building exterior read from the street; signage" },
+    { "name": "Entrance & Arrival", "code": "ENT", "order": 2, "zone": "Public", "liminal": true, "sqft": 1500, "dwell": 0.1, "hint": "Porte-cochere, vestibule, revolving doors" },
+    { "name": "Lobby", "code": "LOB", "order": 3, "zone": "Public", "liminal": false, "sqft": 5000, "dwell": 0.3, "hint": "Check-in hall, living room" },
+    { "name": "Stairs & Atrium", "code": "STR", "order": 4, "zone": "Public", "liminal": true, "sqft": 2000, "dwell": 0.1, "hint": "Grand staircases, atriums, mezzanines" },
+    { "name": "Lobby Bar", "code": "LBR", "order": 5, "zone": "Patron", "liminal": false, "sqft": 1500, "dwell": 0.75, "hint": "Bar that opens onto the lobby" },
+    { "name": "Elevator Lobby", "code": "ELB", "order": 6, "zone": "Public", "liminal": true, "sqft": 400, "dwell": 0.05, "hint": "Elevator waiting areas (ground floor and guest floors)" },
+    { "name": "Elevator Cab", "code": "ELV", "order": 7, "zone": "Guest", "liminal": true, "sqft": 60, "dwell": 0.05, "hint": "Inside the elevator: doors, panels, ceilings" },
+    { "name": "Corridor & Hallway", "code": "COR", "order": 8, "zone": "Guest", "liminal": true, "sqft": 1500, "dwell": 0.1, "hint": "Guest-floor corridors; carpets and wallcoverings" },
+    { "name": "Guest Room", "code": "ROOM", "order": 9, "zone": "Guest", "liminal": false, "sqft": 450, "dwell": 9.0, "hint": "Standard king or queen room" },
+    { "name": "Suite", "code": "STE", "order": 10, "zone": "Guest", "liminal": false, "sqft": 1100, "dwell": 9.0, "hint": "Signature or standard suite" },
+    { "name": "Bathroom", "code": "BATH", "order": 11, "zone": "Guest", "liminal": false, "sqft": 90, "dwell": 1.0, "hint": "Guest bathroom" },
+    { "name": "Cafe & Breakfast", "code": "CAFE", "order": 12, "zone": "Patron", "liminal": false, "sqft": 1500, "dwell": 0.5, "hint": "Coffee bar, breakfast room, food hall" },
+    { "name": "Library & Living Room", "code": "LIB", "order": 13, "zone": "Public", "liminal": false, "sqft": 1500, "dwell": 0.5, "hint": "Library, game room, parlor" },
+    { "name": "Pool", "code": "POOL", "order": 14, "zone": "Guest", "liminal": false, "sqft": 8000, "dwell": 2.0, "hint": "Pool deck, cabanas, swim club" },
+    { "name": "Garden & Terrace", "code": "GRD", "order": 15, "zone": "Public", "liminal": false, "sqft": 10000, "dwell": 0.5, "hint": "Courtyards, lawns, terraces, outdoor rooms" },
+    { "name": "Spa", "code": "SPA", "order": 16, "zone": "Patron", "liminal": false, "sqft": 8000, "dwell": 1.5, "hint": "Treatment rooms, relaxation lounge, thermal suite" },
+    { "name": "Fitness", "code": "FIT", "order": 17, "zone": "Guest", "liminal": false, "sqft": 2500, "dwell": 0.75, "hint": "Gym, studio" },
+    { "name": "Signature Restaurant", "code": "REST", "order": 18, "zone": "Patron", "liminal": false, "sqft": 4000, "dwell": 1.5, "hint": "Main dinner restaurant" },
+    { "name": "Bar & Lounge", "code": "BAR", "order": 19, "zone": "Patron", "liminal": false, "sqft": 2000, "dwell": 1.0, "hint": "Cocktail bar, speakeasy, lounge (not the lobby bar)" },
+    { "name": "Rooftop", "code": "ROOF", "order": 20, "zone": "Patron", "liminal": false, "sqft": 4000, "dwell": 1.0, "hint": "Rooftop bar or terrace" },
+    { "name": "Public Restroom", "code": "WC", "order": 21, "zone": "Public", "liminal": true, "sqft": 300, "dwell": 0.05, "hint": "Lobby, restaurant and meeting-level restrooms" },
+    { "name": "Pre-function & Foyer", "code": "PRE", "order": 22, "zone": "Event", "liminal": true, "sqft": 3000, "dwell": 0.1, "hint": "Pre-function corridors and foyers outside meeting rooms" },
+    { "name": "Ballroom", "code": "BALL", "order": 23, "zone": "Event", "liminal": false, "sqft": 12000, "dwell": 0.25, "hint": "Ballrooms and large function rooms" },
+    { "name": "Meeting Rooms", "code": "MTG", "order": 24, "zone": "Event", "liminal": false, "sqft": 4000, "dwell": 0.25, "hint": "Meeting rooms, boardrooms, salons" },
+    { "name": "Casino", "code": "CAS", "order": 25, "zone": "Public", "liminal": false, "sqft": 60000, "dwell": 2.0, "hint": "Gaming floor" },
+    { "name": "Nightclub", "code": "CLUB", "order": 26, "zone": "Patron", "liminal": false, "sqft": 10000, "dwell": 2.0, "hint": "Club, live music room" },
+    { "name": "Retail & Other", "code": "OTH", "order": 27, "zone": "Public", "liminal": false, "sqft": 1500, "dwell": 0.25, "hint": "Shops and anything else" }
   ],
   "defaultSpaces": [
-    "Arrival & Facade",
+    "Exterior & Facade",
+    "Entrance & Arrival",
     "Lobby",
     "Lobby Bar",
-    "Guest Room",
-    "Bathroom",
-    "Pool",
-    "Spa",
+    "Elevator Lobby",
+    "Corridor & Hallway",
+    "Public Restroom",
     "Signature Restaurant",
-    "Bar & Lounge"
+    "Bar & Lounge",
+    "Pre-function & Foyer",
+    "Ballroom",
+    "Pool",
+    "Guest Room"
+  ],
+  "zones": [
+    {
+      "name": "Public",
+      "meaning": "Anyone can walk in without booking (lobbies, entrances, ground-floor elevator lobbies, public restrooms)"
+    },
+    {
+      "name": "Patron",
+      "meaning": "Open to anyone buying a drink, a meal or a treatment"
+    },
+    {
+      "name": "Event",
+      "meaning": "Meeting and event attendees"
+    },
+    {
+      "name": "Guest",
+      "meaning": "Overnight guests only"
+    }
   ],
   "styles": [
     "Art Deco",
@@ -216,5 +246,303 @@
     "Wave 1 (founder list)",
     "Wave 2 (candidate)",
     "Backlog"
-  ]
+  ],
+  "spotTypes": [
+    "Mural",
+    "Wallpaper & Wall Finish",
+    "Carpet & Rug",
+    "Tile & Mosaic",
+    "Marble & Stone",
+    "Staircase",
+    "Ceiling",
+    "Chandelier & Lighting",
+    "Neon & Signage",
+    "Bar Counter",
+    "Banquette & Seating",
+    "Elevator Doors & Cab",
+    "Art & Sculpture",
+    "Facade & Entrance",
+    "Plants & Garden",
+    "Pool & Water",
+    "Restroom",
+    "View & Window",
+    "Room-Scale Scene",
+    "Other"
+  ],
+  "access": [
+    "Public",
+    "Patrons",
+    "Event attendees",
+    "Guests only",
+    "By arrangement"
+  ],
+  "bestTime": [
+    "Any",
+    "Morning",
+    "Midday",
+    "Golden hour",
+    "Evening",
+    "Night"
+  ],
+  "colorCharacters": [
+    {
+      "name": "Monochromatic",
+      "meaning": "One color family covers 75% or more of the scene (e.g. an all-pink dining room)"
+    },
+    {
+      "name": "Two-tone",
+      "meaning": "Two color families, each 30% or more, together 80% or more (e.g. pink and green marble)"
+    },
+    {
+      "name": "Rich multicolor",
+      "meaning": "Three or more color families at 10% or more, and colorful on average (chroma 20+)"
+    },
+    {
+      "name": "Dominant color",
+      "meaning": "One family covers half or more, with other colors around it"
+    },
+    {
+      "name": "Balanced",
+      "meaning": "No family dominates"
+    },
+    {
+      "name": "Tonal neutral",
+      "meaning": "Low color overall (average chroma under 12): marbles, stone, whites, grays"
+    }
+  ],
+  "materials": [
+    "Paint & Plaster",
+    "Marble & Stone",
+    "Terrazzo",
+    "Wood",
+    "Brass & Gold Metal",
+    "Chrome & Steel",
+    "Velvet & Upholstery",
+    "Leather",
+    "Carpet & Rug",
+    "Wallpaper",
+    "Tile & Mosaic",
+    "Glass & Mirror",
+    "Lacquer",
+    "Mural & Artwork",
+    "Plants & Foliage",
+    "Water",
+    "Light & Neon",
+    "Fabric & Drapery",
+    "Concrete",
+    "Brick"
+  ],
+  "finishes": [
+    "Solid",
+    "Veined",
+    "Speckled",
+    "Patterned",
+    "Metallic",
+    "Gloss",
+    "Matte",
+    "Textured",
+    "Glow"
+  ],
+  "motifTypes": [
+    "Material pairing",
+    "Color scheme",
+    "Pattern",
+    "Symbol & Logo",
+    "Architectural"
+  ],
+  "archetypes": [
+    {
+      "name": "Gilded Classic",
+      "hint": "Brass and off-white, the grand-hotel signature",
+      "hexes": ["#C9A447", "#F3E9D2", "#F4F2EE"]
+    },
+    {
+      "name": "Jewel Box",
+      "hint": "Emerald, sapphire and ruby with brass",
+      "hexes": ["#1E7A55", "#0F52BA", "#A51C30", "#C9A447"]
+    },
+    {
+      "name": "Deco Pink and Green",
+      "hint": "Blush and green marble with brass and terrazzo",
+      "hexes": ["#E5BFC3", "#4F7461", "#C9A447"]
+    },
+    {
+      "name": "Black and White Graphic",
+      "hint": "White marble, black stone, gray veining",
+      "hexes": ["#EEEBE6", "#1C1B1A"]
+    },
+    {
+      "name": "Moody Club",
+      "hint": "Oxblood, walnut, brass and forest green",
+      "hexes": ["#5E1220", "#5D4037", "#C9A447", "#224F33"]
+    },
+    {
+      "name": "Garden Greens",
+      "hint": "Many greens: sage, emerald, moss, with cream",
+      "hexes": ["#9CAF88", "#1E7A55", "#697A3A"]
+    },
+    {
+      "name": "Desert Pastel",
+      "hint": "Terracotta, sand, sage and blush",
+      "hexes": ["#C8643C", "#D8C6A3", "#9CAF88", "#EBC0C4"]
+    },
+    {
+      "name": "Coastal Light",
+      "hint": "White, aqua, sand and navy",
+      "hexes": ["#FAFAF8", "#7FD6D2", "#D8C6A3", "#1F2A44"]
+    },
+    {
+      "name": "Mid-Century Pop",
+      "hint": "Mustard, teal, tangerine and walnut",
+      "hexes": ["#D4A017", "#008080", "#F28C28", "#5D4037"]
+    }
+  ],
+  "shades": {
+    "Black": [
+      ["Jet", "#0B0B0C"],
+      ["Off-Black", "#1C1B1A"],
+      ["Ink", "#141821"]
+    ],
+    "Gray": [
+      ["Charcoal", "#36393C"],
+      ["Graphite", "#4A4C4E"],
+      ["Slate", "#6E777D"],
+      ["Pewter", "#8E8D89"],
+      ["Stone Gray", "#9C9C98"],
+      ["Dove Gray", "#B9B7B2"],
+      ["Silver", "#C4C6C8"],
+      ["Fog", "#D6D6D2"]
+    ],
+    "White": [
+      ["Pure White", "#FFFFFF"],
+      ["Bright White", "#FAFAF8"],
+      ["Chalk", "#F2F1EC"]
+    ],
+    "Cream & Ivory": [
+      ["Ivory", "#FBF6E6"],
+      ["Cream", "#F3E9D2"],
+      ["Eggshell", "#F0EAD6"],
+      ["Champagne", "#F2E2C4"],
+      ["Bone", "#E8DCC4"],
+      ["Linen", "#F4EEE3"]
+    ],
+    "Beige & Taupe": [
+      ["Sand", "#D8C6A3"],
+      ["Oatmeal", "#D3C6B0"],
+      ["Khaki", "#C3B091"],
+      ["Greige", "#BDB4A7"],
+      ["Mushroom", "#A89F90"],
+      ["Taupe", "#8B7D6B"]
+    ],
+    "Brown & Wood": [
+      ["Camel", "#C19A6B"],
+      ["Oak", "#A98157"],
+      ["Teak", "#8F5E36"],
+      ["Caramel", "#A0663A"],
+      ["Clay", "#B5654A"],
+      ["Cognac", "#9A463D"],
+      ["Bronze", "#8C6A3F"],
+      ["Tobacco", "#6E4B2A"],
+      ["Walnut", "#5D4037"],
+      ["Mahogany", "#4E2A1E"],
+      ["Espresso", "#3B2A22"]
+    ],
+    "Red & Burgundy": [
+      ["Scarlet", "#C8232C"],
+      ["Lacquer Red", "#B3202B"],
+      ["Crimson", "#A51C30"],
+      ["Cherry", "#8E0F1E"],
+      ["Wine", "#722F37"],
+      ["Burgundy", "#6D1A2B"],
+      ["Oxblood", "#5E1220"]
+    ],
+    "Pink & Blush": [
+      ["Blush", "#EBC0C4"],
+      ["Rose Quartz", "#E7B6BE"],
+      ["Dusty Rose", "#C9939D"],
+      ["Rose", "#D97C95"],
+      ["Peony", "#DE6F9A"],
+      ["Flamingo", "#EF7FA0"],
+      ["Hot Pink", "#E5418F"],
+      ["Raspberry", "#C7356B"]
+    ],
+    "Orange & Terracotta": [
+      ["Apricot", "#F2A766"],
+      ["Coral", "#F2856D"],
+      ["Tangerine", "#F28C28"],
+      ["Persimmon", "#E0592A"],
+      ["Terracotta", "#C8643C"],
+      ["Copper", "#B87333"],
+      ["Burnt Orange", "#CC5500"],
+      ["Rust", "#B7410E"]
+    ],
+    "Yellow & Gold": [
+      ["Lemon", "#F7E35A"],
+      ["Butter", "#F3E28A"],
+      ["Saffron", "#F2B800"],
+      ["Marigold", "#EAA221"],
+      ["Mustard", "#D4A017"],
+      ["Gold Leaf", "#D4AF37"],
+      ["Brass", "#C9A447"]
+    ],
+    "Green": [
+      ["Mint", "#A8DCC0"],
+      ["Celadon", "#ACCFB1"],
+      ["Sage", "#9CAF88"],
+      ["Pistachio", "#A6C47F"],
+      ["Lime", "#9BC53D"],
+      ["Olive", "#6B6E2E"],
+      ["Moss", "#697A3A"],
+      ["Fern", "#4F7942"],
+      ["Kelly Green", "#2E8B3A"],
+      ["Jade", "#3A9A72"],
+      ["Emerald", "#1E7A55"],
+      ["Malachite", "#0E6B4C"],
+      ["Verde Marble", "#2E5A47"],
+      ["Forest", "#224F33"],
+      ["Hunter", "#355E3B"],
+      ["Bottle Green", "#0F4A36"],
+      ["Racing Green", "#0C3D27"],
+      ["Eucalyptus", "#7E9C8A"],
+      ["Pine", "#2B4A3A"]
+    ],
+    "Teal & Aqua": [
+      ["Aqua", "#7FD6D2"],
+      ["Turquoise", "#40E0D0"],
+      ["Pool Blue", "#2BB3C8"],
+      ["Verdigris", "#43A99F"],
+      ["Teal", "#008080"],
+      ["Peacock", "#0B6B78"],
+      ["Deep Teal", "#0A4F55"]
+    ],
+    "Blue": [
+      ["Powder Blue", "#B4CCE0"],
+      ["Sky", "#87CEEB"],
+      ["Cornflower", "#6495ED"],
+      ["Periwinkle", "#9EA8E0"],
+      ["Denim", "#4A6E95"],
+      ["Steel Blue", "#4682B4"],
+      ["Cerulean", "#007BA7"],
+      ["French Blue", "#3F68A6"],
+      ["Lapis", "#26619C"],
+      ["Royal Blue", "#4169E1"],
+      ["Cobalt", "#0047AB"],
+      ["Sapphire", "#0F52BA"]
+    ],
+    "Navy": [
+      ["Navy", "#1F2A44"],
+      ["Midnight", "#191970"],
+      ["Prussian", "#0F2742"]
+    ],
+    "Purple & Plum": [
+      ["Lilac", "#C8A2C8"],
+      ["Mauve", "#B784A7"],
+      ["Orchid", "#DA70D6"],
+      ["Amethyst", "#8B5FB0"],
+      ["Violet", "#7F4FA0"],
+      ["Plum", "#8E4585"],
+      ["Mulberry", "#6B2D5C"],
+      ["Aubergine", "#3D1F3A"]
+    ]
+  }
 }

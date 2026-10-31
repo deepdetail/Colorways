@@ -25,7 +25,28 @@ _Field guide for your own photo and video shoots. Goal: colors you can trust eno
 | 6-8 | Material close-ups (floor, wall, upholstery, metal) | Accurate hexes for signature materials |
 | 9-10 | The hero photo-op frame(s) | Where the key swatch comes from; drag a region on these in Analyze |
 
-Use frames 2 to 5 for the space palette (they set the shares) and mark photo-op regions on 9 and 10.
+Use frames 2 to 5 for the space palette (they set the shares) and mark photo spots on 9 and 10.
+
+## Public and liminal spaces (the priority list)
+
+Shoot these first; most are reachable without a booking.
+
+| Space | What to capture |
+|---|---|
+| Exterior and entrance | Facade straight on, the entry door or porte-cochere, signage |
+| Lobby and stairs | Wides, the staircase from the landing, floors (marble, terrazzo), ceilings |
+| Elevator lobbies and cabs | Doors (often bronze or brass), call-button panels, the waiting-area wallcovering |
+| Corridors | The carpet shot straight down (pattern and palette), wallcoverings, room doors |
+| Public restrooms | Tile, mirrors, fixtures: often the most photographed corner of a design hotel |
+| Pre-function and ballroom foyers | Carpets and chandeliers when no event is running (ask the events team) |
+| Murals and art | Straight on, level, with nothing in front; note the artist if credited |
+
+## Marbles, metals and many greens
+
+- **Marble and stone:** shoot a close-up square of the slab plus a wider frame. Log the base color and the vein colors as separate swatches with Material = Marble & Stone and Finish = Veined.
+- **Brass, bronze and gold:** reflections push metal toward white or black. Shoot at an angle that shows the true tone; a polarizing filter helps on polished stone and lacquer.
+- **Greens (and every other family with many shades):** white balance decides whether a green reads as sage or celadon, so never skip the gray card. Keep Detail at 12 to 16 in the Analyze tab so close shades are not merged.
+- **Photo spots:** in Analyze, drag a box around each spot (the mural, the banquette, the carpet). Each box becomes a spot with its own palette and color character; name it and set its access before saving.
 
 ## Walkthrough video (for the barcode)
 

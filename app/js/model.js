@@ -112,6 +112,15 @@
           venue: sp.venue || '', source: c.source || '', key: !!c.key, score: score });
       });
     });
+    (hotel.spots || []).forEach(function (spot) {
+      var photo = num(spot.photoOp) != null ? spot.photoOp : 4;
+      normalizedColors(spot).forEach(function (c) {
+        var chroma = Math.min(c.lch[1], 80);
+        var score = Math.sqrt(c.frac) * (0.6 + chroma / 50) * (1 + 0.2 * (photo - 3)) * 1.6;
+        cands.push({ hex: c.hex, lab: c.lab, family: c.family, name: c.name || '', space: spot.spaceType,
+          venue: spot.name, source: c.source || '', key: true, score: score });
+      });
+    });
     cands.sort(function (a, b) { return b.score - a.score; });
     var picked = [];
     for (var i = 0; i < cands.length && picked.length < n; i++) {
@@ -132,6 +141,12 @@
       var cov = coverageOf(sp);
       normalizedColors(sp).forEach(function (c) { pool.push({ c: c, sp: sp, share: c.frac * cov }); });
     });
+    (hotel.spots || []).forEach(function (spot) {
+      if (only && only.indexOf(spot.spaceType) < 0) return;
+      normalizedColors(spot).forEach(function (c) {
+        pool.push({ c: c, sp: { type: spot.spaceType, venue: spot.name }, share: c.frac, spot: spot });
+      });
+    });
     if (!pool.length || !targets.length) return { score: 0, matches: [] };
     var matches = targets.map(function (t) {
       var tlab = C.hexToLab(t.hex);
@@ -142,15 +157,95 @@
         if (t.family) close = p.c.family === t.family ? 1 : close * 0.8;
         var prominence = 0.5 + 0.5 * Math.min(1, p.share / 0.3);
         var s = close * prominence;
-        if (!best || s > best.s) best = { s: s, dE: dE, color: p.c, space: p.sp, share: p.share };
+        if (!best || s > best.s) best = { s: s, dE: dE, color: p.c, space: p.sp, share: p.share, spot: p.spot };
       });
       return {
         target: t, score: best.s, dE: best.dE, hex: best.color.hex, family: best.color.family,
-        spaceType: best.space.type, venue: best.space.venue || '', share: best.share
+        spaceType: best.space.type, venue: best.space.venue || '', share: best.share,
+        spotName: best.spot ? best.spot.name : ''
       };
     });
     var mean = matches.reduce(function (s, m) { return s + m.score; }, 0) / matches.length;
     return { score: Math.round(mean * 1000) / 10, matches: matches };
+  }
+
+  function round6(x) { return Math.round(x * 1e6) / 1e6; }
+
+  /* Classify a scene's palette (a photo spot or any color list with shares). Same rules as
+   * color_character in tools/colorlib.py and the Color_Character formula on the Spots tab. */
+  function colorCharacter(colors) {
+    var cols = (colors || []).filter(function (c) { return C.isHex(c.hex); });
+    if (!cols.length) return null;
+    var total = cols.reduce(function (s, c) { return s + Math.max(0, num(c.share) || 0); }, 0);
+    var fam = {}, meanC = 0;
+    cols.forEach(function (c) {
+      var w = total > 0 ? Math.max(0, num(c.share) || 0) / total : 1 / cols.length;
+      var lch = C.labToLch(C.hexToLab(c.hex));
+      var f = C.familyLch(lch[0], lch[1], lch[2]);
+      fam[f] = (fam[f] || 0) + w;
+      meanC += w * lch[1];
+    });
+    Object.keys(fam).forEach(function (k) { fam[k] = round6(fam[k]); });
+    meanC = round6(meanC);
+    var ranked = Object.keys(fam).map(function (k) { return fam[k]; }).sort(function (a, b) { return b - a; });
+    var top = ranked[0], second = ranked.length > 1 ? ranked[1] : 0;
+    var n10 = ranked.filter(function (v) { return v >= 0.1; }).length;
+    var ch;
+    if (meanC < 12) ch = 'Tonal neutral';
+    else if (top >= 0.75) ch = 'Monochromatic';
+    else if (second >= 0.3 && top + second >= 0.8) ch = 'Two-tone';
+    else if (n10 >= 3 && meanC >= 20) ch = 'Rich multicolor';
+    else if (top >= 0.5) ch = 'Dominant color';
+    else ch = 'Balanced';
+    var topFamily = null;
+    for (var i = 0; i < C.FAMILIES.length; i++) {
+      if (fam[C.FAMILIES[i].name] === top) { topFamily = C.FAMILIES[i].name; break; }
+    }
+    return { character: ch, topFamily: topFamily, topShare: top, secondShare: second, families10: n10, meanChroma: meanC, families: fam };
+  }
+
+  /* Best palette archetype for a set of hexes (see archetype_match in tools/colorlib.py). */
+  function archetypeMatch(hexes, archetypes) {
+    var labs = (hexes || []).filter(C.isHex).map(C.hexToLab), best = { name: null, score: 0 };
+    if (!labs.length) return best;
+    (archetypes || []).forEach(function (a) {
+      var sc = a.hexes.reduce(function (s, t) {
+        var tl = C.hexToLab(t), m = Infinity;
+        labs.forEach(function (l) { m = Math.min(m, C.deltaE2000(tl, l)); });
+        return s + Math.max(0, 1 - m / 15);
+      }, 0) / a.hexes.length;
+      if (sc > best.score) best = { name: a.name, score: sc };
+    });
+    return best;
+  }
+
+  /* Every color the hotel shows, across spaces and photo spots: near-duplicates merged (Delta E under 3),
+   * grouped by family in a fixed order, light to dark, each with its nearest named shade. */
+  function hotelSpectrum(hotel, vocab) {
+    var shades = vocab && vocab.shades;
+    var items = [];
+    (hotel.spaces || []).forEach(function (sp) {
+      var cov = coverageOf(sp);
+      normalizedColors(sp).forEach(function (c) { items.push({ hex: c.hex, lab: c.lab, family: c.family, w: c.frac * cov, where: sp.type }); });
+    });
+    (hotel.spots || []).forEach(function (spot) {
+      normalizedColors(spot).forEach(function (c) { items.push({ hex: c.hex, lab: c.lab, family: c.family, w: c.frac * 0.5, where: spot.name }); });
+    });
+    var merged = [];
+    items.forEach(function (it) {
+      for (var i = 0; i < merged.length; i++) {
+        if (C.deltaE2000(merged[i].lab, it.lab) < 3) { merged[i].w += it.w; return; }
+      }
+      merged.push({ hex: it.hex, lab: it.lab, family: it.family, w: it.w, where: it.where });
+    });
+    var order = {};
+    C.FAMILIES.forEach(function (f, i) { order[f.name] = i; });
+    merged.sort(function (a, b) { return order[a.family] - order[b.family] || b.lab[0] - a.lab[0]; });
+    merged.forEach(function (m) {
+      var s = C.nearestShade(m.lab, m.family, shades);
+      m.shade = s ? s.name : '';
+    });
+    return merged;
   }
 
   function countColors(hotel) {
@@ -181,6 +276,9 @@
     keySwatches: keySwatches,
     scoreHotel: scoreHotel,
     countColors: countColors,
+    colorCharacter: colorCharacter,
+    archetypeMatch: archetypeMatch,
+    hotelSpectrum: hotelSpectrum,
     dataQuality: dataQuality
   };
 });

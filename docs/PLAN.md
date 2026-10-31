@@ -1,6 +1,6 @@
 # Colorways: Feasibility and Build Plan
 
-_Status: v0.2 (2026-10-31). v0.1 was the first feasibility pass; v0.2 folds in the hotel stripe concept, the seed dataset, the working prototype and a first Max research pass. Items still unverified are marked [VERIFY]. Full research notes: [RESEARCH_2026-10.md](RESEARCH_2026-10.md)._
+_Status: v0.3 (2026-10-31). v0.1 was the first feasibility pass; v0.2 added the hotel stripe, the seed dataset, the prototype and a first Max research pass; v0.3 adds shades, materials, photo spots, motifs, a public-and-liminal capture plan and the Guess the hotel game (see CONCEPT.md section 8). Items still unverified are marked [VERIFY]. Full research notes: [RESEARCH_2026-10.md](RESEARCH_2026-10.md)._
 
 ## 1. Thesis
 
@@ -60,7 +60,7 @@ The workbook ([data dictionary](DATA_DICTIONARY.md)) is the working database for
 | Phase | Scope | Exit criterion |
 |---|---|---|
 | 0a. Signature Index (now) | Your Wave 1 list in the workbook; desk research finished; Described colors as placeholders | Every Wave 1 hotel has status, designers and a sourced palette description |
-| 0b. Measured pilot | Shoot 5 to 8 hotels you can reach soon with the capture protocol; replace Described with Measured; publish stripes and walkthrough barcodes on social | People recognize hotels from their stripes (the "guess the hotel" test) and click through |
+| 0b. Measured pilot | Shoot 5 to 8 hotels you can reach soon with the capture protocol, public and liminal spaces first; log photo spots (murals, carpets, stairs, elevator lobbies); replace Described with Measured; publish spots, stripes and walkthrough barcodes on social | People recognize hotels from their stripes (the "guess the hotel" test) and click through |
 | 1. Web MVP | Real site with affiliate links (Expedia, Booking via Awin/CJ, or Stay22), accounts, saved palettes, the daily guess-the-hotel game | First affiliate revenue; repeat visits |
 | 2. Verified Palette program | Hotels commission a calibrated shoot and get a stripe, key swatch and barcode for their marketing | First paid hotel partner |
 | 3. App | Installable web app or React Native; camera "match this vibe" | Repeat use justifies app-store overhead |
@@ -91,4 +91,5 @@ The workbook ([data dictionary](DATA_DICTIONARY.md)) is the working database for
 - [ ] What "one more FA" meant in your Four Seasons line.
 - [ ] Default stripe weighting for consumers: Area (your concept), Time, or Equal.
 - [ ] First 5 to 8 hotels to shoot for the Measured pilot, and when.
-- [ ] Second research pass: approve the plan in the research log.
+- [ ] Second research pass: approve the plan in the research log, now focused on public and liminal spots (murals, carpets, elevator lobbies, restrooms) and the Lafayette's marbles and greens.
+- [ ] Tune color-character thresholds against 20 measured spots you consider iconic.

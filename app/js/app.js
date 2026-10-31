@@ -66,6 +66,8 @@
 
   function fmtNum(n) { return n == null ? '' : Number(n).toLocaleString('en-US'); }
 
+  function plural(n, word) { return n + ' ' + word + (n === 1 ? '' : 's'); }
+
   function slug(s) { return String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
 
   function place(h) { return [h.city, h.state].filter(Boolean).join(', '); }
@@ -158,19 +160,21 @@
   function refreshData() {
     var byId = {};
     var list = (SEED.hotels || []).map(function (h) {
-      var c = Object.assign({}, h, { spaces: (h.spaces || []).slice() });
+      var c = Object.assign({}, h, { spaces: (h.spaces || []).slice(), spots: (h.spots || []).slice(), motifs: h.motifs || [] });
       byId[c.id] = c;
       return c;
     });
     S.user.hotels.forEach(function (u) {
       var spaces = (u.spaces || []).map(function (s) { return Object.assign({ user: true }, s); });
+      var spots = (u.spots || []).map(function (s) { return Object.assign({ user: true }, s); });
       var base = byId[u.id];
       if (base) {
         base.spaces = base.spaces.concat(spaces);
+        base.spots = base.spots.concat(spots);
         if (u.walkthrough) base.walkthrough = u.walkthrough;
         base.hasUser = true;
       } else {
-        var c = Object.assign({}, u, { spaces: spaces, hasUser: true, isUser: true });
+        var c = Object.assign({}, u, { spaces: spaces, spots: spots, motifs: u.motifs || [], hasUser: true, isUser: true });
         list.push(c);
         byId[c.id] = c;
       }
@@ -327,6 +331,140 @@
     return b;
   }
 
+  /* ---------- shades, spectrum, spots ---------- */
+
+  var ARCH_MIN = 0.65;
+  var CHAR_ORDER = ['Monochromatic', 'Two-tone', 'Rich multicolor', 'Dominant color', 'Balanced', 'Tonal neutral'];
+
+  function shadeOf(hex) {
+    var lab = C.hexToLab(hex), sh = C.nearestShade(lab, C.familyOfLab(lab), V.shades);
+    return sh ? sh.name : '';
+  }
+
+  function spectrumEl(h, tall) {
+    var sp = M.hotelSpectrum(h, V);
+    if (!sp.length) return null;
+    var bar = el('div', { class: 'spectrum' + (tall ? ' tall' : ''), role: 'img',
+      'aria-label': 'Every color across the hotel: ' + sp.length + ' distinct colors' });
+    sp.forEach(function (c) {
+      var chip = swatch('span', c.hex);
+      bindTip(chip, function () { return [{ hex: c.hex, text: c.hex + '  ' + c.shade }, { text: c.family }, { text: c.where }]; });
+      bar.appendChild(chip);
+    });
+    return bar;
+  }
+
+  function shadeGroups(spec) {
+    var box = el('div', { class: 'shade-groups' }), byFam = {};
+    spec.forEach(function (c) { (byFam[c.family] = byFam[c.family] || []).push(c); });
+    C.FAMILIES.forEach(function (f) {
+      var list = byFam[f.name];
+      if (!list) return;
+      var chips = el('div', { class: 'shade-row-chips' });
+      list.forEach(function (c) {
+        var chip = el('span', { class: 'shade-chip' }, [swatch('i', c.hex), c.shade || c.hex]);
+        bindTip(chip, function () { return [{ hex: c.hex, text: c.hex + '  ' + c.shade }, { text: c.where }]; });
+        chips.appendChild(chip);
+      });
+      box.appendChild(el('div', { class: 'shade-row' }, [el('span', { class: 'shade-fam', text: f.name + ' (' + list.length + ')' }), chips]));
+    });
+    return box;
+  }
+
+  function charBadge(r) {
+    if (!r) return null;
+    return el('span', { class: 'badge char', title: 'Average chroma ' + Math.round(r.meanChroma) + '; top family ' + r.topFamily + ' ' + fmtPct(r.topShare) },
+      [swatch('i', C.familyHex(r.topFamily)), r.character]);
+  }
+
+  function paletteBar(colors, tall) {
+    var cols = M.normalizedColors({ colors: colors });
+    if (!cols.length) return el('div', { class: 'stripe-empty', text: 'Colors not published yet: measure on site' });
+    var bar = el('div', { class: 'stripe' + (tall ? '' : ' thin'), role: 'img',
+      'aria-label': cols.map(function (c) { return c.hex + ' ' + fmtPct(c.frac); }).join(', ') });
+    var blk = el('div', { class: 'seg-block' });
+    blk.style.flex = '1 1 0';
+    cols.forEach(function (c) {
+      var cs = swatch('div', c.hex, 'chip-stripe');
+      cs.style.flex = c.frac + ' 1 0';
+      bindTip(cs, function () {
+        return [{ hex: c.hex, text: c.hex + '  ' + shadeOf(c.hex) }, { text: fmtPct(c.frac) + (c.name ? ' · ' + c.name : '') },
+          { text: c.family + (c.material ? ' · ' + c.material : '') + (c.finish ? ', ' + c.finish.toLowerCase() : '') },
+          { text: 'Source: ' + (c.source || 'n/a') }];
+      });
+      blk.appendChild(cs);
+    });
+    bar.appendChild(blk);
+    return bar;
+  }
+
+  function spotCard(spot, h, showHotel) {
+    var r = M.colorCharacter(spot.colors);
+    var card = el('article', { class: 'card spot-card' + (showHotel ? '' : ' flat') });
+    if (showHotel) card.appendChild(el('p', { class: 'meta', text: h.name + ' · ' + place(h) }));
+    card.appendChild(el('h3', { text: spot.name }));
+    var tags = el('div', { class: 'tags' });
+    [spot.type, spot.access, spot.spaceType, spot.bestTime && spot.bestTime !== 'Any' ? spot.bestTime : null].filter(Boolean)
+      .forEach(function (t, i) { tags.appendChild(el('span', { class: 'tag' + (i === 1 && t === 'Public' ? ' public' : ''), text: t })); });
+    card.appendChild(tags);
+    card.appendChild(paletteBar(spot.colors, true));
+    if (r) {
+      var names = (spot.colors || []).map(function (c) { return shadeOf(c.hex); })
+        .filter(function (v, i, a) { return v && a.indexOf(v) === i; });
+      card.appendChild(el('div', { class: 'spot-char' }, [charBadge(r), el('span', { class: 'muted', text: names.join(', ') })]));
+    }
+    if (spot.tip) card.appendChild(el('p', { class: 'tip', text: 'Tip: ' + spot.tip }));
+    var ev = el('p', { class: 'evidence' });
+    if (spot.evidence) ev.appendChild(document.createTextNode(spot.evidence + ' '));
+    var u = safeUrl(spot.url);
+    if (u) ev.appendChild(el('a', { href: u, target: '_blank', rel: 'noopener noreferrer', text: 'source' }));
+    card.appendChild(ev);
+    var status = spot.user ? 'Measured' : ((spot.colors || []).length ? 'Described (approx.)' : 'To capture');
+    card.appendChild(el('div', { class: 'card-foot' }, [
+      el('span', { class: 'badge ' + (spot.user ? 'measured' : (status === 'To capture' ? 'none' : 'described')), text: status }),
+      spot.confidence ? el('span', { text: spot.confidence + ' confidence' }) : null,
+      showHotel ? el('button', { type: 'button', class: 'btn ghost', text: 'Open hotel', onclick: function () { openDetail(h.id); } }) : null
+    ]));
+    return card;
+  }
+
+  function allSpots() {
+    var out = [];
+    S.hotels.forEach(function (h) {
+      (h.spots || []).forEach(function (sp) { out.push({ spot: sp, hotel: h, ch: M.colorCharacter(sp.colors) }); });
+    });
+    return out;
+  }
+
+  function renderSpots() {
+    var q = $('#s-q').value.trim().toLowerCase(), ch = $('#s-char').value, ty = $('#s-type').value;
+    var ac = $('#s-access').value, fam = $('#s-fam').value;
+    var all = allSpots();
+    var list = all.filter(function (x) {
+      if (q && [x.hotel.name, x.hotel.city, x.spot.name, x.spot.type].join(' ').toLowerCase().indexOf(q) < 0) return false;
+      if (ch && (!x.ch || x.ch.character !== ch)) return false;
+      if (ty && x.spot.type !== ty) return false;
+      if (ac && x.spot.access !== ac) return false;
+      if (fam && (!x.ch || !x.ch.families[fam])) return false;
+      return true;
+    });
+    list.sort(function (a, b) {
+      var ca = a.ch ? 0 : 1, cb = b.ch ? 0 : 1;
+      if (ca !== cb) return ca - cb;
+      var pa = num(a.spot.photoOp) || 0, pb = num(b.spot.photoOp) || 0;
+      if (pa !== pb) return pb - pa;
+      return (b.ch ? b.ch.meanChroma : 0) - (a.ch ? a.ch.meanChroma : 0);
+    });
+    var grid = $('#spots-grid');
+    grid.textContent = '';
+    list.forEach(function (x) { grid.appendChild(spotCard(x.spot, x.hotel, true)); });
+    if (!list.length) grid.appendChild(el('p', { class: 'empty', text: 'No spots match these filters.' }));
+    var pub = all.filter(function (x) { return x.spot.access === 'Public'; }).length;
+    $('#spots-count').textContent = list.length + ' of ' + all.length + ' spots shown · ' + pub + ' public · ' +
+      all.filter(function (x) { return x.ch; }).length + ' with palettes';
+  }
+
+
   /* ---------- index ---------- */
 
   function fillSelect(sel, values, allLabel) {
@@ -369,6 +507,8 @@
       el('p', { class: 'meta', text: [place(h), h.brand].filter(Boolean).join(' · ') })
     ]));
     card.appendChild(stripeEl(h, { labels: true }));
+    var spec = spectrumEl(h, false);
+    if (spec) card.appendChild(spec);
     if (h.walkthrough && h.walkthrough.colors) card.appendChild(barcodeMini(h.walkthrough.colors));
     var ks = M.keySwatches(h, 5);
     if (ks.length) card.appendChild(keyRow(ks));
@@ -378,7 +518,7 @@
     var dist = num(h.distinctiveness);
     card.appendChild(el('div', { class: 'card-foot' }, [
       el('span', { class: 'badge ' + q.toLowerCase(), text: q === 'None' ? 'Not captured yet' : q + (q === 'Described' ? ' (approx.)' : '') }),
-      el('span', { text: (h.spaces || []).length + ' spaces · ' + M.countColors(h) + ' colors' }),
+      el('span', { text: plural((h.spaces || []).length, 'space') + ' · ' + plural(M.countColors(h), 'color') + ' · ' + plural((h.spots || []).length, 'spot') }),
       dist ? el('span', { class: 'dots', title: 'Distinctiveness ' + dist + ' of 5', 'aria-label': 'Distinctiveness ' + dist + ' of 5',
         text: '●'.repeat(dist) + '○'.repeat(Math.max(0, 5 - dist)) }) : null
     ]));
@@ -495,6 +635,39 @@
     ].forEach(function (f) { if (f) facts.appendChild(f); });
     body.appendChild(facts);
 
+    var spec = M.hotelSpectrum(h, V);
+    if (spec.length) {
+      body.appendChild(el('h2', { class: 'small', text: 'Every color across the hotel, by family and shade (' + spec.length + ')' }));
+      body.appendChild(spectrumEl(h, true));
+      body.appendChild(shadeGroups(spec));
+    }
+    if ((h.spots || []).length) {
+      body.appendChild(el('h2', { class: 'small', text: 'Photo spots worth shooting (' + h.spots.length + ')' }));
+      var sg = el('div', { class: 'grid spots-grid' });
+      h.spots.forEach(function (sp) { sg.appendChild(spotCard(sp, h, false)); });
+      body.appendChild(sg);
+    }
+    if ((h.motifs || []).length) {
+      body.appendChild(el('h2', { class: 'small', text: 'Motifs' }));
+      var ml = el('div', { class: 'motifs' });
+      h.motifs.forEach(function (m) {
+        var arch = m.hexes && m.hexes.length ? M.archetypeMatch(m.hexes, V.archetypes) : { name: null, score: 0 };
+        var chips = el('span', { class: 'motif-chips' });
+        (m.hexes || []).forEach(function (hx) {
+          var i = swatch('i', hx);
+          bindTip(i, function () { return [{ hex: hx, text: hx + '  ' + shadeOf(hx) }]; });
+          chips.appendChild(i);
+        });
+        var u = safeUrl(m.url);
+        var meta = [m.type, m.where, arch.score >= ARCH_MIN ? 'Archetype: ' + arch.name + ' (' + Math.round(arch.score * 100) + '% match)' : null];
+        ml.appendChild(el('div', { class: 'motif' }, [chips, el('div', null, [
+          el('strong', { text: m.name }),
+          el('div', { class: 'muted small-print', text: meta.filter(Boolean).join(' · ') }),
+          el('div', { class: 'evidence' }, [m.evidence || '', u ? ' ' : '', u ? el('a', { href: u, target: '_blank', rel: 'noopener noreferrer', text: 'source' }) : null])
+        ])]));
+      });
+      body.appendChild(ml);
+    }
     if (M.countColors(h)) {
       body.appendChild(el('h2', { class: 'small', text: 'Color families across the stay (' + S.mode + ' weighting)' }));
       body.appendChild(famBar(h));
@@ -569,9 +742,39 @@
         S.targets.push({ hex: f.hex, family: f.name });
         renderTargets();
         renderResults();
+        renderShadeChips(f.name);
       } }, [swatch('i', f.hex), f.name]));
     });
+    var pre = $('#preset-chips');
+    pre.textContent = '';
+    (V.archetypes || []).forEach(function (a) {
+      var dots = el('span', { class: 'dots-row' });
+      a.hexes.forEach(function (hx) { dots.appendChild(swatch('i', hx)); });
+      pre.appendChild(el('button', { type: 'button', class: 'fchip preset', title: a.hint, onclick: function () {
+        S.targets = a.hexes.slice(0, 5).map(function (hx) { return { hex: hx }; });
+        renderTargets();
+        renderResults();
+        toast('Searching for the ' + a.name + ' palette: ' + a.hint.toLowerCase() + '.');
+      } }, [dots, a.name]));
+    });
   }
+
+  function renderShadeChips(family) {
+    var box = $('#shade-chips'), list = (V.shades || {})[family] || [];
+    box.textContent = '';
+    box.hidden = !list.length;
+    if (!list.length) return;
+    box.appendChild(el('span', { class: 'muted small-print', text: 'Shades of ' + family + ':' }));
+    list.forEach(function (sh) {
+      box.appendChild(el('button', { type: 'button', class: 'fchip', onclick: function () {
+        if (S.targets.length >= 5) { toast('Up to five colors. Remove one first.'); return; }
+        S.targets.push({ hex: sh[1] });
+        renderTargets();
+        renderResults();
+      } }, [swatch('i', sh[1]), sh[0]]));
+    });
+  }
+
 
   function renderSpaceFilter() {
     var box = $('#space-filter');
@@ -608,7 +811,8 @@
     scored.forEach(function (x) {
       var why = el('div', { class: 'why' });
       x.r.matches.forEach(function (m) {
-        var label = m.spaceType + (m.venue ? ' (' + m.venue + ')' : '') + ' · ' + m.family + ' · ΔE ' + m.dE.toFixed(1);
+        var label = (m.spotName ? 'Spot: ' + m.spotName : m.spaceType + (m.venue ? ' (' + m.venue + ')' : '')) +
+          ' · ' + shadeOf(m.hex) + ' · ΔE ' + m.dE.toFixed(1);
         why.appendChild(el('span', { class: 'whychip', title: 'Your ' + C.normHex(m.target.hex) + ' matched ' + m.hex }, [
           swatch('i', m.target.hex), swatch('i', m.hex), label
         ]));
@@ -759,17 +963,21 @@
       it.regions.forEach(function (r) {
         var x = Math.floor(r.x * c.w), y = Math.floor(r.y * c.h);
         var w = Math.max(1, Math.round(r.w * c.w)), h = Math.max(1, Math.round(r.h * c.h));
-        regions.push({ labs: K.pixelsToLab(c.ctx.getImageData(x, y, w, h).data, { ignoreExtremes: ignore }), area: r.w * r.h });
+        regions.push({ labs: K.pixelsToLab(c.ctx.getImageData(x, y, w, h).data, { ignoreExtremes: ignore }), area: r.w * r.h, image: it.name });
       });
     });
     var labs = concatLabs(parts);
     if (!labs.length) { toast('No usable pixels. Try unchecking "Ignore blown highlights".'); return; }
-    var pal = K.kmeans(labs, k, { seed: 11 }).map(function (cl) {
+    var pal = K.kmeans(labs, k, { seed: 11, mergeDE: 3 }).map(function (cl) {
       return { hex: cl.hex, lab: cl.lab, family: cl.family, share: cl.share, key: false, name: '' };
     });
+    var spots = [];
     regions.forEach(function (rg) {
       if (!rg.labs.length) return;
-      K.kmeans(rg.labs, 3, { seed: 5 }).filter(function (x) { return x.share >= 0.25; }).forEach(function (x) {
+      var rc = K.kmeans(rg.labs, 5, { seed: 5, mergeDE: 4 });
+      spots.push({ name: 'Photo spot ' + (spots.length + 1), type: 'Other', access: 'Public', bestTime: 'Any', image: rg.image,
+        colors: rc.filter(function (x) { return x.share >= 0.04; }).map(function (x) { return { hex: x.hex, share: Math.round(x.share * 1000) / 10 }; }) });
+      rc.filter(function (x) { return x.share >= 0.25; }).forEach(function (x) {
         var nearest = null, nd = Infinity;
         pal.forEach(function (p) { var dd = C.deltaE2000(p.lab, x.lab); if (dd < nd) { nd = dd; nearest = p; } });
         if (nearest && nd < 8) nearest.key = true;
@@ -780,6 +988,7 @@
     pal.forEach(function (p) { p.share = p.share / total; });
     pal.sort(function (a, b) { return b.share - a.share; });
     S.analyze.palette = pal;
+    S.analyze.spots = spots;
     renderPalette();
   }
 
@@ -797,7 +1006,7 @@
       var star = el('button', { type: 'button', class: 'star', 'aria-pressed': String(p.key), text: p.key ? 'Key swatch' : 'Mark key' });
       star.addEventListener('click', function () { p.key = !p.key; renderPalette(); });
       list.appendChild(el('div', { class: 'pchip' }, [
-        swatch('i', p.hex), el('code', { text: p.hex }), el('span', { class: 'pfam', text: p.family }),
+        swatch('i', p.hex), el('code', { text: p.hex }), el('span', { class: 'pfam', text: p.family + ' · ' + shadeOf(p.hex) }),
         el('span', { class: 'num', text: fmtPct(p.share) }), name, star
       ]));
     });
@@ -806,6 +1015,24 @@
       colors: pal.map(function (p) { return { hex: p.hex, share: p.share * 100, key: p.key }; }) }] };
     panel.appendChild(el('h2', { class: 'small', text: 'This space as a stripe block' }));
     panel.appendChild(stripeEl(preview, { mode: 'equal' }));
+    (S.analyze.spots || []).forEach(function (sp, i) {
+      if (i === 0) panel.appendChild(el('h2', { class: 'small', text: 'Photo spots from your marked regions' }));
+      var name = el('input', { value: sp.name, 'aria-label': 'Spot name' });
+      name.addEventListener('input', function () { sp.name = name.value; });
+      var type = el('select', { 'aria-label': 'Spot type' }), access = el('select', { 'aria-label': 'Access' }), best = el('select', { 'aria-label': 'Best time' });
+      fillSelect(type, V.spotTypes || []); type.value = sp.type;
+      fillSelect(access, V.access || []); access.value = sp.access;
+      fillSelect(best, V.bestTime || []); best.value = sp.bestTime;
+      type.addEventListener('change', function () { sp.type = type.value; });
+      access.addEventListener('change', function () { sp.access = access.value; });
+      best.addEventListener('change', function () { sp.bestTime = best.value; });
+      panel.appendChild(el('div', { class: 'spot-edit' }, [
+        el('div', { class: 'form-grid' }, [el('label', null, ['Spot name', name]), el('label', null, ['Type', type]),
+          el('label', null, ['Access', access]), el('label', null, ['Best time', best])]),
+        paletteBar(sp.colors, true),
+        el('div', { class: 'spot-char' }, [charBadge(M.colorCharacter(sp.colors)), el('span', { class: 'muted', text: 'from ' + sp.image })])
+      ]));
+    });
     panel.appendChild(el('div', { class: 'row' }, [
       el('button', { type: 'button', class: 'btn primary', text: 'Save space to dataset', onclick: saveSpace })
     ]));
@@ -843,7 +1070,7 @@
     var type = $('#an-type').value;
     var files = S.analyze.images.map(function (i) { return i.name; }).join('; ');
     var sqft = num($('#an-sqft').value);
-    rec.spaces.push({
+    var spaceRec = {
       id: rec.id + '-' + typeCode(type) + '-M' + (rec.spaces.length + 1),
       type: type,
       venue: $('#an-venue').value.trim(),
@@ -858,8 +1085,20 @@
       captureStatus: 'Analyzed',
       colors: S.analyze.palette.map(function (p, i) {
         return { hex: p.hex, name: p.name, share: Math.round(p.share * 1000) / 10, key: p.key,
-          reason: p.key ? 'Photo-op' : (i === 0 ? 'Dominant' : 'Accent'), source: 'Measured', evidence: files };
+          reason: p.key ? 'Photo-op' : (i === 0 ? 'Dominant' : 'Accent'), source: 'Measured', evidence: files, shade: shadeOf(p.hex) };
       })
+    };
+    rec.spaces.push(spaceRec);
+    rec.spots = rec.spots || [];
+    (S.analyze.spots || []).forEach(function (sp) {
+      rec.spots.push({
+        id: rec.id + '-SPM' + (rec.spots.length + 1), spaceId: spaceRec.id, spaceType: type, name: sp.name || 'Photo spot',
+        type: sp.type, access: sp.access, bestTime: sp.bestTime, photoOp: +$('#an-photo').value, tip: '', confidence: 'High',
+        evidence: sp.image, url: '', captureStatus: 'Analyzed', rights: 'Owned',
+        colors: sp.colors.map(function (c) {
+          return { hex: c.hex, share: c.share, key: true, reason: 'Photo-op', source: 'Measured', shade: shadeOf(c.hex), evidence: sp.image };
+        })
+      });
     });
     saveUser();
     refreshData();
@@ -869,9 +1108,12 @@
     renderIndex();
     renderSpaceFilter();
     renderUserSummary();
-    S.analyze = { images: [], palette: null };
+    var nSpots = (S.analyze.spots || []).length;
+    S.analyze = { images: [], palette: null, spots: [] };
     renderAnalyzeImages();
     $('#an-result').textContent = '';
+    renderSpots();
+    if (nSpots) toast('Saved ' + type + ' and ' + nSpots + ' photo spot' + (nSpots > 1 ? 's' : '') + ' to ' + rec.name + '.');
     toast('Saved ' + type + ' to ' + rec.name + '. It now shows in the Index as Measured.');
   }
 
@@ -881,14 +1123,15 @@
   }
 
   function renderUserSummary() {
-    var hs = S.user.hotels, sp = 0, co = 0, wt = 0;
+    var hs = S.user.hotels, sp = 0, co = 0, wt = 0, spots = 0;
     hs.forEach(function (h) {
+      spots += (h.spots || []).length;
       sp += (h.spaces || []).length;
       (h.spaces || []).forEach(function (s) { co += (s.colors || []).length; });
       if (h.walkthrough) wt++;
     });
     $('#user-summary').textContent = hs.length
-      ? sp + ' measured spaces and ' + co + ' colors across ' + hs.length + ' hotels' + (wt ? ', plus ' + wt + ' walkthrough barcodes' : '') + ', saved in this browser.'
+      ? sp + ' measured spaces, ' + spots + ' photo spots and ' + co + ' colors across ' + hs.length + ' hotels' + (wt ? ', plus ' + wt + ' walkthrough barcodes' : '') + ', saved in this browser.'
       : 'Nothing measured yet. Saved spaces stay in this browser until you export or clear them.';
   }
 
@@ -897,7 +1140,10 @@
   var HOTEL_COLS = ['Hotel_ID', 'Hotel_Name', 'Brand_Collection', 'City', 'State'];
   var SPACE_COLS = ['Space_ID', 'Hotel_ID', 'Space_Type', 'Venue', 'Area_sqft', 'Area_Source', 'Coverage_Pct', 'Dwell_Hours', 'Style', 'Era',
     'Genre', 'Mood_Tags', 'Lighting', 'Materials_Motifs', 'Photo_Op_1to5', 'Confidence', 'Source_Evidence', 'Capture_Status', 'Notes'];
-  var SWATCH_COLS = ['Swatch_ID', 'Space_ID', 'Rank', 'Hex', 'Color_Name', 'Share_Pct', 'Key_Swatch', 'Key_Reason', 'Color_Source', 'Evidence'];
+  var SWATCH_COLS = ['Swatch_ID', 'Space_ID', 'Spot_ID', 'Rank', 'Hex', 'Color_Name', 'Shade', 'Material', 'Finish', 'Share_Pct',
+    'Key_Swatch', 'Key_Reason', 'Color_Source', 'Evidence'];
+  var SPOT_COLS = ['Spot_ID', 'Hotel_ID', 'Space_ID', 'Spot_Name', 'Spot_Type', 'Access', 'Best_Time', 'Photo_Op_1to5', 'Photo_Tip',
+    'Confidence', 'Source_Evidence', 'Rights_Status', 'Capture_Status', 'Notes'];
 
   function exportHotels() {
     var rows = [HOTEL_COLS];
@@ -923,11 +1169,29 @@
     S.user.hotels.forEach(function (h) {
       (h.spaces || []).forEach(function (s) {
         (s.colors || []).forEach(function (c, i) {
-          rows.push([s.id + '-C' + (i + 1), s.id, i + 1, c.hex, c.name || '', c.share, c.key ? 'Y' : 'N', c.reason || '', c.source || 'Measured', c.evidence || '']);
+          rows.push([s.id + '-C' + (i + 1), s.id, '', i + 1, c.hex, c.name || '', c.shade || shadeOf(c.hex), c.material || '', c.finish || '',
+            c.share, c.key ? 'Y' : 'N', c.reason || '', c.source || 'Measured', c.evidence || '']);
+        });
+      });
+      (h.spots || []).forEach(function (sp) {
+        (sp.colors || []).forEach(function (c, i) {
+          rows.push([sp.id + '-C' + (i + 1), sp.spaceId, sp.id, i + 1, c.hex, c.name || '', c.shade || shadeOf(c.hex), c.material || '', c.finish || '',
+            c.share, 'Y', c.reason || 'Photo-op', c.source || 'Measured', c.evidence || '']);
         });
       });
     });
     offer('Swatches CSV', 'colorways-swatches.csv', csv(rows), 'text/csv');
+  }
+
+  function exportSpots() {
+    var rows = [SPOT_COLS];
+    S.user.hotels.forEach(function (h) {
+      (h.spots || []).forEach(function (sp) {
+        rows.push([sp.id, h.id, sp.spaceId, sp.name, sp.type, sp.access, sp.bestTime, sp.photoOp == null ? '' : sp.photoOp, sp.tip || '',
+          sp.confidence || '', sp.evidence || '', sp.rights || '', sp.captureStatus || '', sp.notes || '']);
+      });
+    });
+    offer('Spots CSV', 'colorways-spots.csv', csv(rows), 'text/csv');
   }
 
   function importJson(file) {
@@ -948,6 +1212,10 @@
           if (!exists) { rec.spaces.push(s); added++; }
         });
         if (h.walkthrough && Array.isArray(h.walkthrough.colors)) rec.walkthrough = h.walkthrough;
+        rec.spots = rec.spots || [];
+        (Array.isArray(h.spots) ? h.spots : []).forEach(function (sp) {
+          if (sp && typeof sp.name === 'string' && !rec.spots.some(function (x) { return x.id === sp.id; })) rec.spots.push(sp);
+        });
       });
       saveUser(); refreshData(); populateHotelSelects(); renderIndex(); renderSpaceFilter(); renderUserSummary();
       toast('Imported ' + added + ' spaces.');
@@ -1027,6 +1295,84 @@
     }).then(function () { prog.hidden = true; run.disabled = false; });
   }
 
+  /* ---------- guess the hotel ---------- */
+
+  var G = { seed: 0, round: 0, score: 0, answered: 0, current: null, done: false };
+
+  function dateSeed() {
+    var d = new Date();
+    return d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
+  }
+
+  function gameItems() {
+    var items = [];
+    S.hotels.forEach(function (h) {
+      var spec = M.hotelSpectrum(h, V);
+      if (spec.length >= 4) items.push({ kind: 'Hotel spectrum', hotel: h, colors: spec.map(function (c) { return { hex: c.hex, share: 1 }; }) });
+      (h.spots || []).forEach(function (sp) {
+        if ((sp.colors || []).length) items.push({ kind: 'Photo spot', hotel: h, spot: sp, colors: sp.colors });
+      });
+    });
+    return items;
+  }
+
+  function newRound() {
+    var items = gameItems();
+    var hotels = S.hotels.filter(function (h) { return M.hotelSpectrum(h, V).length; });
+    if (items.length < 1 || hotels.length < 4) {
+      $('#g-palette').textContent = 'Not enough hotels with colors yet. Measure a few more spaces first.';
+      return;
+    }
+    var rand = K.mulberry32(G.seed * 1000 + G.round);
+    var item = items[Math.floor(rand() * items.length)];
+    var others = hotels.filter(function (h) { return h.id !== item.hotel.id; });
+    var opts = [item.hotel];
+    while (opts.length < 4 && others.length) opts.push(others.splice(Math.floor(rand() * others.length), 1)[0]);
+    for (var i = opts.length - 1; i > 0; i--) { var j = Math.floor(rand() * (i + 1)); var t = opts[i]; opts[i] = opts[j]; opts[j] = t; }
+    G.current = { item: item, answered: false };
+    $('#g-kind').textContent = item.kind + (item.spot ? ': ' + item.spot.type : '');
+    var pal = $('#g-palette');
+    pal.textContent = '';
+    pal.appendChild(paletteBar(item.colors, true));
+    $('#g-hint').textContent = '';
+    var hint = el('button', { type: 'button', class: 'btn ghost', text: 'Need a hint?', onclick: function () {
+      var h = item.hotel;
+      $('#g-hint').textContent = 'Hint: ' + [h.region, h.primaryStyle, h.genre].filter(Boolean).join(' · ');
+    } });
+    var box = $('#g-options');
+    box.textContent = '';
+    opts.forEach(function (h) {
+      box.appendChild(el('button', { type: 'button', class: 'btn g-opt', 'data-id': h.id, text: h.name, onclick: function () { answer(h.id); } }));
+    });
+    box.appendChild(hint);
+    $('#g-result').textContent = '';
+    renderScore();
+  }
+
+  function renderScore() {
+    $('#g-score').textContent = 'Score ' + G.score + ' of ' + G.answered;
+  }
+
+  function answer(id) {
+    if (!G.current || G.current.answered) return;
+    var item = G.current.item, ok = id === item.hotel.id;
+    G.current.answered = true;
+    G.answered++;
+    if (ok) G.score++;
+    $all('.g-opt').forEach(function (b) {
+      b.disabled = true;
+      if (b.getAttribute('data-id') === item.hotel.id) b.classList.add('right');
+      else if (b.getAttribute('data-id') === id) b.classList.add('wrong');
+    });
+    var res = $('#g-result');
+    res.textContent = '';
+    res.appendChild(el('p', null, [el('strong', { text: ok ? 'Yes. ' : 'Not quite. ' }),
+      item.hotel.name + ', ' + place(item.hotel) + (item.spot ? ': ' + item.spot.name : '')]));
+    res.appendChild(stripeEl(item.hotel, { size: 'thin' }));
+    res.appendChild(el('button', { type: 'button', class: 'btn', text: 'Open ' + item.hotel.name, onclick: function () { openDetail(item.hotel.id); } }));
+    renderScore();
+  }
+
   /* ---------- method page ---------- */
 
   function renderMethod() {
@@ -1046,15 +1392,40 @@
     ft.appendChild(tb);
     $all('.fam-sw', ft).forEach(function (s) { s.style.display = 'inline-block'; s.style.width = '48px'; s.style.height = '18px'; s.style.borderRadius = '4px'; });
 
+    var ms = $('#m-shades');
+    ms.textContent = '';
+    Object.keys(V.shades || {}).forEach(function (fam) {
+      var chips = el('div', { class: 'shade-row-chips' });
+      V.shades[fam].forEach(function (sh) { chips.appendChild(el('span', { class: 'shade-chip' }, [swatch('i', sh[1]), sh[0]])); });
+      ms.appendChild(el('div', { class: 'shade-row' }, [el('span', { class: 'shade-fam', text: fam }), chips]));
+    });
+    var mc = $('#m-chars');
+    mc.textContent = '';
+    mc.appendChild(el('thead', null, [el('tr', null, [el('th', { text: 'Character' }), el('th', { text: 'Rule' })])]));
+    var mcb = el('tbody');
+    (V.colorCharacters || []).forEach(function (c) { mcb.appendChild(el('tr', null, [el('td', { text: c.name }), el('td', { text: c.meaning })])); });
+    mc.appendChild(mcb);
+    var ma = $('#m-arch');
+    ma.textContent = '';
+    ma.appendChild(el('thead', null, [el('tr', null, [el('th', { text: 'Archetype' }), el('th', { text: 'Colors' }), el('th', { text: 'What it is' })])]));
+    var mab = el('tbody');
+    (V.archetypes || []).forEach(function (a) {
+      var dots = el('span', { class: 'dots-row' });
+      a.hexes.forEach(function (hx) { dots.appendChild(swatch('i', hx)); });
+      mab.appendChild(el('tr', null, [el('td', { text: a.name }), el('td', null, [dots]), el('td', { text: a.hint })]));
+    });
+    ma.appendChild(mab);
+
     var stb = $('#m-spaces');
     stb.textContent = '';
     stb.appendChild(el('thead', null, [el('tr', null, [
-      el('th', { text: 'Space type' }), el('th', { class: 'num', text: 'Journey order' }),
+      el('th', { text: 'Space type' }), el('th', { class: 'num', text: 'Journey order' }), el('th', { text: 'Zone' }),
       el('th', { class: 'num', text: 'Default sq ft' }), el('th', { class: 'num', text: 'Default hours' }), el('th', { text: 'Covers' })
     ])]));
     var tb2 = el('tbody');
     (V.spaceTypes || []).forEach(function (t) {
-      tb2.appendChild(el('tr', null, [el('td', { text: t.name }), el('td', { class: 'num', text: String(t.order) }),
+      tb2.appendChild(el('tr', null, [el('td', { text: t.name + (t.liminal ? ' (liminal)' : '') }), el('td', { class: 'num', text: String(t.order) }),
+        el('td', { text: t.zone || '' }),
         el('td', { class: 'num', text: fmtNum(t.sqft) }), el('td', { class: 'num', text: String(t.dwell) }), el('td', { text: t.hint || '' })]));
     });
     stb.appendChild(tb2);
@@ -1071,6 +1442,8 @@
     });
     hideTip();
     if (v === 'search') renderResults();
+    if (v === 'spots') renderSpots();
+    if (v === 'game' && !G.current) newRound();
   }
 
   function init() {
@@ -1083,6 +1456,15 @@
       $(s).addEventListener('input', renderIndex);
     });
     $all('.seg button').forEach(function (b) { b.addEventListener('click', function () { setMode(b.dataset.mode); }); });
+
+    fillSelect($('#s-char'), CHAR_ORDER, 'Any character');
+    fillSelect($('#s-type'), V.spotTypes || [], 'Any type');
+    fillSelect($('#s-access'), V.access || [], 'Any access');
+    fillSelect($('#s-fam'), C.FAMILIES.map(function (f) { return f.name; }), 'Any color');
+    ['#s-q', '#s-char', '#s-type', '#s-access', '#s-fam'].forEach(function (sel) { $(sel).addEventListener('input', renderSpots); });
+    G.seed = dateSeed();
+    $('#g-next').addEventListener('click', function () { G.round++; newRound(); });
+    $('#g-new').addEventListener('click', function () { G.seed = Math.floor(Math.random() * 1e6); G.round = 0; G.score = 0; G.answered = 0; newRound(); });
 
     $('#add-target').addEventListener('click', function () {
       if (S.targets.length < 5) { S.targets.push({ hex: '#E2725B' }); renderTargets(); renderResults(); }
@@ -1105,6 +1487,7 @@
     $('#exp-hotels').addEventListener('click', exportHotels);
     $('#exp-spaces').addEventListener('click', exportSpaces);
     $('#exp-swatches').addEventListener('click', exportSwatches);
+    $('#exp-spots').addEventListener('click', exportSpots);
     $('#exp-json').addEventListener('click', function () {
       offer('JSON backup', 'colorways-backup.json', JSON.stringify(S.user, null, 2), 'application/json',
         'Keep this backup somewhere safe; Import JSON restores it in any browser.');
@@ -1167,6 +1550,6 @@
     route();
   }
 
-  window.CWApp = { state: S, refresh: function () { refreshData(); renderIndex(); }, openDetail: openDetail, runBarcode: runBarcode, sampleVideo: sampleVideo };
+  window.CWApp = { state: S, game: G, refresh: function () { refreshData(); renderIndex(); }, openDetail: openDetail, runBarcode: runBarcode, sampleVideo: sampleVideo };
   init();
 })();

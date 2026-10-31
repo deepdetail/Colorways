@@ -49,8 +49,36 @@ function dE(a, b) { return C.deltaE2000(C.hexToLab(a), C.hexToLab(b)); }
   const rows = await page.locator('dialog table.data tbody tr').count();
   assert.ok(rows >= 5, 'detail table lists spaces');
   console.log('detail ok:', rows, 'space rows for Noelle');
+  assert.ok(await page.locator('dialog .spot-card').count() >= 4, 'Noelle detail lists its photo spots');
+  assert.ok(await page.locator('dialog .motif').count() >= 1, 'Noelle detail lists its motif');
+  assert.ok(await page.locator('dialog .shade-chip').count() >= 5, 'detail groups colors by shade');
+  const archText = await page.locator('dialog .motif').first().textContent();
+  assert.ok(archText.includes('Deco Pink and Green'), 'motif archetype shown: ' + archText);
   await shot('02-detail-noelle.png');
   await page.click('dialog .d-close');
+
+  await page.goto(APP + '#spots');
+  await page.waitForSelector('#spots-grid .spot-card');
+  const nSpots = await page.locator('#spots-grid .spot-card').count();
+  assert.strictEqual(nSpots, 24, 'all seed spots render');
+  await page.selectOption('#s-char', 'Monochromatic');
+  const nMono = await page.locator('#spots-grid .spot-card').count();
+  assert.ok(nMono >= 5 && nMono < nSpots, 'character filter narrows the list');
+  await page.selectOption('#s-char', '');
+  await page.selectOption('#s-access', 'Public');
+  console.log('spots ok:', nSpots, 'spots;', nMono, 'monochromatic;', await page.locator('#spots-grid .spot-card').count(), 'public');
+  await page.selectOption('#s-access', '');
+  await shot('08-spots.png');
+
+  await page.goto(APP + '#game');
+  await page.waitForSelector('.g-opt');
+  assert.strictEqual(await page.locator('.g-opt').count(), 4, 'four choices');
+  await page.locator('.g-opt').first().click();
+  await page.waitForSelector('#g-result strong');
+  const score = await page.textContent('#g-score');
+  assert.ok(/Score [01] of 1/.test(score), score);
+  console.log('game ok:', score.trim(), '|', (await page.textContent('#g-result p')).trim());
+  await shot('09-game.png');
 
   await page.goto(APP + '#search');
   await page.waitForSelector('#results .result');
@@ -77,8 +105,14 @@ function dE(a, b) { return C.deltaE2000(C.hexToLab(a), C.hexToLab(b)); }
   await page.mouse.down();
   await page.mouse.move(box.x + box.width * 0.97, box.y + box.height * 0.97, { steps: 6 });
   await page.mouse.up();
+  await page.selectOption('#an-k', '8').catch(() => {});
+  await page.evaluate(() => { const k = document.querySelector('#an-k'); k.value = '8'; k.dispatchEvent(new Event('input')); });
   await page.click('#an-run');
   await page.waitForSelector('.palette .pchip');
+  const aspots = await page.evaluate(() => window.CWApp.state.analyze.spots);
+  assert.strictEqual(aspots.length, 1, 'one marked region becomes one spot');
+  assert.ok(dE(aspots[0].colors[0].hex, '#8E1B2C') < 3, 'spot palette is the red region');
+  await page.fill('.spot-edit input', 'Red velvet test wall');
   const pal = await page.evaluate(() => window.CWApp.state.analyze.palette.map((p) => ({ hex: p.hex, share: p.share, key: p.key })));
   console.log('palette:', JSON.stringify(pal));
   assert.ok(pal.some((p) => dE(p.hex, '#0F5E46') < 3 && Math.abs(p.share - 0.6) < 0.05), 'emerald at about 60%');
@@ -89,6 +123,12 @@ function dE(a, b) { return C.deltaE2000(C.hexToLab(a), C.hexToLab(b)); }
   await page.fill('#f-q', 'Test Lobby');
   await page.waitForSelector('.card .badge.measured');
   console.log('saved measured space shows in the Index');
+  await page.goto(APP + '#spots');
+  await page.fill('#s-q', 'Red velvet test');
+  await page.waitForSelector('#spots-grid .spot-card .badge.measured');
+  const testChar = await page.textContent('#spots-grid .spot-card .badge.char');
+  assert.ok(testChar.includes('Monochromatic'), 'measured spot classified: ' + testChar);
+  console.log('measured spot shows in Photo spots as', testChar.trim());
 
   await page.goto(APP + '#analyze');
   await page.click('#exp-spaces');
@@ -102,6 +142,17 @@ function dE(a, b) { return C.deltaE2000(C.hexToLab(a), C.hexToLab(b)); }
   const row = csv.split('\n').find((l) => l.includes(',Lobby,Test lobby,'));
   assert.ok(row && /^USR-TEST-LOBBY-[A-Z-]*-LOB-M1,USR-TEST-LOBBY-[A-Z-]*,Lobby,Test lobby,,Type default,100,/.test(row), 'exported row: ' + row);
   console.log('csv ok:', head);
+  await page.click('#exp-swatches');
+  await page.waitForSelector('dialog#export[open]');
+  const sw = await page.inputValue('#x-text');
+  assert.ok(sw.startsWith('Swatch_ID,Space_ID,Spot_ID,Rank,Hex,Color_Name,Shade,Material,Finish,Share_Pct,'), sw.split('\n')[0]);
+  assert.ok(/-SPM1-C1,.*-LOB-M1,USR-[A-Z-]*-SPM1,1,#/.test(sw), 'spot swatch row exported');
+  await page.click('#x-close');
+  await page.click('#exp-spots');
+  await page.waitForSelector('dialog#export[open]');
+  const spc = await page.inputValue('#x-text');
+  assert.ok(spc.includes('Red velvet test wall'), 'spots export has the measured spot');
+  await page.click('#x-close');
   console.log('csv row:', row.slice(0, 120));
 
   await page.goto(APP + '#barcode');

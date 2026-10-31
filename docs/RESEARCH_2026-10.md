@@ -87,3 +87,8 @@ Run at most four agents so the 200-search cap goes further, about three searches
 4. Rights (about 30): confirm the leads above with primary or law-firm sources.
 
 If the hosts listed at the top are allowed in the environment's network settings, agents can read full pages and quote them directly instead of from excerpts.
+
+## 7. Addendum (later on Oct 31): palette games and next-pass focus
+
+- **The Tom Cruise palette clip:** coverage found at Upworthy ([article](https://www.upworthy.com/tom-cruise-had-to-guess-movies-based-purely-on-color-palettes-he-nailed-every-single-one/?nb=1)); the original interview video and how many palettes were shown were not verified. Counterpoint on how well people read color cues: [University of Missouri](https://engineering.missouri.edu/early-study-finds-viewers-may-not-pick-up-on-mathematical-analytical-color-cues).
+- **Next pass focus (proposed, not run):** public and liminal photo spots per Wave 1 hotel (murals, corridor carpets, elevator lobbies and doors, public restrooms, pre-function foyers), marble types, and the Lafayette's greens and marbles, which the founder flagged from photos.

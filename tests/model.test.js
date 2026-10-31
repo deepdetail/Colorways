@@ -100,3 +100,35 @@ test('coverage lowers search prominence for a color that only covers part of a s
   const t = [{ hex: '#C9919A' }];
   assert.ok(M.scoreHotel(full, t).score > M.scoreHotel(part, t).score);
 });
+
+test('color character: real seed scenes land where a designer would put them', () => {
+  const ch = (cols) => M.colorCharacter(cols).character;
+  // Post Oak Bloom & Bee: pink plaster, pink velvet, purple pastel
+  assert.strictEqual(ch([{ hex: '#EBC6CF', share: 45 }, { hex: '#D98EA3', share: 30 }, { hex: '#C9AFD6', share: 25 }]), 'Monochromatic');
+  // Noelle columns: pink and green marble
+  assert.strictEqual(ch([{ hex: '#E5BFC3', share: 55 }, { hex: '#4F7461', share: 45 }]), 'Two-tone');
+  // Post Oak lobby: Calacatta and ebony
+  assert.strictEqual(ch([{ hex: '#EEEBE6', share: 60 }, { hex: '#2B2522', share: 40 }]), 'Tonal neutral');
+  // Jewel box: emerald, sapphire, ruby, brass
+  assert.strictEqual(ch([{ hex: '#1E7A55', share: 30 }, { hex: '#0F52BA', share: 30 }, { hex: '#A51C30', share: 20 }, { hex: '#C9A447', share: 20 }]), 'Rich multicolor');
+  // Fontainebleau carpet: dove grey with two blues reads as a two-tone pattern
+  assert.strictEqual(ch([{ hex: '#B9B7B2', share: 40 }, { hex: '#4F78A8', share: 35 }, { hex: '#8EA9C8', share: 25 }]), 'Two-tone');
+  // Blue dominates, with gray and cream around it
+  assert.strictEqual(ch([{ hex: '#4F78A8', share: 55 }, { hex: '#B9B7B2', share: 25 }, { hex: '#F3E9D2', share: 20 }]), 'Dominant color');
+  assert.strictEqual(M.colorCharacter([]), null);
+});
+
+test('many greens stay one family but get distinct shade names', () => {
+  const shades = { Green: [['Sage', '#9CAF88'], ['Emerald', '#1E7A55'], ['Forest', '#224F33'], ['Mint', '#A8DCC0']] };
+  const C = require('../app/js/color.js');
+  const names = ['#9AAD86', '#1F7B56', '#21502F', '#A9DBBF'].map((h) => C.nearestShade(C.hexToLab(h), C.familyOfHex(h), shades).name);
+  assert.deepStrictEqual(names, ['Sage', 'Emerald', 'Forest', 'Mint']);
+  assert.strictEqual(M.colorCharacter([{ hex: '#9CAF88', share: 25 }, { hex: '#1E7A55', share: 25 }, { hex: '#224F33', share: 25 }, { hex: '#A8DCC0', share: 25 }]).character, 'Monochromatic');
+});
+
+test('archetype match finds the brass and ivory motif', () => {
+  const arch = [{ name: 'Gilded Classic', hexes: ['#C9A447', '#F3E9D2'] }, { name: 'Coastal Light', hexes: ['#7FD6D2', '#1F2A44'] }];
+  const m = M.archetypeMatch(['#C8A54A', '#F2E8D0', '#202020'], arch);
+  assert.strictEqual(m.name, 'Gilded Classic');
+  assert.ok(m.score > 0.85);
+});

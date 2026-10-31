@@ -37,6 +37,9 @@ class TestColumnsMatchApp(unittest.TestCase):
     def test_swatches(self):
         self.assertEqual(js_array("SWATCH_COLS"), self.inputs(build.SWATCH_COLS))
 
+    def test_spots(self):
+        self.assertEqual(js_array("SPOT_COLS"), self.inputs(build.SPOT_COLS))
+
 
 class TestColorParity(unittest.TestCase):
     def test_reference_families(self):
@@ -55,6 +58,37 @@ class TestColorParity(unittest.TestCase):
             py = colorlib.hex_to_lab(hx)
             self.assertLess(max(abs(a - b) for a, b in zip(lab, py)), 1e-9, hx)
             self.assertEqual(fam, colorlib.family_of_hex(hx), hx)
+
+
+class TestShadeAndCharacterParity(unittest.TestCase):
+    def setUp(self):
+        self.vocab = json.loads((ROOT / "data" / "vocab.json").read_text())
+
+    def test_every_shade_sits_in_its_family(self):
+        for fam, lst in self.vocab["shades"].items():
+            for name, hx in lst:
+                self.assertEqual(colorlib.family_of_hex(hx), fam, name)
+
+    def test_js_and_python_agree(self):
+        rnd = random.Random(7)
+        hexes = ["#%06X" % rnd.randrange(0, 0x1000000) for _ in range(800)]
+        palettes = [[("#%06X" % rnd.randrange(0, 0x1000000), rnd.choice([5, 10, 15, 20, 25, 30, 40, 50]))
+                     for _ in range(rnd.randint(1, 6))] for _ in range(400)]
+        payload = {"hexes": hexes, "palettes": palettes, "shades": self.vocab["shades"]}
+        js = subprocess.run(
+            ["node", "-e", "const C=require('./app/js/color.js'),M=require('./app/js/model.js');"
+             "const d=JSON.parse(require('fs').readFileSync(0,'utf8'));"
+             "const sh=d.hexes.map(h=>{const l=C.hexToLab(h);return C.nearestShade(l,C.familyOfLab(l),d.shades).name;});"
+             "const ch=d.palettes.map(p=>{const r=M.colorCharacter(p.map(([hex,share])=>({hex,share})));return [r.character,r.topFamily];});"
+             "console.log(JSON.stringify({sh,ch}))"],
+            input=json.dumps(payload), capture_output=True, text=True, check=True, cwd=ROOT)
+        out = json.loads(js.stdout)
+        for hx, name in zip(hexes, out["sh"]):
+            lab = colorlib.hex_to_lab(hx)
+            self.assertEqual(name, colorlib.nearest_shade(lab, colorlib.family_lch(*colorlib.lab_to_lch(lab)), self.vocab["shades"])[0], hx)
+        for pal, (ch, top) in zip(palettes, out["ch"]):
+            py = colorlib.color_character(pal)
+            self.assertEqual((ch, top), (py["character"], py["top_family"]), pal)
 
 
 class TestSeed(unittest.TestCase):
