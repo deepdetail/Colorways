@@ -195,6 +195,21 @@
   </main>
 
   <dialog id="detail" aria-labelledby="d-title"></dialog>
+  <dialog id="export" aria-labelledby="x-title">
+    <div class="d-head">
+      <h2 id="x-title">Export</h2>
+      <p class="muted small-print" id="x-hint">Download the file, or copy the text and paste it into the workbook.</p>
+      <button type="button" class="btn ghost d-close" id="x-close">Close</button>
+    </div>
+    <div class="d-body">
+      <textarea id="x-text" readonly rows="12" spellcheck="false"></textarea>
+      <img id="x-img" alt="" hidden>
+      <div class="row">
+        <button type="button" class="btn primary" id="x-download">Download</button>
+        <button type="button" class="btn" id="x-copy">Copy to clipboard</button>
+      </div>
+    </div>
+  </dialog>
   <div id="tooltip" class="tooltip" role="tooltip" hidden></div>
   <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
 

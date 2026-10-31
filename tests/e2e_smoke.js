@@ -91,8 +91,12 @@ function dE(a, b) { return C.deltaE2000(C.hexToLab(a), C.hexToLab(b)); }
   console.log('saved measured space shows in the Index');
 
   await page.goto(APP + '#analyze');
-  const [dl] = await Promise.all([page.waitForEvent('download'), page.click('#exp-spaces')]);
+  await page.click('#exp-spaces');
+  await page.waitForSelector('dialog#export[open]');
+  const [dl] = await Promise.all([page.waitForEvent('download'), page.click('#x-download')]);
   const csv = fs.readFileSync(await dl.path(), 'utf8');
+  assert.strictEqual(await page.inputValue('#x-text'), csv, 'panel text equals the downloaded file');
+  await page.click('#x-close');
   const head = csv.split('\n')[0];
   assert.ok(head.startsWith('Space_ID,Hotel_ID,Space_Type,Venue,Area_sqft,Area_Source,Coverage_Pct,'), head);
   const row = csv.split('\n').find((l) => l.includes(',Lobby,Test lobby,'));

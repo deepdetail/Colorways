@@ -91,6 +91,43 @@
     setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500);
   }
 
+  var exportState = null;
+
+  function offer(title, name, content, type, hint) {
+    var d = $('#export');
+    exportState = { name: name, content: content, type: type };
+    $('#x-title').textContent = title;
+    $('#x-hint').textContent = hint || 'Download the file, or copy the text and paste it into the workbook.';
+    var isImage = content instanceof Blob;
+    $('#x-text').hidden = isImage;
+    $('#x-copy').hidden = isImage;
+    $('#x-img').hidden = !isImage;
+    if (isImage) {
+      $('#x-img').src = URL.createObjectURL(content);
+      $('#x-img').alt = title;
+    } else {
+      $('#x-text').value = content;
+    }
+    d.showModal();
+  }
+
+  function copyText(text) {
+    function fallback() {
+      var ta = $('#x-text');
+      ta.hidden = false;
+      ta.focus();
+      ta.select();
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+      toast(ok ? 'Copied.' : 'Select the text and copy it with your keyboard.');
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { toast('Copied.'); }, fallback);
+    } else {
+      fallback();
+    }
+  }
+
   function csv(rows) {
     return rows.map(function (r) {
       return r.map(function (v) {
@@ -865,7 +902,7 @@
   function exportHotels() {
     var rows = [HOTEL_COLS];
     S.user.hotels.forEach(function (h) { rows.push([h.id, h.name, h.brand || '', h.city || '', h.state || '']); });
-    download('colorways-hotels.csv', csv(rows), 'text/csv');
+    offer('Hotels CSV', 'colorways-hotels.csv', csv(rows), 'text/csv');
   }
 
   function exportSpaces() {
@@ -878,7 +915,7 @@
           s.photoOp == null ? '' : s.photoOp, s.confidence || '', s.evidence || '', s.captureStatus || '', s.notes || '']);
       });
     });
-    download('colorways-spaces.csv', csv(rows), 'text/csv');
+    offer('Spaces CSV', 'colorways-spaces.csv', csv(rows), 'text/csv');
   }
 
   function exportSwatches() {
@@ -890,7 +927,7 @@
         });
       });
     });
-    download('colorways-swatches.csv', csv(rows), 'text/csv');
+    offer('Swatches CSV', 'colorways-swatches.csv', csv(rows), 'text/csv');
   }
 
   function importJson(file) {
@@ -1068,11 +1105,25 @@
     $('#exp-hotels').addEventListener('click', exportHotels);
     $('#exp-spaces').addEventListener('click', exportSpaces);
     $('#exp-swatches').addEventListener('click', exportSwatches);
-    $('#exp-json').addEventListener('click', function () { download('colorways-backup.json', JSON.stringify(S.user, null, 2), 'application/json'); });
+    $('#exp-json').addEventListener('click', function () {
+      offer('JSON backup', 'colorways-backup.json', JSON.stringify(S.user, null, 2), 'application/json',
+        'Keep this backup somewhere safe; Import JSON restores it in any browser.');
+    });
     $('#imp-json').addEventListener('change', function (e) { if (e.target.files[0]) importJson(e.target.files[0]); e.target.value = ''; });
+    var clearArmed = null;
     $('#clear-user').addEventListener('click', function () {
-      if (!window.confirm('Delete all measured data saved in this browser? Export a JSON backup first if you want to keep it.')) return;
+      var btn = $('#clear-user');
+      if (!clearArmed) {
+        btn.textContent = 'Click again to delete everything';
+        toast('This deletes all measured data saved in this browser. Export a JSON backup first if you want to keep it.');
+        clearArmed = setTimeout(function () { clearArmed = null; btn.textContent = 'Clear my data'; }, 5000);
+        return;
+      }
+      clearTimeout(clearArmed);
+      clearArmed = null;
+      btn.textContent = 'Clear my data';
       S.user = { hotels: [] }; saveUser(); refreshData(); populateHotelSelects(); renderIndex(); renderSpaceFilter(); renderUserSummary();
+      toast('Cleared.');
     });
 
     $('#bc-file').addEventListener('change', function (e) {
@@ -1081,8 +1132,17 @@
     });
     $('#bc-run').addEventListener('click', runBarcode);
     $('#bc-download').addEventListener('click', function () {
-      $('#bc-canvas').toBlob(function (b) { if (b) download('walkthrough-barcode.png', b); }, 'image/png');
+      $('#bc-canvas').toBlob(function (b) {
+        if (b) offer('Walkthrough barcode', 'walkthrough-barcode.png', b, 'image/png',
+          'Download the PNG. If downloads are blocked here, press and hold (or right-click) the image to save it.');
+      }, 'image/png');
     });
+    $('#x-close').addEventListener('click', function () { $('#export').close(); });
+    $('#x-download').addEventListener('click', function () {
+      if (exportState) download(exportState.name, exportState.content, exportState.type);
+    });
+    $('#x-copy').addEventListener('click', function () { if (exportState) copyText(exportState.content); });
+    $('#export').addEventListener('click', function (e) { if (e.target === $('#export')) $('#export').close(); });
     $('#bc-save').addEventListener('click', function () {
       var id = $('#bc-hotel').value;
       if (!S.barcode) { toast('Generate a barcode first.'); return; }
