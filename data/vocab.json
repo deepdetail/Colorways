@@ -1,0 +1,220 @@
+{
+  "_note": "Controlled vocabularies shared by the web app and the Excel workbook. Space-type sqft and dwell values are planning assumptions (labeled 'Type default'), not facts about any hotel. Edit here, then run: python3 tools/build.py",
+  "spaceTypes": [
+    { "name": "Arrival & Facade", "code": "ARR", "order": 1, "sqft": 3000, "dwell": 0.1, "hint": "Porte-cochere, entrance, exterior read from the street" },
+    { "name": "Lobby", "code": "LOB", "order": 2, "sqft": 5000, "dwell": 0.3, "hint": "Check-in hall, living room" },
+    { "name": "Lobby Bar", "code": "LBR", "order": 3, "sqft": 1500, "dwell": 0.75, "hint": "Bar that opens onto the lobby" },
+    { "name": "Corridor & Elevator", "code": "COR", "order": 4, "sqft": 1500, "dwell": 0.1, "hint": "Guest floor corridors, elevator cabs and lobbies" },
+    { "name": "Guest Room", "code": "ROOM", "order": 5, "sqft": 450, "dwell": 9.0, "hint": "Standard king or queen room" },
+    { "name": "Suite", "code": "STE", "order": 6, "sqft": 1100, "dwell": 9.0, "hint": "Signature or standard suite" },
+    { "name": "Bathroom", "code": "BATH", "order": 7, "sqft": 90, "dwell": 1.0, "hint": "Guest bathroom" },
+    { "name": "Cafe & Breakfast", "code": "CAFE", "order": 8, "sqft": 1500, "dwell": 0.5, "hint": "Coffee bar, breakfast room" },
+    { "name": "Pool", "code": "POOL", "order": 9, "sqft": 8000, "dwell": 2.0, "hint": "Pool deck, cabanas, swim club" },
+    { "name": "Garden & Grounds", "code": "GRD", "order": 10, "sqft": 20000, "dwell": 0.75, "hint": "Courtyards, lawns, terraces" },
+    { "name": "Spa", "code": "SPA", "order": 11, "sqft": 8000, "dwell": 1.5, "hint": "Treatment rooms, relaxation lounge, thermal suite" },
+    { "name": "Fitness", "code": "FIT", "order": 12, "sqft": 2500, "dwell": 0.75, "hint": "Gym, studio" },
+    { "name": "Signature Restaurant", "code": "REST", "order": 13, "sqft": 4000, "dwell": 1.5, "hint": "Main dinner restaurant" },
+    { "name": "Bar & Lounge", "code": "BAR", "order": 14, "sqft": 2000, "dwell": 1.0, "hint": "Cocktail bar, speakeasy, lounge (not the lobby bar)" },
+    { "name": "Rooftop", "code": "ROOF", "order": 15, "sqft": 4000, "dwell": 1.0, "hint": "Rooftop bar or terrace" },
+    { "name": "Casino", "code": "CAS", "order": 16, "sqft": 60000, "dwell": 2.0, "hint": "Gaming floor" },
+    { "name": "Nightclub", "code": "CLUB", "order": 17, "sqft": 10000, "dwell": 2.0, "hint": "Club, live music room" },
+    { "name": "Ballroom & Events", "code": "EVT", "order": 18, "sqft": 15000, "dwell": 0.25, "hint": "Ballrooms, pre-function, meeting rooms" },
+    { "name": "Retail & Other", "code": "OTH", "order": 19, "sqft": 1500, "dwell": 0.25, "hint": "Shops, library, game room, anything else" }
+  ],
+  "defaultSpaces": [
+    "Arrival & Facade",
+    "Lobby",
+    "Lobby Bar",
+    "Guest Room",
+    "Bathroom",
+    "Pool",
+    "Spa",
+    "Signature Restaurant",
+    "Bar & Lounge"
+  ],
+  "styles": [
+    "Art Deco",
+    "Art Nouveau",
+    "Beaux-Arts",
+    "Neoclassical",
+    "Gilded Age / Victorian",
+    "Tudor / Jacobean Revival",
+    "Arts & Crafts",
+    "Spanish Colonial / Mediterranean Revival",
+    "Mid-Century Modern",
+    "Hollywood Regency",
+    "Brutalist",
+    "Postmodern",
+    "Modern Minimalist",
+    "Contemporary",
+    "Contemporary Glam",
+    "Industrial",
+    "Bohemian",
+    "Coastal",
+    "Maximalist",
+    "Japandi / Scandinavian",
+    "Desert Modern / Southwestern",
+    "Southern Traditional",
+    "Retro / Pop",
+    "Tropical",
+    "Rustic Lodge",
+    "Western / Ranch",
+    "Kitsch / Themed",
+    "Eclectic"
+  ],
+  "eras": [
+    "Gilded Age (1870-1900)",
+    "Belle Epoque / Edwardian (1900-1915)",
+    "Jazz Age (1920s)",
+    "Streamline / Deco (1930s)",
+    "Postwar (1940s-50s)",
+    "Space Age / Mid-Century (1950s-60s)",
+    "1970s",
+    "1980s",
+    "1990s",
+    "2000s",
+    "2010s",
+    "2020s Contemporary",
+    "Timeless / Classical"
+  ],
+  "genres": [
+    "Old Hollywood Glamour",
+    "Vegas Spectacle",
+    "Southern Grand Dame",
+    "Gilded Mansion",
+    "Mountain Lodge",
+    "Coastal Surf",
+    "Desert Retreat",
+    "Urban Luxe",
+    "Jazz Age Speakeasy",
+    "Euro Chic",
+    "Tropical Escape",
+    "Nightlife & Party",
+    "Corporate Modern",
+    "Art & Gallery",
+    "Literary & Library",
+    "Country Club",
+    "Western & Ranch",
+    "Music City / Rock and Roll",
+    "Romantic Hideaway",
+    "Wellness Sanctuary",
+    "Family Resort",
+    "Whimsical Storybook",
+    "Hip Boutique",
+    "Historic Landmark",
+    "Roadside Americana"
+  ],
+  "moods": [
+    "Moody",
+    "Airy",
+    "Cozy",
+    "Dramatic",
+    "Playful",
+    "Serene",
+    "Opulent",
+    "Romantic",
+    "Energetic",
+    "Minimal",
+    "Sultry",
+    "Sunny",
+    "Earthy",
+    "Fresh",
+    "Nostalgic",
+    "Sophisticated",
+    "Whimsical",
+    "Calm"
+  ],
+  "lighting": [
+    "Natural daylight",
+    "Golden hour",
+    "Warm artificial",
+    "Cool artificial",
+    "Mixed",
+    "Low / moody",
+    "Neon / colored"
+  ],
+  "colorSources": [
+    {
+      "name": "Measured",
+      "meaning": "Extracted from a photo or video you own or are licensed to analyze (Colorways Analyze tab or Barcode tab). Best evidence."
+    },
+    {
+      "name": "Described",
+      "meaning": "Hex approximated from a cited written description, e.g. 'emerald velvet banquettes'. Treat the hex as an estimate of a real, sourced color."
+    },
+    {
+      "name": "Estimated",
+      "meaning": "Placeholder judgment with no specific source. Replace before publishing."
+    }
+  ],
+  "confidence": [
+    "High",
+    "Medium",
+    "Low"
+  ],
+  "regions": [
+    "West",
+    "Southwest",
+    "Mountain",
+    "Texas",
+    "Midwest",
+    "Southeast",
+    "Northeast",
+    "Northwest",
+    "Hawaii"
+  ],
+  "hotelStatus": [
+    "Open",
+    "Renovating",
+    "Rebranding",
+    "Closed",
+    "Unverified"
+  ],
+  "researchStatus": [
+    "Not started",
+    "Desk researched (partial)",
+    "Desk researched",
+    "Shoot planned",
+    "Shot",
+    "Measured"
+  ],
+  "areaSources": [
+    "Published",
+    "Measured",
+    "Estimated",
+    "Type default"
+  ],
+  "captureStatus": [
+    "Not shot",
+    "Planned",
+    "Shot",
+    "Analyzed"
+  ],
+  "keyReasons": [
+    "Dominant",
+    "Photo-op",
+    "Accent",
+    "Signature material"
+  ],
+  "mediaTypes": [
+    "Magazine editorial",
+    "Fashion shoot",
+    "Film / TV",
+    "Album / music",
+    "Hotel press kit",
+    "Destination promo",
+    "Own shoot",
+    "Social post"
+  ],
+  "rightsStatus": [
+    "Reference only (link)",
+    "Permission requested",
+    "Licensed",
+    "Owned"
+  ],
+  "waves": [
+    "Wave 1 (founder list)",
+    "Wave 2 (candidate)",
+    "Backlog"
+  ]
+}

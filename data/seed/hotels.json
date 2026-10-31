@@ -1,0 +1,2520 @@
+{
+  "_note": "Colorways seed dataset. Desk research from 2026-10-31. Quotes come from search-result excerpts of the cited pages (pages could not be opened from the research environment), so spot-check each quote on the page before publishing. Hex values marked Described are Colorways approximations of colors named in the cited text, checked to fall in the named color family. Nothing here is a measurement yet.",
+  "hotels": [
+    {
+      "id": "LV-FONT",
+      "name": "Fontainebleau Las Vegas",
+      "brand": "Independent (Fontainebleau Development)",
+      "city": "Las Vegas",
+      "state": "NV",
+      "region": "West",
+      "status": "Open",
+      "opened": "2023",
+      "redesign": "",
+      "architect": "Carlos Zapata Studio (exterior)",
+      "interiorDesigner": "David Collins Studio (lobby, lobby bar, VIP check-in, suites, steakhouse); Rockwell Group (restaurants, bars, LIV, casino); Lissoni & Partners (spa); Jeffrey Beers International (pool, meetings)",
+      "primaryStyle": "Contemporary Glam",
+      "secondaryStyle": "Mid-Century Modern",
+      "era": "Space Age / Mid-Century (1950s-60s)",
+      "genre": "Vegas Spectacle",
+      "palette": "Blue and silver water tones with pops of coral; brass and gold accents. Pitched as the newest and bluest resort on the Strip.",
+      "keyFamilies": [
+        "Blue",
+        "Navy",
+        "Yellow & Gold"
+      ],
+      "photoOp": "Domed lobby with lit glass torsion columns; Urs Fischer's gold 'Lovers #3' in the South Lobby",
+      "media": "AP launch story (Dec 2023); Galerie Hotel of the Week; Hospitality Design best U.S. openings 2023; The Real Deal cover story (Apr 2026)",
+      "rooms": 3644,
+      "stdRoomSqft": 488,
+      "meetingSqft": 550000,
+      "distinctiveness": 5,
+      "researchStatus": "Desk researched (partial)",
+      "wave": "Wave 1 (founder list)",
+      "notes": "Rooms 3,644 vs about 3,700 in a 2022 release. Accents reported as silver and coral in trade press, gold in consumer reviews. Lobby colors blend a space-specific quote (brass) with the hotel-wide palette (inferred).",
+      "sources": [
+        {
+          "label": "FOX5 / AP: newest, bluest resort (Dec 2023)",
+          "url": "https://www.fox5vegas.com/2023/12/13/newest-bluest-resort-las-vegas-strip-aims-bring-miami-beach-vibe-southern-nevada/"
+        },
+        {
+          "label": "Hospitality Design: palette of blue and silver with pops of coral",
+          "url": "https://hospitalitydesign.com/news/fontainebleau-las-vegas-resort/153771"
+        },
+        {
+          "label": "Sleeper: blue and silver water tones with coral-pink",
+          "url": "https://sleepermagazine.com/?p=87857"
+        },
+        {
+          "label": "David Collins Studio project page",
+          "url": "https://www.davidcollins.studio/project/fontainebleau-las-vegas"
+        },
+        {
+          "label": "Hotel Management: design partners",
+          "url": "https://www.hotelmanagement.net/design/architecture-design-partners-named-fontainebleau-las-vegas"
+        },
+        {
+          "label": "CLAD: Lapis spa, 55,000 sq ft",
+          "url": "https://www.cladglobal.com/CLADnews/architecture-design/Fontainebleau-Las-Vegas-unveils-55000sq-ft-wellness-retreat-inspired-by-precious-lapis-lazuli-stone/352363"
+        },
+        {
+          "label": "Meeting Spotlight: guest room carpet",
+          "url": "https://www.meetingspotlight.com/hotels/fontainebleau-las-vegas-reveals-details-architecture-design-partners"
+        },
+        {
+          "label": "FOX5: residency announced (Oct 2026)",
+          "url": "https://www.fox5vegas.com/2026/10/26/doobie-brothers-announce-fontainebleau-las-vegas-residency/"
+        }
+      ],
+      "spaces": [
+        {
+          "type": "Arrival & Facade",
+          "venue": "67-story blue glass tower",
+          "coverage": 90,
+          "photoOp": 4,
+          "confidence": "Medium",
+          "evidence": "'67-storey blue glass building rising from the Vegas Strip'",
+          "url": "https://www.outthere.travel/?p=65381",
+          "colors": [
+            {
+              "hex": "#4A7FB0",
+              "name": "blue glass",
+              "share": 100,
+              "key": true,
+              "reason": "Signature material",
+              "source": "Described"
+            }
+          ]
+        },
+        {
+          "type": "Lobby",
+          "venue": "Domed lobby",
+          "coverage": 60,
+          "photoOp": 5,
+          "confidence": "Low",
+          "evidence": "Dome 'adorned with brass trim'; hotel-wide 'palette of blue and silver tones with pops of coral' (applied here, inferred)",
+          "url": "https://enr.com/articles/59581-residential-hospitality-merit-fontainebleau-las-vegas",
+          "colors": [
+            {
+              "hex": "#C9A447",
+              "name": "brass trim",
+              "share": 40,
+              "key": true,
+              "reason": "Signature material",
+              "source": "Described"
+            },
+            {
+              "hex": "#4F78A8",
+              "name": "blue (hotel-wide palette)",
+              "share": 30,
+              "source": "Described"
+            },
+            {
+              "hex": "#C0C2C4",
+              "name": "silver (hotel-wide palette)",
+              "share": 20,
+              "source": "Described"
+            },
+            {
+              "hex": "#F2856D",
+              "name": "coral (hotel-wide palette)",
+              "share": 10,
+              "reason": "Accent",
+              "source": "Described"
+            }
+          ]
+        },
+        {
+          "type": "Lobby",
+          "venue": "VIP check-in",
+          "coverage": 80,
+          "photoOp": 4,
+          "confidence": "Medium",
+          "evidence": "'navy-blue moire walls, Calacatta marble desks, ripple-textured glass screens'",
+          "url": "https://www.davidcollins.studio/project/fontainebleau-las-vegas",
+          "colors": [
+            {
+              "hex": "#1E2C4F",
+              "name": "navy-blue moire walls",
+              "share": 60,
+              "key": true,
+              "reason": "Signature material",
+              "source": "Described"
+            },
+            {
+              "hex": "#EEEBE6",
+              "name": "Calacatta marble desks",
+              "share": 40,
+              "source": "Described"
+            }
+          ]
+        },
+        {
+          "type": "Signature Restaurant",
+          "venue": "Don's Prime (steakhouse)",
+          "coverage": 30,
+          "photoOp": 3,
+          "confidence": "Low",
+          "evidence": "Stone supplier lists Calacatta Oro for the steakhouse floor (paraphrase)",
+          "url": "https://www.margraf.it/en/projects/fontainebleau-casino-las-vegas/",
+          "colors": [
+            {
+              "hex": "#F0EADF",
+              "name": "Calacatta Oro marble",
+              "share": 75,
+              "source": "Described"
+            },
+            {
+              "hex": "#C8A96A",
+              "name": "gold veining",
+              "share": 25,
+              "source": "Described"
+            }
+          ]
+        },
+        {
+          "type": "Guest Room",
+          "venue": "Bleau King",
+          "coverage": 40,
+          "sqft": 488,
+          "sqftSource": "Published",
+          "photoOp": 3,
+          "confidence": "Medium",
+          "evidence": "Carpet in a 'linear, art-deco pattern of dove-grey and shades of blue'",
+          "url": "https://www.meetingspotlight.com/hotels/fontainebleau-las-vegas-reveals-details-architecture-design-partners",
+          "colors": [
+            {
+              "hex": "#B9B7B2",
+              "name": "dove-grey carpet",
+              "share": 40,
+              "source": "Described"
+            },
+            {
+              "hex": "#4F78A8",
+              "name": "blue carpet",
+              "share": 35,
+              "source": "Described"
+            },
+            {
+              "hex": "#8EA9C8",
+              "name": "light blue carpet",
+              "share": 25,
+              "source": "Described"
+            }
+          ]
+        },
+        {
+          "type": "Spa",
+          "venue": "Lapis Spa & Wellness",
+          "coverage": 50,
+          "sqft": 55000,
+          "sqftSource": "Published",
+          "photoOp": 4,
+          "confidence": "Low",
+          "evidence": "'inspired by precious lapis lazuli stone' (inspiration, not a confirmed surface color)",
+          "url": "https://www.cladglobal.com/CLADnews/architecture-design/Fontainebleau-Las-Vegas-unveils-55000sq-ft-wellness-retreat-inspired-by-precious-lapis-lazuli-stone/352363",
+          "colors": [
+            {
+              "hex": "#26619C",
+              "name": "lapis lazuli",
+              "share": 100,
+              "key": true,
+              "reason": "Signature material",
+              "source": "Described"
+            }
+          ]
+        },
+        {
+          "type": "Pool",
+          "venue": "Oasis Pool Deck (6 acres, 7 pools)",
+          "sqft": 261360,
+          "sqftSource": "Published",
+          "photoOp": 4,
+          "confidence": "Low",
+          "evidence": "Pool deck of 6 acres with 7 pools (converted to sq ft); colors not found",
+          "url": "https://www.hotelmanagement.net/design/architecture-design-partners-named-fontainebleau-las-vegas",
+          "colors": []
+        },
+        {
+          "type": "Ballroom & Events",
+          "venue": "Royal Ballroom",
+          "sqft": 105264,
+          "sqftSource": "Published",
+          "confidence": "Low",
+          "evidence": "Largest ballroom 105,264 sq ft",
+          "url": "https://www.bizbash.com/corporate-events/long-awaited-fontainebleau-las-vegas-set-to-debut-in-december",
+          "colors": []
+        },
+        {
+          "type": "Nightclub",
+          "venue": "LIV / LIV Beach",
+          "confidence": "Low",
+          "evidence": "Rockwell Group; colors not found",
+          "colors": []
+        },
+        {
+          "type": "Casino",
+          "venue": "Gaming floor",
+          "confidence": "Low",
+          "evidence": "Rockwell Group; colors not found",
+          "colors": []
+        }
+      ]
+    },
+    {
+      "id": "LV-VIRG",
+      "name": "Virgin Hotels Las Vegas",
+      "brand": "Curio Collection by Hilton",
+      "city": "Las Vegas",
+      "state": "NV",
+      "region": "West",
+      "status": "Open",
+      "opened": "",
+      "redesign": "Hard Rock converted to Virgin (dates not confirmed)",
+      "architect": "",
+      "interiorDesigner": "",
+      "primaryStyle": "",
+      "secondaryStyle": "",
+      "era": "",
+      "genre": "",
+      "palette": "",
+      "keyFamilies": [],
+      "photoOp": "Kassi Beach Club (five-acre pool area)",
+      "media": "AAA Four Diamond cited in 2026 releases",
+      "rooms": null,
+      "stdRoomSqft": null,
+      "meetingSqft": null,
+      "distinctiveness": null,
+      "researchStatus": "Desk researched (partial)",
+      "wave": "Wave 1 (founder list)",
+      "notes": "Name still used in Mar to Oct 2026 releases. Casino operations moved from Mohegan to Virgin (2024 to early 2025, sources conflict). Room count (1,504) only from low-reliability copies. Designers and palette not found.",
+      "sources": [
+        {
+          "label": "Hilton: Curio Collection debut",
+          "url": "https://stories.hilton.com/releases/virgin-hotels-las-vegas-curio-collection-debuts"
+        },
+        {
+          "label": "Nevada Business: 2026 pool season",
+          "url": "https://nevadabusiness.com/2026/03/virgin-hotels-las-vegas-kicks-off-pool-season-on-march-24-with-local-friendly-pricing-and-the-return-of-celebrity-hotspot-kassi-beach-club/"
+        },
+        {
+          "label": "FOX5: casino operations (May 2024)",
+          "url": "https://www.fox5vegas.com/2024/05/07/virgin-hotels-take-over-casino-operations-mohegan-las-vegas-resort"
+        }
+      ],
+      "spaces": [
+        {
+          "type": "Pool",
+          "venue": "Kassi Beach Club",
+          "sqft": 217800,
+          "sqftSource": "Published",
+          "confidence": "Low",
+          "evidence": "Five-acre pool area (converted to sq ft)",
+          "url": "https://nevadabusiness.com/2026/03/virgin-hotels-las-vegas-kicks-off-pool-season-on-march-24-with-local-friendly-pricing-and-the-return-of-celebrity-hotspot-kassi-beach-club/",
+          "colors": []
+        },
+        {
+          "type": "Nightclub",
+          "venue": "24 Oxford (music venue)",
+          "confidence": "Low",
+          "evidence": "Formerly Hard Rock's Vinyl",
+          "url": "https://ggbnews.com/article/hard-rocks-vinyl-will-be-rebranded-as-virgins-24-oxford",
+          "colors": []
+        },
+        {
+          "type": "Casino",
+          "venue": "Casino floor",
+          "confidence": "Low",
+          "evidence": "",
+          "colors": []
+        }
+      ]
+    },
+    {
+      "id": "SD-LAFA",
+      "name": "The Lafayette Hotel & Swim Club",
+      "brand": "Independent (CH Projects)",
+      "city": "San Diego",
+      "state": "CA",
+      "region": "West",
+      "status": "Unverified",
+      "opened": "1946 (as Imig Manor)",
+      "redesign": "2023 (about $31M restoration)",
+      "architect": "Tucker Sadler (renovation)",
+      "interiorDesigner": "Post Company (Brooklyn)",
+      "primaryStyle": "",
+      "secondaryStyle": "",
+      "era": "Postwar (1940s-50s)",
+      "genre": "",
+      "palette": "Mahogany-lined bowling bar; themed outlets including a Mexican restaurant built around a relocated chapel.",
+      "keyFamilies": [
+        "Brown & Wood"
+      ],
+      "photoOp": "The Gutter bowling bar; Swim Club pool",
+      "media": "Hospitality Design; San Diego Magazine; Lodging",
+      "rooms": null,
+      "stdRoomSqft": null,
+      "meetingSqft": null,
+      "distinctiveness": 4,
+      "researchStatus": "Desk researched (partial)",
+      "wave": "Wave 1 (founder list)",
+      "notes": "Reopened July 2023; 2025-2026 status not verified. Official name (with or without '& Bungalows') not confirmed. Distinctiveness is provisional.",
+      "sources": [
+        {
+          "label": "KPBS: reopens after $31M renovation (Jul 2023)",
+          "url": "https://kpbs.org/news/local/2023/07/14/lafayette-hotel-club-reopens-31-million-renovation"
+        },
+        {
+          "label": "archup: CH Projects and Post Company redesign",
+          "url": "https://archup.net/hospitality-group-ch-projects-and-post-company-redesign-historic-lafayette-hotel-in-san-diego/"
+        }
+      ],
+      "spaces": [
+        {
+          "type": "Bar & Lounge",
+          "venue": "The Gutter (bowling bar)",
+          "coverage": 60,
+          "photoOp": 4,
+          "confidence": "Medium",
+          "evidence": "'vermouth-fueled, mahogany-lined escapist bowling alley, cocktail bar, and game room'",
+          "url": "https://whatnow.com/?p=147292",
+          "colors": [
+            {
+              "hex": "#4E2A1E",
+              "name": "mahogany paneling",
+              "share": 100,
+              "key": true,
+              "reason": "Signature material",
+              "source": "Described"
+            }
+          ]
+        },
+        {
+          "type": "Signature Restaurant",
+          "venue": "Quixote",
+          "confidence": "Low",
+          "evidence": "Built around a decommissioned chapel moved from Mexico (paraphrase)",
+          "url": "https://whatnow.com/?p=147292",
+          "colors": []
+        },
+        {
+          "type": "Pool",
+          "venue": "Swim Club",
+          "confidence": "Low",
+          "evidence": "Deck refurbished with reference to the original design (paraphrase)",
+          "url": "https://archup.net/hospitality-group-ch-projects-and-post-company-redesign-historic-lafayette-hotel-in-san-diego/",
+          "colors": []
+        }
+      ]
+    },
+    {
+      "id": "SD-ICSD",
+      "name": "InterContinental San Diego",
+      "brand": "InterContinental (IHG)",
+      "city": "San Diego",
+      "state": "CA",
+      "region": "West",
+      "status": "Unverified",
+      "opened": "2018",
+      "redesign": "",
+      "architect": "John Portman & Associates",
+      "interiorDesigner": "Linda Snyder Associates",
+      "primaryStyle": "Coastal",
+      "secondaryStyle": "",
+      "era": "2010s",
+      "genre": "",
+      "palette": "",
+      "keyFamilies": [],
+      "photoOp": "",
+      "media": "Luxe Source design feature",
+      "rooms": 400,
+      "stdRoomSqft": null,
+      "meetingSqft": null,
+      "distinctiveness": 2,
+      "researchStatus": "Desk researched (partial)",
+      "wave": "Wave 1 (founder list)",
+      "notes": "Opened September 2018 (not 2022). 18 vs 19 stories conflict. Venue names, palette and 2026 status not found. Distinctiveness inferred from the 'coastal' brief.",
+      "sources": [
+        {
+          "label": "IHG: opening release (2018)",
+          "url": "https://www.ihgplc.com/en/news-and-media/news-releases/2018/intercontinental-hotels-and-resorts-opens-newest-property-in-the-heart-of-downtown-san-diego"
+        },
+        {
+          "label": "Hospitality Design: coastal interiors by Linda Snyder Associates",
+          "url": "https://hospitalitydesign.com/news/intercontinental-expands-southern-california-footprint/70532"
+        }
+      ],
+      "spaces": []
+    },
+    {
+      "id": "SM-REGE",
+      "name": "Regent Santa Monica Beach",
+      "brand": "Regent Hotels & Resorts (IHG)",
+      "city": "Santa Monica",
+      "state": "CA",
+      "region": "West",
+      "status": "Unverified",
+      "opened": "1989 (as Loews Santa Monica Beach)",
+      "redesign": "2023 onward (about $150M conversion to Regent)",
+      "architect": "",
+      "interiorDesigner": "",
+      "primaryStyle": "Coastal",
+      "secondaryStyle": "",
+      "era": "2020s Contemporary",
+      "genre": "",
+      "palette": "",
+      "keyFamilies": [],
+      "photoOp": "",
+      "media": "SCMP Style; Indagare",
+      "rooms": null,
+      "stdRoomSqft": null,
+      "meetingSqft": null,
+      "distinctiveness": null,
+      "researchStatus": "Desk researched (partial)",
+      "wave": "Wave 1 (founder list)",
+      "notes": "Former Loews at 1700 Ocean Ave; billed as IHG's Americas flagship and Regent's U.S. return. Reopening date, designers, palette and room count (143 rooms + 24 suites, unverified) still to confirm.",
+      "sources": [
+        {
+          "label": "Hotel Dive: Regent Santa Monica flagship",
+          "url": "https://www.hoteldive.com/news/ihg-regent-santa-monica-flagship-opening/730260/"
+        },
+        {
+          "label": "Hotels: Loews to rebrand under Regent",
+          "url": "https://hotelsmag.com/news/loews-santa-monica-to-reopen-rebrand-under-ihgs-regent-brand/"
+        }
+      ],
+      "spaces": []
+    },
+    {
+      "id": "NSH-FS",
+      "name": "Four Seasons Hotel Nashville",
+      "brand": "Four Seasons",
+      "city": "Nashville",
+      "state": "TN",
+      "region": "Southeast",
+      "status": "Open",
+      "opened": "2022",
+      "redesign": "2026 (Bacco replaced Mimo; AvroKO)",
+      "architect": "Solomon Cordwell Buenz (SCB)",
+      "interiorDesigner": "Marzipan (hotel and public spaces); HOK (residences); AvroKO (Bacco)",
+      "primaryStyle": "Contemporary",
+      "secondaryStyle": "Industrial",
+      "era": "2020s Contemporary",
+      "genre": "Music City / Rock and Roll",
+      "palette": "Dark Tennessee walnut, leather and burnished metal, weathered steel; a neutral lobby mixed with blues and greens. Tower recalls a guitar's fretted neck.",
+      "keyFamilies": [
+        "Brown & Wood",
+        "Blue",
+        "Green"
+      ],
+      "photoOp": "7th-floor infinity pool deck with river and skyline views (inferred)",
+      "media": "Two MICHELIN Keys (2025); Daily Beast review (Gibson loaner guitars); NFocus walkthrough",
+      "rooms": 235,
+      "stdRoomSqft": 402,
+      "meetingSqft": 25330,
+      "distinctiveness": 2,
+      "researchStatus": "Desk researched (partial)",
+      "wave": "Wave 1 (founder list)",
+      "notes": "HOK's river-inspired blue, green and gray palette is documented for the residences; one outlet applies it to the hotel. Bacco's actual colors not found.",
+      "sources": [
+        {
+          "label": "Four Seasons press: hotel facts",
+          "url": "https://press.fourseasons.com/nashville/hotel-facts/"
+        },
+        {
+          "label": "Four Seasons press: architecture and design",
+          "url": "https://press.fourseasons.com/nashville/trending-now/architecture-and-design/"
+        },
+        {
+          "label": "Daily Beast: dark walnut throughout",
+          "url": "https://www.thedailybeast.com/the-nashville-four-seasons-sports-uptown-luxury-in-a-honky-tonk-town"
+        },
+        {
+          "label": "NFocus: step inside",
+          "url": "https://www.nfocusmagazine.com/people-places/step-inside-four-seasons-nashville/article_96cb5124-86e9-11ed-bc86-c774c4d0f6c0.html"
+        },
+        {
+          "label": "Four Seasons press: Bacco opening (2026)",
+          "url": "https://press.fourseasons.com/nashville/hotel-news/2026/bacco-restaurant-reservations-live/"
+        }
+      ],
+      "spaces": [
+        {
+          "type": "Arrival & Facade",
+          "venue": "Podium and glass tower",
+          "coverage": 50,
+          "photoOp": 3,
+          "confidence": "Medium",
+          "evidence": "'warm-coloured panels and weathered steel'",
+          "url": "https://press.fourseasons.com/nashville/hotel-facts/",
+          "colors": [
+            {
+              "hex": "#7E4A2E",
+              "name": "weathered steel",
+              "share": 100,
+              "reason": "Signature material",
+              "source": "Described"
+            }
+          ]
+        },
+        {
+          "type": "Lobby",
+          "venue": "",
+          "coverage": 80,
+          "photoOp": 3,
+          "confidence": "Medium",
+          "evidence": "'contemporary furnishings in neutral shades mixed with blues and greens'; 'Dark walnut, native to Tennessee, is used throughout the hotel'",
+          "url": "https://www.nfocusmagazine.com/people-places/step-inside-four-seasons-nashville/article_96cb5124-86e9-11ed-bc86-c774c4d0f6c0.html",
+          "colors": [
+            {
+              "hex": "#CFC7BA",
+              "name": "neutral furnishings",
+              "share": 45,
+              "source": "Described"
+            },
+            {
+              "hex": "#5D4037",
+              "name": "Tennessee black walnut",
+              "share": 20,
+              "key": true,
+              "reason": "Signature material",
+              "source": "Described"
+            },
+            {
+              "hex": "#4F7193",
+              "name": "blue accents",
+              "share": 20,
+              "source": "Described"
+            },
+            {
+              "hex": "#5F7E66",
+              "name": "green accents",
+              "share": 15,
+              "source": "Described"
+            }
+          ]
+        },
+        {
+          "type": "Guest Room",
+          "venue": "River-View Room",
+          "coverage": 50,
+          "sqft": 402,
+          "sqftSource": "Published",
+          "photoOp": 3,
+          "confidence": "Low",
+          "evidence": "'porcelain tile with a slate-like finish' (page uncertain) plus hotel-wide walnut",
+          "url": "https://press.fourseasons.com/nashville/trending-now/architecture-and-design/",
+          "colors": [
+            {
+              "hex": "#5B6166",
+              "name": "slate-like porcelain tile",
+              "share": 60,
+              "source": "Described"
+            },
+            {
+              "hex": "#5D4037",
+              "name": "walnut",
+              "share": 40,
+              "source": "Described"
+            }
+          ]
+        },
+        {
+          "type": "Bathroom",
+          "venue": "",
+          "coverage": 10,
+          "confidence": "Low",
+          "evidence": "Matte-black fittings (paraphrase)",
+          "url": "https://www.studiokohler.com/projects/four-seasons-nashville",
+          "colors": [
+            {
+              "hex": "#1E1E1E",
+              "name": "matte black fittings",
+              "share": 100,
+              "source": "Described"
+            }
+          ]
+        },
+        {
+          "type": "Pool",
+          "venue": "7th-floor infinity pool",
+          "sqft": 2300,
+          "sqftSource": "Published",
+          "photoOp": 5,
+          "confidence": "Low",
+          "evidence": "Pool 2,300 sq ft (page uncertain); colors not found",
+          "url": "https://press.fourseasons.com/nashville/hotel-facts/",
+          "colors": []
+        },
+        {
+          "type": "Signature Restaurant",
+          "venue": "Bacco",
+          "sqft": 8000,
+          "sqftSource": "Published",
+          "confidence": "Low",
+          "evidence": "'bold, playful colors and textures of classic Spaghetti Western films' (colors not named)",
+          "url": "https://whatnow.com/nashville/restaurants/four-seasons-hotel-and-private-residences-nashville-unveils-first-look-at-bacco/",
+          "colors": []
+        },
+        {
+          "type": "Rooftop",
+          "venue": "Riviere Rooftop",
+          "confidence": "Low",
+          "evidence": "French Riviera inspiration; colors not found",
+          "url": "https://press.fourseasons.com/nashville/hotel-news/2023/riviere-rooftop-restaurant-and-bar-opening",
+          "colors": []
+        },
+        {
+          "type": "Ballroom & Events",
+          "venue": "Grand Ballroom",
+          "sqft": 10062,
+          "sqftSource": "Published",
+          "confidence": "Low",
+          "evidence": "Carpet echoes the pedestrian bridge's geometry",
+          "url": "https://press.fourseasons.com/nashville/trending-now/architecture-and-design/",
+          "colors": []
+        }
+      ]
+    },
+    {
+      "id": "NSH-NOEL",
+      "name": "Noelle",
+      "brand": "Independent (formerly Tribute Portfolio)",
+      "city": "Nashville",
+      "state": "TN",
+      "region": "Southeast",
+      "status": "Open",
+      "opened": "1930 (Noel Hotel); reopened 2017",
+      "redesign": "2017 (DAAD / Nick Dryden)",
+      "architect": "Marr & Holman (original building)",
+      "interiorDesigner": "DAAD (Nick Dryden); Feltus Hawkins Design; 55 local makers",
+      "primaryStyle": "Art Deco",
+      "secondaryStyle": "Neoclassical",
+      "era": "Jazz Age (1920s)",
+      "genre": "Historic Landmark",
+      "palette": "Original pink and green Tennessee marble, restored terrazzo and brass; the brand palette is drawn from the marble.",
+      "keyFamilies": [
+        "Pink & Blush",
+        "Green",
+        "Yellow & Gold"
+      ],
+      "photoOp": "Pink-marble lobby and stairs; Rare Bird rooftop views (inferred)",
+      "media": "Garden & Gun 'Nashville's Sleeping Beauty'; Metropolis; Atlanta Magazine; Wallpaper* listing; Michelin Guide listing",
+      "rooms": 222,
+      "stdRoomSqft": 269,
+      "meetingSqft": 4000,
+      "distinctiveness": 4,
+      "researchStatus": "Desk researched (partial)",
+      "wave": "Wave 1 (founder list)",
+      "notes": "Stone described as pink Tennessee granite, pink Tennessee marble, or (c.1930 brochure) Italian marble and Vermont green marble. Meeting space 4,000 sq ft (Cvent) vs 7,500+ (ALHI). Status open by inference (2025 restaurant opening).",
+      "sources": [
+        {
+          "label": "Hospitality Net: opening release (2017)",
+          "url": "https://www.hospitalitynet.org/announcement/41000922/rockbridge-announces-noelle-an-experiential-hotel-now-open-in-downtown-nashville"
+        },
+        {
+          "label": "Nashville Sites: Noelle history",
+          "url": "https://nashvillesites.org/records/noelle-hotel"
+        },
+        {
+          "label": "Metropolis: Noelle design",
+          "url": "https://metropolismag.com/projects/nashville-noelle-hotel-design/"
+        },
+        {
+          "label": "Garden & Gun: Nashville's Sleeping Beauty",
+          "url": "https://gardenandgun.com/nashvilles-sleeping-beauty"
+        },
+        {
+          "label": "Hotel-Online: goes independent (2022)",
+          "url": "https://www.hotel-online.com/news/nashvilles-noelle-hotel-goes-independent-on-fifth-anniversary"
+        }
+      ],
+      "spaces": [
+        {
+          "type": "Lobby",
+          "venue": "Original 1930 lobby",
+          "coverage": 85,
+          "photoOp": 5,
+          "confidence": "Medium",
+          "evidence": "'pink marble stairs, pink and green marble columns, brass mail shoot'; 'soft pink Tennessee granite walls'",
+          "url": "https://nashvillesites.org/records/noelle-hotel",
+          "colors": [
+            {
+              "hex": "#E5BFC3",
+              "name": "pink Tennessee marble",
+              "share": 45,
+              "key": true,
+              "reason": "Signature material",
+              "source": "Described"
+            },
+            {
+              "hex": "#E8E0D2",
+              "name": "restored terrazzo",
+              "share": 25,
+              "source": "Described"
+            },
+            {
+              "hex": "#4F7461",
+              "name": "green marble columns",
+              "share": 15,
+              "key": true,
+              "reason": "Photo-op",
+              "source": "Described"
+            },
+            {
+              "hex": "#C9A447",
+              "name": "original brass",
+              "share": 15,
+              "source": "Described"
+            }
+          ]
+        },
+        {
+          "type": "Lobby Bar",
+          "venue": "Trade Room",
+          "coverage": 80,
+          "photoOp": 4,
+          "confidence": "Low",
+          "evidence": "Pink marble walls, terrazzo floors and brass railings (paraphrase)",
+          "url": "https://nashvilleguru.com/70962/noelle-nashville-hotel",
+          "colors": [
+            {
+              "hex": "#E5BFC3",
+              "name": "pink marble walls",
+              "share": 50,
+              "source": "Described"
+            },
+            {
+              "hex": "#E8E0D2",
+              "name": "terrazzo floor",
+              "share": 30,
+              "source": "Described"
+            },
+            {
+              "hex": "#C9A447",
+              "name": "brass railings",
+              "share": 20,
+              "source": "Described"
+            }
+          ]
+        },
+        {
+          "type": "Guest Room",
+          "venue": "Classic King",
+          "coverage": 70,
+          "sqft": 269,
+          "sqftSource": "Published",
+          "photoOp": 3,
+          "confidence": "Low",
+          "evidence": "White or navy walls, pillbox-hat sconces (paraphrase)",
+          "url": "https://gardenandgun.com/nashvilles-sleeping-beauty",
+          "colors": [
+            {
+              "hex": "#F4F2EE",
+              "name": "white walls",
+              "share": 60,
+              "source": "Described"
+            },
+            {
+              "hex": "#1F2A44",
+              "name": "navy walls",
+              "share": 40,
+              "source": "Described"
+            }
+          ]
+        },
+        {
+          "type": "Rooftop",
+          "venue": "Rare Bird",
+          "coverage": 15,
+          "photoOp": 4,
+          "confidence": "Low",
+          "evidence": "Limestone fireplaces and river and stadium views (paraphrase)",
+          "url": "https://nashvilleguru.com/74597/rare-bird-nashville",
+          "colors": [
+            {
+              "hex": "#D9CFBE",
+              "name": "limestone fireplaces",
+              "share": 100,
+              "source": "Described"
+            }
+          ]
+        },
+        {
+          "type": "Signature Restaurant",
+          "venue": "Lona",
+          "confidence": "Low",
+          "evidence": "Opened 2025; colors not found",
+          "url": "https://www.noelle-nashville.com/dine-drink/lona-by-chef-richard-sandoval/",
+          "colors": []
+        }
+      ]
+    },
+    {
+      "id": "CHS-CPL",
+      "name": "The Charleston Place",
+      "brand": "Independent (Beemok Hospitality), formerly Belmond",
+      "city": "Charleston",
+      "state": "SC",
+      "region": "Southeast",
+      "status": "Unverified",
+      "opened": "1986 (as Omni at Charleston Place)",
+      "redesign": "Phased $100M+ renovation planned from 2023 (completion not confirmed)",
+      "architect": "",
+      "interiorDesigner": "",
+      "primaryStyle": "",
+      "secondaryStyle": "",
+      "era": "",
+      "genre": "Southern Grand Dame",
+      "palette": "",
+      "keyFamilies": [],
+      "photoOp": "",
+      "media": "",
+      "rooms": null,
+      "stdRoomSqft": null,
+      "meetingSqft": null,
+      "distinctiveness": null,
+      "researchStatus": "Desk researched (partial)",
+      "wave": "Wave 1 (founder list)",
+      "notes": "Left Belmond on March 1, 2022; locally owned and managed. Renovation designers, completion and current palette not found.",
+      "sources": [
+        {
+          "label": "Luxury Travel Advisor: leaves Belmond (2022)",
+          "url": "https://www.luxurytraveladvisor.com/hotels/charleston-place-leave-belmond-becomes-locally-owned-independent-hotel"
+        },
+        {
+          "label": "Lodging: transition and transformation",
+          "url": "https://lodgingmagazine.com/the-charleston-place-to-undergo-transition-and-transformation/"
+        }
+      ],
+      "spaces": []
+    },
+    {
+      "id": "AVL-GPI",
+      "name": "The Omni Grove Park Inn",
+      "brand": "Omni Hotels & Resorts",
+      "city": "Asheville",
+      "state": "NC",
+      "region": "Southeast",
+      "status": "Unverified",
+      "opened": "",
+      "redesign": "",
+      "architect": "",
+      "interiorDesigner": "",
+      "primaryStyle": "Arts & Crafts",
+      "secondaryStyle": "Rustic Lodge",
+      "era": "",
+      "genre": "Mountain Lodge",
+      "palette": "",
+      "keyFamilies": [],
+      "photoOp": "",
+      "media": "",
+      "rooms": null,
+      "stdRoomSqft": null,
+      "meetingSqft": null,
+      "distinctiveness": null,
+      "researchStatus": "Not started",
+      "wave": "Wave 1 (founder list)",
+      "notes": "Not reached before the search limit. Check Hurricane Helene (2024) impact and reopening status first. Style tags are working assumptions to verify.",
+      "sources": [],
+      "spaces": []
+    },
+    {
+      "id": "AVL-IBE",
+      "name": "The Inn on Biltmore Estate",
+      "brand": "Biltmore",
+      "city": "Asheville",
+      "state": "NC",
+      "region": "Southeast",
+      "status": "Unverified",
+      "opened": "",
+      "redesign": "",
+      "architect": "",
+      "interiorDesigner": "",
+      "primaryStyle": "",
+      "secondaryStyle": "",
+      "era": "",
+      "genre": "Gilded Mansion",
+      "palette": "",
+      "keyFamilies": [],
+      "photoOp": "",
+      "media": "",
+      "rooms": null,
+      "stdRoomSqft": null,
+      "meetingSqft": null,
+      "distinctiveness": null,
+      "researchStatus": "Not started",
+      "wave": "Wave 1 (founder list)",
+      "notes": "Founder wrote 'Biltmore'. Confirm which: Biltmore Estate (Asheville), Arizona Biltmore, The Biltmore (Coral Gables) or The Biltmore (Los Angeles). The other three are in the backlog.",
+      "sources": [],
+      "spaces": []
+    },
+    {
+      "id": "ATX-FAIR",
+      "name": "Fairmont Austin",
+      "brand": "Fairmont (Accor)",
+      "city": "Austin",
+      "state": "TX",
+      "region": "Texas",
+      "status": "Open",
+      "opened": "2018",
+      "redesign": "",
+      "architect": "Gensler",
+      "interiorDesigner": "Warren Sheets Design",
+      "primaryStyle": "Contemporary",
+      "secondaryStyle": "",
+      "era": "2010s",
+      "genre": "Urban Luxe",
+      "palette": "Cool blues, bright white and honey beige in rooms; plush blue and dark wood at Fulton; a pink-rock chandelier in the spa. Hill Country-inspired, with a film theme.",
+      "keyFamilies": [
+        "Blue",
+        "Beige & Taupe",
+        "Brown & Wood"
+      ],
+      "photoOp": "Fulton's oak tree lit green and blue; Revue's streetscape; rooftop pool (inferred)",
+      "media": "Forbes Four-Star (hotel, Garrison, spa); MICHELIN Key credited to Fairmont Gold (2024 guide)",
+      "rooms": 1048,
+      "stdRoomSqft": 410,
+      "meetingSqft": 140000,
+      "distinctiveness": 3,
+      "researchStatus": "Desk researched (partial)",
+      "wave": "Wave 1 (founder list)",
+      "notes": "Opening date Mar 5 vs Mar 23, 2018. Standard room 400 vs 410 sq ft. Whether Revue still operates in 2026 is unconfirmed.",
+      "sources": [
+        {
+          "label": "Hotel Management: Hill Country-inspired design (WSD)",
+          "url": "https://www.hotelmanagement.net/development/wsd-designs-hill-country-inspired-fairmont-austin-hotel"
+        },
+        {
+          "label": "Hospitality Design: guestroom designs",
+          "url": "https://hospitalitydesign.com/news/fairmont-austin-hotel-reveals-guestroom-designs/17237"
+        },
+        {
+          "label": "Forbes Travel Guide: hotel review",
+          "url": "https://forbestravelguide.com/hotels/austin-texas/fairmont-austin"
+        },
+        {
+          "label": "Forbes Travel Guide: spa review",
+          "url": "https://forbestravelguide.com/spas/austin-texas/fairmont-spa-austin"
+        },
+        {
+          "label": "Fairmont Austin digital brochure (Aug 2026)",
+          "url": "https://www.fairmont-austin.com/content/uploads/2026/08/Fairmont-Austin-Digital-Brochure-2026.pdf"
+        }
+      ],
+      "spaces": [
+        {
+          "type": "Lobby Bar",
+          "venue": "Fulton",
+          "coverage": 70,
+          "photoOp": 4,
+          "confidence": "Medium",
+          "evidence": "'Plush blue and dark wood seating'; oak tree 'twinkling with green and blue lights'",
+          "url": "https://forbestravelguide.com/hotels/austin-texas/fairmont-austin",
+          "colors": [
+            {
+              "hex": "#2D5486",
+              "name": "plush blue seating",
+              "share": 40,
+              "key": true,
+              "reason": "Signature material",
+              "source": "Described"
+            },
+            {
+              "hex": "#4A3427",
+              "name": "dark wood",
+              "share": 40,
+              "source": "Described"
+            },
+            {
+              "hex": "#3F8F5F",
+              "name": "green tree lights",
+              "share": 20,
+              "key": true,
+              "reason": "Photo-op",
+              "source": "Described"
+            }
+          ]
+        },
+        {
+          "type": "Guest Room",
+          "venue": "Standard room",
+          "coverage": 85,
+          "sqft": 410,
+          "sqftSource": "Published",
+          "photoOp": 3,
+          "confidence": "Medium",
+          "evidence": "'cool shades of blue, bright white, and honey beige'; 'Ebony veneers, quarter cut Asia oak'",
+          "url": "https://hospitalitydesign.com/news/fairmont-austin-hotel-reveals-guestroom-designs/17237",
+          "colors": [
+            {
+              "hex": "#FAFAF7",
+              "name": "bright white",
+              "share": 35,
+              "source": "Described"
+            },
+            {
+              "hex": "#5D86B0",
+              "name": "cool blue",
+              "share": 25,
+              "source": "Described"
+            },
+            {
+              "hex": "#D8BD8F",
+              "name": "honey beige",
+              "share": 25,
+              "source": "Described"
+            },
+            {
+              "hex": "#3A2E28",
+              "name": "ebony veneer",
+              "share": 15,
+              "source": "Described"
+            }
+          ]
+        },
+        {
+          "type": "Bathroom",
+          "venue": "",
+          "coverage": 40,
+          "confidence": "Medium",
+          "evidence": "'custom designed vanity in cerused oak with quartz tops'",
+          "url": "https://hospitalitydesign.com/news/fairmont-austin-hotel-reveals-guestroom-designs/17237",
+          "colors": [
+            {
+              "hex": "#CBBBA0",
+              "name": "cerused oak",
+              "share": 60,
+              "source": "Described"
+            },
+            {
+              "hex": "#ECEBE7",
+              "name": "quartz",
+              "share": 40,
+              "source": "Described"
+            }
+          ]
+        },
+        {
+          "type": "Spa",
+          "venue": "Fairmont Spa Austin",
+          "coverage": 10,
+          "photoOp": 4,
+          "confidence": "Low",
+          "evidence": "Chandelier modeled on 'Enchanted Rock, a beautiful pink rock formation'",
+          "url": "https://forbestravelguide.com/spas/austin-texas/fairmont-spa-austin",
+          "colors": [
+            {
+              "hex": "#C9919A",
+              "name": "pink granite (chandelier)",
+              "share": 100,
+              "key": true,
+              "reason": "Photo-op",
+              "source": "Described"
+            }
+          ]
+        },
+        {
+          "type": "Cafe & Breakfast",
+          "venue": "Revue (food hall)",
+          "coverage": 50,
+          "photoOp": 4,
+          "confidence": "Low",
+          "evidence": "'brick building facades, a billboard and a live stream of 6th Street'",
+          "url": "https://forbestravelguide.com/hotels/austin-texas/fairmont-austin",
+          "colors": [
+            {
+              "hex": "#B5513D",
+              "name": "brick facades",
+              "share": 100,
+              "source": "Described"
+            }
+          ]
+        },
+        {
+          "type": "Signature Restaurant",
+          "venue": "Garrison",
+          "confidence": "Low",
+          "evidence": "'facade of a classic Southern home'; colors not found",
+          "url": "https://www.papercitymag.com/culture/travel/texas-travels-fairmont-austin-review-spa-garrison/",
+          "colors": []
+        },
+        {
+          "type": "Bar & Lounge",
+          "venue": "Rules & Regs",
+          "confidence": "Low",
+          "evidence": "'the moody indoor bar'; colors not found",
+          "url": "https://timeout.com/austin/bars/rules-and-regs",
+          "colors": []
+        },
+        {
+          "type": "Ballroom & Events",
+          "venue": "Manchester Ballroom",
+          "sqft": 31100,
+          "sqftSource": "Published",
+          "confidence": "Low",
+          "evidence": "31,100 vs 31,125 sq ft in sources",
+          "url": "https://www.tsnn.com/convention-center/fairmont-austin-opens-its-doors-as-largest-hotel-in-central-texas",
+          "colors": []
+        }
+      ]
+    },
+    {
+      "id": "HOU-POAK",
+      "name": "The Post Oak Hotel at Uptown Houston",
+      "brand": "Independent (Fertitta Entertainment)",
+      "city": "Houston",
+      "state": "TX",
+      "region": "Texas",
+      "status": "Open",
+      "opened": "2018",
+      "redesign": "Spa expansion (year not found)",
+      "architect": "Gensler Houston",
+      "interiorDesigner": "Gensler with Fertitta's in-house team",
+      "primaryStyle": "Contemporary Glam",
+      "secondaryStyle": "",
+      "era": "2010s",
+      "genre": "Urban Luxe",
+      "palette": "Calacatta marble, ebony stone and dark woods with grey tones and crystal chandeliers; pink and purple pastels at Bloom & Bee.",
+      "keyFamilies": [
+        "White",
+        "Black",
+        "Pink & Blush"
+      ],
+      "photoOp": "Stella Lobby crystal chandelier (15,719 crystals); pink Bloom & Bee; Rolls-Royce showroom staircase (inferred)",
+      "media": "Forbes Five-Star 2026 (sixth year); U.S. News No. 1 in Texas (2026); Travel + Leisure 500 (2026); Good Morning America feature",
+      "rooms": 250,
+      "stdRoomSqft": null,
+      "meetingSqft": null,
+      "distinctiveness": 4,
+      "researchStatus": "Desk researched (partial)",
+      "wave": "Wave 1 (founder list)",
+      "notes": "Meeting space 27,001 vs 35,000 sq ft (conflict). Spa 20,000 vs 22,000 sq ft. Lobby quotes come from a set of near-identical press pages (page unconfirmed).",
+      "sources": [
+        {
+          "label": "Lodging: inside Bloom & Bee",
+          "url": "https://lodgingmagazine.com/inside-post-oaks-bloom-bee-restaurant/"
+        },
+        {
+          "label": "Hospitality Snapshots: project page",
+          "url": "https://hospitalitysnapshots.com/projects/10833/the-post-oak-hotel-at-uptown-houston/"
+        },
+        {
+          "label": "PaperCity: Presidential Suite",
+          "url": "https://www.papercitymag.com/real-estate/tilman-fertitta-presidential-suite-post-oak-hotel-12000-night-presidential-suite/"
+        },
+        {
+          "label": "CultureMap: best hotel in Texas (2026)",
+          "url": "https://houston.culturemap.com/news/travel/post-oak-best-hotel-texas/"
+        },
+        {
+          "label": "Gensler project page",
+          "url": "https://www.gensler.com/projects/the-post-oak-hotel-at-uptown-houston"
+        }
+      ],
+      "spaces": [
+        {
+          "type": "Lobby",
+          "venue": "Stella Lobby",
+          "coverage": 70,
+          "photoOp": 5,
+          "confidence": "Medium",
+          "evidence": "'custom Calcutta marble flooring, ebony woodridge stone pillars' (page unconfirmed)",
+          "url": "https://www.thepostoakhotel.com/pdfs/Grand-Opening-Release.pdf",
+          "colors": [
+            {
+              "hex": "#EEEBE6",
+              "name": "Calacatta marble floor",
+              "share": 60,
+              "source": "Described"
+            },
+            {
+              "hex": "#2B2522",
+              "name": "ebony stone pillars",
+              "share": 40,
+              "key": true,
+              "reason": "Signature material",
+              "source": "Described"
+            }
+          ]
+        },
+        {
+          "type": "Signature Restaurant",
+          "venue": "Bloom & Bee",
+          "coverage": 85,
+          "photoOp": 5,
+          "confidence": "Medium",
+          "evidence": "'arrive at the pink and purple pastels'; 'Venetian plaster walls, pink velvet chairs'",
+          "url": "https://lodgingmagazine.com/inside-post-oaks-bloom-bee-restaurant/",
+          "colors": [
+            {
+              "hex": "#EBC6CF",
+              "name": "pink Venetian plaster",
+              "share": 45,
+              "key": true,
+              "reason": "Photo-op",
+              "source": "Described"
+            },
+            {
+              "hex": "#D98EA3",
+              "name": "pink velvet chairs",
+              "share": 30,
+              "source": "Described"
+            },
+            {
+              "hex": "#C9AFD6",
+              "name": "purple pastel",
+              "share": 25,
+              "source": "Described"
+            }
+          ]
+        },
+        {
+          "type": "Bathroom",
+          "venue": "",
+          "coverage": 80,
+          "confidence": "Low",
+          "evidence": "'white marble bathrooms' (page unconfirmed)",
+          "url": "https://asmallworld.com/collection/hotels/the-post-oak-hotel-at-uptown-houston",
+          "colors": [
+            {
+              "hex": "#F1F0EC",
+              "name": "white marble",
+              "share": 100,
+              "source": "Described"
+            }
+          ]
+        },
+        {
+          "type": "Suite",
+          "venue": "Presidential Suite (22nd floor)",
+          "coverage": 80,
+          "sqft": 5000,
+          "sqftSource": "Published",
+          "photoOp": 4,
+          "confidence": "Medium",
+          "evidence": "'ebony-stained hickory floors inlaid with marble'; 'gray, veiny Calacatta marble is paired with black granite'",
+          "url": "https://www.papercitymag.com/real-estate/tilman-fertitta-presidential-suite-post-oak-hotel-12000-night-presidential-suite/",
+          "colors": [
+            {
+              "hex": "#2E2622",
+              "name": "ebony-stained hickory",
+              "share": 35,
+              "source": "Described"
+            },
+            {
+              "hex": "#ECEAE6",
+              "name": "Calacatta marble",
+              "share": 35,
+              "source": "Described"
+            },
+            {
+              "hex": "#A7A7A2",
+              "name": "gray veining",
+              "share": 15,
+              "source": "Described"
+            },
+            {
+              "hex": "#1B1B1B",
+              "name": "black granite",
+              "share": 15,
+              "source": "Described"
+            }
+          ]
+        },
+        {
+          "type": "Spa",
+          "venue": "The Spa at The Post Oak",
+          "sqft": 20000,
+          "sqftSource": "Published",
+          "confidence": "Low",
+          "evidence": "Spa fact sheet; colors not found",
+          "url": "https://conferencehotelgroup.com/img/hotels/files/6554/71366 POH Spa Fact Sheet 2 (1).pdf",
+          "colors": []
+        },
+        {
+          "type": "Ballroom & Events",
+          "venue": "Grand Ballroom",
+          "sqft": 16000,
+          "sqftSource": "Published",
+          "confidence": "Low",
+          "evidence": "16,000 sq ft, seats up to 1,200",
+          "colors": []
+        },
+        {
+          "type": "Arrival & Facade",
+          "venue": "Rolls-Royce showroom",
+          "confidence": "Low",
+          "evidence": "'a custom grand staircase, spiraling up from the ground to the second floor'",
+          "url": "https://archello.com/project/rolls-royce-houston",
+          "colors": []
+        }
+      ]
+    },
+    {
+      "id": "HOU-JWDT",
+      "name": "JW Marriott Houston Downtown",
+      "brand": "JW Marriott (Marriott International)",
+      "city": "Houston",
+      "state": "TX",
+      "region": "Texas",
+      "status": "Unverified",
+      "opened": "2014 (in the c.1910 Samuel F. Carter Building)",
+      "redesign": "",
+      "architect": "Gensler",
+      "interiorDesigner": "Wilson Associates; MBCM Incorporated",
+      "primaryStyle": "",
+      "secondaryStyle": "Industrial",
+      "era": "Belle Epoque / Edwardian (1900-1915)",
+      "genre": "Historic Landmark",
+      "palette": "Original hot-riveted steel beams; interiors 'fuse old and new, past and present'.",
+      "keyFamilies": [],
+      "photoOp": "",
+      "media": "Houstonia (Nov 2014); Hotel Designs",
+      "rooms": 328,
+      "stdRoomSqft": null,
+      "meetingSqft": null,
+      "distinctiveness": 3,
+      "researchStatus": "Desk researched (partial)",
+      "wave": "Wave 1 (founder list)",
+      "notes": "Recommended over the Galleria JW for a color-led product. Building era inferred from '104-year-old' at opening. Planned Battelstein Building expansion (+56 rooms): timing unknown. Distinctiveness provisional.",
+      "sources": [
+        {
+          "label": "Hotel Executive: opens in historic building",
+          "url": "https://www.hotelexecutive.com/newswire/51385/328-room-jw-marriott-houston-downtown-opens-within-an-historic-building-in-texas"
+        },
+        {
+          "label": "Hospitality Design: Gensler and Wilson Associates",
+          "url": "https://hospitalitydesign.com/news/gensler-wilson-associates-design-the-jw-marriott-houston-downtown/18824"
+        }
+      ],
+      "spaces": []
+    },
+    {
+      "id": "HOU-HAMR",
+      "name": "Hilton Americas-Houston",
+      "brand": "Hilton",
+      "city": "Houston",
+      "state": "TX",
+      "region": "Texas",
+      "status": "Unverified",
+      "opened": "",
+      "redesign": "2011 ($11M rooms); 2019-21 (Wilson Associates)",
+      "architect": "",
+      "interiorDesigner": "Wilson Associates (2019-21 renovation)",
+      "primaryStyle": "Contemporary",
+      "secondaryStyle": "",
+      "era": "",
+      "genre": "Corporate Modern",
+      "palette": "Guestrooms designed as 'a tribute to Houston arts and culture'.",
+      "keyFamilies": [],
+      "photoOp": "",
+      "media": "",
+      "rooms": null,
+      "stdRoomSqft": null,
+      "meetingSqft": null,
+      "distinctiveness": 2,
+      "researchStatus": "Desk researched (partial)",
+      "wave": "Wave 1 (founder list)",
+      "notes": "Wilson Associates vs Gensler credit conflict (possibly interior designer vs architect of record). Opening year, rooms, meeting space and 2026 status not found. Distinctiveness provisional.",
+      "sources": [
+        {
+          "label": "Hotel Management: Wilson Associates renovation",
+          "url": "https://www.hotelmanagement.net/renovations/wilson-associates-helms-renovations-hilton-americas-houston"
+        }
+      ],
+      "spaces": []
+    },
+    {
+      "id": "NYC-FS57",
+      "name": "Four Seasons Hotel New York",
+      "brand": "Four Seasons (owned by Ty Warner Hotels & Resorts)",
+      "city": "New York",
+      "state": "NY",
+      "region": "Northeast",
+      "status": "Open",
+      "opened": "1993",
+      "redesign": "2016 ($120M suites and corridors); 2024 reopening refresh",
+      "architect": "I. M. Pei (Pei Cobb Freed & Partners) with Frank Williams",
+      "interiorDesigner": "Peter Marino (Royal, Presidential and Ty Warner Penthouse suites); Pierre-Yves Rochon (FIFTY7); original interiors credited to Chhada Siembieda Remedios (single source)",
+      "primaryStyle": "Art Deco",
+      "secondaryStyle": "Postmodern",
+      "era": "Streamline / Deco (1930s)",
+      "genre": "Urban Luxe",
+      "palette": "Honey-colored French Magny limestone, onyx and honey-toned marble; a red velvet TY Bar; a forest-like Garden; tan, cream and white rooms.",
+      "keyFamilies": [
+        "Beige & Taupe",
+        "Red & Burgundy",
+        "Green"
+      ],
+      "photoOp": "TY Bar's red velvet banquette under a 19-foot beveled mirror; Grand Lobby",
+      "media": "Galerie Hotel of the Week; Met Gala livestream party with a red carpet at TY Bar (May 2025); reopened Nov 15, 2024 after a 2020 closure",
+      "rooms": 219,
+      "stdRoomSqft": 500,
+      "meetingSqft": 15183,
+      "distinctiveness": 3,
+      "researchStatus": "Desk researched (partial)",
+      "wave": "Wave 1 (founder list)",
+      "notes": "Recommended over Downtown as the primary NY entry. Lobby floor described as black granite (older source) vs honey-toned marble (2024 release). Room palette quote may predate the 2024 refresh.",
+      "sources": [
+        {
+          "label": "Four Seasons press: hotel facts",
+          "url": "https://press.fourseasons.com/newyork/hotel-facts/"
+        },
+        {
+          "label": "Four Seasons press: now open (Nov 2024)",
+          "url": "https://press.fourseasons.com/newyork/hotel-news/2024/now-open/"
+        },
+        {
+          "label": "Four Seasons press: Met Gala at TY Bar (2025)",
+          "url": "https://press.fourseasons.com/newyork/hotel-news/2025/met-gala-at-ty-bar/"
+        },
+        {
+          "label": "Forbes Travel Guide: tan, cream and white",
+          "url": "https://forbestravelguide.com/hotels/new-york-city-new-york/four-seasons-hotel-new-york"
+        },
+        {
+          "label": "Christian Science Monitor (1993): Magny limestone",
+          "url": "https://www.csmonitor.com/1993/0701/01101.html"
+        },
+        {
+          "label": "Four Seasons press: TY Bar events (2026)",
+          "url": "https://press.fourseasons.com/newyork/hotel-news/2026/event-menu-at-ty-bar/"
+        }
+      ],
+      "spaces": [
+        {
+          "type": "Arrival & Facade",
+          "venue": "Limestone tower on East 57th",
+          "coverage": 90,
+          "photoOp": 3,
+          "confidence": "Medium",
+          "evidence": "'honey-colored Magny limestone from France'",
+          "url": "https://www.csmonitor.com/1993/0701/01101.html",
+          "colors": [
+            {
+              "hex": "#D6B98C",
+              "name": "honey Magny limestone",
+              "share": 100,
+              "key": true,
+              "reason": "Signature material",
+              "source": "Described"
+            }
+          ]
+        },
+        {
+          "type": "Lobby",
+          "venue": "Grand Lobby",
+          "coverage": 70,
+          "photoOp": 4,
+          "confidence": "Low",
+          "evidence": "'honey-toned marble floors and columns' (2024 release) vs 'black granite, seen in the lobby floors' (older source)",
+          "url": "https://press.fourseasons.com/newyork/hotel-news/2024/now-open/",
+          "colors": [
+            {
+              "hex": "#D8BC8E",
+              "name": "honey-toned marble",
+              "share": 70,
+              "source": "Described"
+            },
+            {
+              "hex": "#1C1C1E",
+              "name": "black granite",
+              "share": 30,
+              "source": "Described"
+            }
+          ]
+        },
+        {
+          "type": "Lobby Bar",
+          "venue": "TY Bar",
+          "coverage": 50,
+          "photoOp": 5,
+          "confidence": "Medium",
+          "evidence": "'Art Deco-inspired red velvet lounge'; 'plush red velvet banquette' under a '19-foot beveled mirror'",
+          "url": "https://press.fourseasons.com/newyork/hotel-news/2025/met-gala-at-ty-bar/",
+          "colors": [
+            {
+              "hex": "#8E1B2C",
+              "name": "red velvet",
+              "share": 100,
+              "key": true,
+              "reason": "Photo-op",
+              "source": "Described"
+            }
+          ]
+        },
+        {
+          "type": "Signature Restaurant",
+          "venue": "The Garden",
+          "coverage": 40,
+          "photoOp": 4,
+          "confidence": "Low",
+          "evidence": "'a dramatic, forest-like restaurant setting'; 'four 20-foot Acacia trees' (green inferred)",
+          "url": "https://www.timeout.com/newyork/restaurants/the-garden-at-the-four-seasons",
+          "colors": [
+            {
+              "hex": "#4F6F3E",
+              "name": "acacia foliage (inferred green)",
+              "share": 100,
+              "source": "Described"
+            }
+          ]
+        },
+        {
+          "type": "Guest Room",
+          "venue": "Studio / junior suite",
+          "coverage": 90,
+          "sqft": 500,
+          "sqftSource": "Published",
+          "photoOp": 3,
+          "confidence": "Medium",
+          "evidence": "'a dominant color palette of tan, cream and white that feels invitingly soft'",
+          "url": "https://forbestravelguide.com/hotels/new-york-city-new-york/four-seasons-hotel-new-york",
+          "colors": [
+            {
+              "hex": "#D2B48C",
+              "name": "tan",
+              "share": 40,
+              "source": "Described"
+            },
+            {
+              "hex": "#EFE6D2",
+              "name": "cream",
+              "share": 35,
+              "source": "Described"
+            },
+            {
+              "hex": "#F7F6F2",
+              "name": "white",
+              "share": 25,
+              "source": "Described"
+            }
+          ]
+        },
+        {
+          "type": "Suite",
+          "venue": "Ty Warner Penthouse (52nd floor)",
+          "sqft": 4300,
+          "sqftSource": "Published",
+          "confidence": "Low",
+          "evidence": "Pei, Marino and Warner; colors not found",
+          "url": "https://press.fourseasons.com/newyork/trending-now/ty-warner-penthouse",
+          "colors": []
+        },
+        {
+          "type": "Ballroom & Events",
+          "venue": "FIFTY7",
+          "sqft": 3116,
+          "sqftSource": "Published",
+          "confidence": "Low",
+          "evidence": "'art-deco inspired' (largest ballroom 3,116 sq ft)",
+          "url": "https://press.fourseasons.com/newyork/hotel-facts/",
+          "colors": []
+        }
+      ]
+    },
+    {
+      "id": "NYC-FSDT",
+      "name": "Four Seasons Hotel New York Downtown",
+      "brand": "Four Seasons",
+      "city": "New York",
+      "state": "NY",
+      "region": "Northeast",
+      "status": "Unverified",
+      "opened": "2016",
+      "redesign": "2025 (Greenwich and Trinity suites, Bill Rooney Studio)",
+      "architect": "Robert A.M. Stern Architects",
+      "interiorDesigner": "Yabu Pushelberg; Bill Rooney Studio (suites)",
+      "primaryStyle": "Contemporary",
+      "secondaryStyle": "",
+      "era": "2010s",
+      "genre": "Urban Luxe",
+      "palette": "Lobby in ivory, brown, bronze and gold; rooms in light blues, grays and taupes; jewel-toned fabrics.",
+      "keyFamilies": [
+        "Cream & Ivory",
+        "Brown & Wood",
+        "Blue"
+      ],
+      "photoOp": "",
+      "media": "Conde Nast Traveler Readers' Choice No. 2 in NYC (Oct 2025)",
+      "rooms": 185,
+      "stdRoomSqft": null,
+      "meetingSqft": 6815,
+      "distinctiveness": 2,
+      "researchStatus": "Desk researched (partial)",
+      "wave": "Wave 1 (founder list)",
+      "notes": "Alternate NY Four Seasons. Open through at least Oct 2025; 2026 not confirmed. Rooms 185 vs 189 in early releases.",
+      "sources": [
+        {
+          "label": "Four Seasons press: hotel facts",
+          "url": "https://press.fourseasons.com/newyorkdowntown/hotel-facts/"
+        },
+        {
+          "label": "Centurion: lobby palette",
+          "url": "https://centurion-magazine.com/travel/hotels/north-america/usa/nyc-four-seasons-hotel-new-york-downtown-review"
+        },
+        {
+          "label": "Lodging: opening and room palette",
+          "url": "https://lodgingmagazine.com/four-seasons-hotel-new-york-downtown-opens/"
+        }
+      ],
+      "spaces": [
+        {
+          "type": "Lobby",
+          "venue": "",
+          "coverage": 85,
+          "photoOp": 3,
+          "confidence": "Medium",
+          "evidence": "Lobby in 'shades of ivory, brown, bronze, and gold'",
+          "url": "https://centurion-magazine.com/travel/hotels/north-america/usa/nyc-four-seasons-hotel-new-york-downtown-review",
+          "colors": [
+            {
+              "hex": "#F1EADB",
+              "name": "ivory",
+              "share": 40,
+              "source": "Described"
+            },
+            {
+              "hex": "#6B4E3A",
+              "name": "brown",
+              "share": 25,
+              "source": "Described"
+            },
+            {
+              "hex": "#8C6A3F",
+              "name": "bronze",
+              "share": 20,
+              "source": "Described"
+            },
+            {
+              "hex": "#C9A447",
+              "name": "gold",
+              "share": 15,
+              "source": "Described"
+            }
+          ]
+        },
+        {
+          "type": "Guest Room",
+          "venue": "",
+          "coverage": 85,
+          "photoOp": 2,
+          "confidence": "Medium",
+          "evidence": "Rooms in 'light blues, grays, and taupes'",
+          "url": "https://lodgingmagazine.com/four-seasons-hotel-new-york-downtown-opens/",
+          "colors": [
+            {
+              "hex": "#AFC4D6",
+              "name": "light blue",
+              "share": 35,
+              "source": "Described"
+            },
+            {
+              "hex": "#A6A6A2",
+              "name": "gray",
+              "share": 35,
+              "source": "Described"
+            },
+            {
+              "hex": "#8B7D6B",
+              "name": "taupe",
+              "share": 30,
+              "source": "Described"
+            }
+          ]
+        },
+        {
+          "type": "Signature Restaurant",
+          "venue": "CUT by Wolfgang Puck",
+          "confidence": "Low",
+          "evidence": "Colors not found",
+          "colors": []
+        }
+      ]
+    },
+    {
+      "id": "NYC-HMID",
+      "name": "New York Hilton Midtown",
+      "brand": "Hilton",
+      "city": "New York",
+      "state": "NY",
+      "region": "Northeast",
+      "status": "Unverified",
+      "opened": "",
+      "redesign": "",
+      "architect": "",
+      "interiorDesigner": "",
+      "primaryStyle": "",
+      "secondaryStyle": "",
+      "era": "",
+      "genre": "",
+      "palette": "",
+      "keyFamilies": [],
+      "photoOp": "",
+      "media": "",
+      "rooms": null,
+      "stdRoomSqft": null,
+      "meetingSqft": null,
+      "distinctiveness": null,
+      "researchStatus": "Not started",
+      "wave": "Wave 1 (founder list)",
+      "notes": "One search found no 2024-2026 sale or conversion news (not proof of none). Owner, opening year, architect and palette all to research.",
+      "sources": [],
+      "spaces": []
+    },
+    {
+      "id": "CHI-ICMM",
+      "name": "InterContinental Chicago Magnificent Mile",
+      "brand": "InterContinental (IHG)",
+      "city": "Chicago",
+      "state": "IL",
+      "region": "Midwest",
+      "status": "Unverified",
+      "opened": "",
+      "redesign": "2013 (rooms); 2023 tower refresh",
+      "architect": "",
+      "interiorDesigner": "",
+      "primaryStyle": "Art Deco",
+      "secondaryStyle": "",
+      "era": "",
+      "genre": "Historic Landmark",
+      "palette": "",
+      "keyFamilies": [],
+      "photoOp": "",
+      "media": "Historic Hotels of America history page",
+      "rooms": 792,
+      "stdRoomSqft": null,
+      "meetingSqft": null,
+      "distinctiveness": null,
+      "researchStatus": "Desk researched (partial)",
+      "wave": "Wave 1 (founder list)",
+      "notes": "Described as an 'Art Deco structure' (2005). Leads to verify: built 1929 as the Medinah Athletic Club; 14th-floor junior Olympic pool; King Arthur Court; Hall of Lions. Strong candidate for the next research pass.",
+      "sources": [
+        {
+          "label": "Hotel-Online (2005): Art Deco structure",
+          "url": "https://www.hotel-online.com/news/archive-12667"
+        },
+        {
+          "label": "Historic Hotels of America: history",
+          "url": "https://www.historichotels.org/us/hotels-resorts/intercontinental-chicago-magnificent-mile/history.php"
+        }
+      ],
+      "spaces": []
+    },
+    {
+      "id": "SEA-FOLY",
+      "name": "Fairmont Olympic Hotel, Seattle",
+      "brand": "Fairmont (Accor)",
+      "city": "Seattle",
+      "state": "WA",
+      "region": "Northwest",
+      "status": "Unverified",
+      "opened": "1924",
+      "redesign": "$22M public-area renovation (before Dec 2024 sale)",
+      "architect": "",
+      "interiorDesigner": "",
+      "primaryStyle": "",
+      "secondaryStyle": "",
+      "era": "Jazz Age (1920s)",
+      "genre": "Historic Landmark",
+      "palette": "",
+      "keyFamilies": [],
+      "photoOp": "",
+      "media": "",
+      "rooms": 450,
+      "stdRoomSqft": null,
+      "meetingSqft": null,
+      "distinctiveness": null,
+      "researchStatus": "Desk researched (partial)",
+      "wave": "Wave 1 (founder list)",
+      "notes": "Bought by Trinity Investments (Dec 2024). Operating as a Fairmont as of about Sep 2025. Leads to verify: Italian Renaissance Revival style; The George, Olympic Bar, Shuckers, indoor pool.",
+      "sources": [
+        {
+          "label": "Business Wire: Trinity Investments acquires (Dec 2024)",
+          "url": "https://www.businesswire.com/news/home/20241218782296/en/Trinity-Investments-Acquires-Fairmont-Olympic-Hotel-in-Seattle"
+        },
+        {
+          "label": "HistoryLink: Olympic Hotel (1924)",
+          "url": "https://historylink.org/File/2028"
+        }
+      ],
+      "spaces": []
+    },
+    {
+      "id": "DC-KPAL",
+      "name": "Kimpton Hotel Palomar Washington DC",
+      "brand": "Kimpton (IHG)",
+      "city": "Washington",
+      "state": "DC",
+      "region": "Northeast",
+      "status": "Unverified",
+      "opened": "",
+      "redesign": "Powerstrip Studios redesign (year not found)",
+      "architect": "",
+      "interiorDesigner": "Powerstrip Studios",
+      "primaryStyle": "Contemporary",
+      "secondaryStyle": "",
+      "era": "",
+      "genre": "Hip Boutique",
+      "palette": "Guestrooms with 'pops of marigold, union blue, and oxford white'.",
+      "keyFamilies": [
+        "Yellow & Gold",
+        "Blue",
+        "White"
+      ],
+      "photoOp": "",
+      "media": "",
+      "rooms": null,
+      "stdRoomSqft": null,
+      "meetingSqft": null,
+      "distinctiveness": null,
+      "researchStatus": "Desk researched (partial)",
+      "wave": "Wave 1 (founder list)",
+      "notes": "Kimpton pick from a partial shortlist (Dupont Circle). Redesign year and 2026 status not found.",
+      "sources": [
+        {
+          "label": "Hotel-Online: multimillion-dollar redesign",
+          "url": "https://www.hotel-online.com/press_releases/release/kimpton-hotel-palomar-washington-dc-in-dupont-circle-completes-multimillion/"
+        }
+      ],
+      "spaces": [
+        {
+          "type": "Guest Room",
+          "venue": "",
+          "coverage": 80,
+          "photoOp": 3,
+          "confidence": "Medium",
+          "evidence": "'pops of marigold, union blue, and oxford white'",
+          "url": "https://www.hotel-online.com/press_releases/release/kimpton-hotel-palomar-washington-dc-in-dupont-circle-completes-multimillion/",
+          "colors": [
+            {
+              "hex": "#F4F3EE",
+              "name": "oxford white",
+              "share": 55,
+              "source": "Described"
+            },
+            {
+              "hex": "#2E4C80",
+              "name": "union blue",
+              "share": 30,
+              "source": "Described"
+            },
+            {
+              "hex": "#EAA221",
+              "name": "marigold",
+              "share": 15,
+              "key": true,
+              "reason": "Accent",
+              "source": "Described"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "PIT-KMON",
+      "name": "Kimpton Hotel Monaco Pittsburgh",
+      "brand": "Kimpton (IHG)",
+      "city": "Pittsburgh",
+      "state": "PA",
+      "region": "Northeast",
+      "status": "Unverified",
+      "opened": "",
+      "redesign": "",
+      "architect": "",
+      "interiorDesigner": "",
+      "primaryStyle": "Retro / Pop",
+      "secondaryStyle": "",
+      "era": "",
+      "genre": "Hip Boutique",
+      "palette": "'bold yellow, black, and white hues' echoing local sports teams and the city flag.",
+      "keyFamilies": [
+        "Yellow & Gold",
+        "Black",
+        "White"
+      ],
+      "photoOp": "",
+      "media": "",
+      "rooms": null,
+      "stdRoomSqft": null,
+      "meetingSqft": null,
+      "distinctiveness": null,
+      "researchStatus": "Desk researched (partial)",
+      "wave": "Wave 1 (founder list)",
+      "notes": "Strong local-color story; which spaces carry it is not stated, so no space-level swatches yet. Opening year and 2026 status not found.",
+      "sources": [
+        {
+          "label": "Lodging: Kimpton's Hotel Monaco opens in Pittsburgh",
+          "url": "https://lodgingmagazine.com/kimptons-hotel-monaco-opens-in-pittsburgh/"
+        }
+      ],
+      "spaces": []
+    },
+    {
+      "id": "NYC-KASH",
+      "name": "Kimpton Ashbel New York - Park Avenue",
+      "brand": "Kimpton (IHG)",
+      "city": "New York",
+      "state": "NY",
+      "region": "Northeast",
+      "status": "Open",
+      "opened": "1928 building; reopened 2026",
+      "redesign": "2026 (Busta Studio)",
+      "architect": "",
+      "interiorDesigner": "Busta Studio",
+      "primaryStyle": "Beaux-Arts",
+      "secondaryStyle": "",
+      "era": "Jazz Age (1920s)",
+      "genre": "Historic Landmark",
+      "palette": "Warm woods, soft palettes and gold accents in a restored Beaux-Arts landmark.",
+      "keyFamilies": [],
+      "photoOp": "",
+      "media": "Dezeen interiors feature; Hotel Business",
+      "rooms": 205,
+      "stdRoomSqft": null,
+      "meetingSqft": null,
+      "distinctiveness": 2,
+      "researchStatus": "Desk researched (partial)",
+      "wave": "Wave 1 (founder list)",
+      "notes": "Formerly Kimpton 70 Park Avenue (inferred). Palette quotes could not be tied to specific outlets, so no swatches yet.",
+      "sources": [
+        {
+          "label": "IHG: Kimpton Ashbel opens (Apr 2026)",
+          "url": "https://www.ihgplc.com/en/news-and-media/news-releases/2026/kimpton-ashbel-new-york-park-avenue-opens-in-historic-midtown-manhattan-landmark"
+        },
+        {
+          "label": "Hotel Management: restored Beaux-Arts landmark",
+          "url": "https://www.hotelmanagement.net/openings/kimpton-ashbel-new-york-park-avenue-debuts-restored-beaux-arts-landmark"
+        }
+      ],
+      "spaces": []
+    },
+    {
+      "id": "SLO-MADO",
+      "name": "Madonna Inn",
+      "brand": "Independent",
+      "city": "San Luis Obispo",
+      "state": "CA",
+      "region": "West",
+      "status": "Open",
+      "opened": "1958",
+      "redesign": "",
+      "architect": "Alex and Phyllis Madonna (builders and room concepts)",
+      "interiorDesigner": "Alex and Phyllis Madonna; Alice Turney Williams (some rooms)",
+      "primaryStyle": "Kitsch / Themed",
+      "secondaryStyle": "",
+      "era": "Space Age / Mid-Century (1950s-60s)",
+      "genre": "Roadside Americana",
+      "palette": "Pink everywhere: 'the next best thing from red was going down a little to pink' (Phyllis Madonna).",
+      "keyFamilies": [
+        "Pink & Blush",
+        "Yellow & Gold",
+        "Red & Burgundy"
+      ],
+      "photoOp": "Gold Rush Steak House pink-and-gold booths and golden tree; Caveman Suite; pink champagne cake",
+      "media": "PBS SoCal Artbound 'Think Pink'; National Geographic best retro motels in California; Kacey Musgraves cake reference",
+      "rooms": 110,
+      "stdRoomSqft": null,
+      "meetingSqft": null,
+      "distinctiveness": 5,
+      "researchStatus": "Desk researched (partial)",
+      "wave": "Wave 2 (candidate)",
+      "notes": "Rooms: 'more than 110 themed rooms and suites'. Steak House colors are paraphrased from the PBS piece.",
+      "sources": [
+        {
+          "label": "PBS SoCal Artbound: Think Pink",
+          "url": "https://www.pbssocal.org/shows/artbound/think-pink-the-madonna-inn-san-luis-obispos-kitsch-castle"
+        },
+        {
+          "label": "trivago Magazine: cake matches the carpet",
+          "url": "https://magazine.trivago.com/where-to-go-california-hotels"
+        },
+        {
+          "label": "New Times SLO (Feb 2026)",
+          "url": "https://www.newtimesslo.com/311-plays-madonna-inn-on-march-3-as-a-warm-up-to-two-days-of-vegas-shows/"
+        }
+      ],
+      "spaces": [
+        {
+          "type": "Signature Restaurant",
+          "venue": "Gold Rush Steak House",
+          "coverage": 70,
+          "photoOp": 5,
+          "confidence": "Low",
+          "evidence": "Pink-and-gold leather booths and a golden tree (paraphrase); cake frosted to match the rose-patterned carpet (paraphrase)",
+          "url": "https://www.pbssocal.org/shows/artbound/think-pink-the-madonna-inn-san-luis-obispos-kitsch-castle",
+          "colors": [
+            {
+              "hex": "#E58FAC",
+              "name": "pink leather booths",
+              "share": 45,
+              "key": true,
+              "reason": "Photo-op",
+              "source": "Described"
+            },
+            {
+              "hex": "#C9A447",
+              "name": "gold booths and golden tree",
+              "share": 35,
+              "key": true,
+              "reason": "Photo-op",
+              "source": "Described"
+            },
+            {
+              "hex": "#D9708F",
+              "name": "rose-patterned carpet",
+              "share": 20,
+              "source": "Described"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "PSP-PARK",
+      "name": "Parker Palm Springs",
+      "brand": "Independent",
+      "city": "Palm Springs",
+      "state": "CA",
+      "region": "West",
+      "status": "Unverified",
+      "opened": "",
+      "redesign": "Jonathan Adler redesign (date not found)",
+      "architect": "",
+      "interiorDesigner": "Jonathan Adler",
+      "primaryStyle": "Retro / Pop",
+      "secondaryStyle": "Hollywood Regency",
+      "era": "Space Age / Mid-Century (1950s-60s)",
+      "genre": "Desert Retreat",
+      "palette": "Adler: 'Strong, clear colors against an earthy palette make a space feel uplifting'.",
+      "keyFamilies": [],
+      "photoOp": "Lobby rug copied from the carpet in The Shining; 7-foot bronze half-peeled banana",
+      "media": "Dwell; Sunset; Gestalten",
+      "rooms": null,
+      "stdRoomSqft": null,
+      "meetingSqft": null,
+      "distinctiveness": 4,
+      "researchStatus": "Desk researched (partial)",
+      "wave": "Wave 2 (candidate)",
+      "notes": "2026 status not verified. Which spaces carry the red and yellow accents is not stated. Distinctiveness provisional.",
+      "sources": [
+        {
+          "label": "Dwell: Jonathan Adler's redesign",
+          "url": "https://dwell.com/amp/article/jonathan-adler-reveals-his-redesign-of-the-parker-palm-springs-392094f6"
+        },
+        {
+          "label": "Sunset: Adler on color",
+          "url": "https://sunset.com/?p=10211"
+        }
+      ],
+      "spaces": []
+    },
+    {
+      "id": "PSP-SAGU",
+      "name": "The Saguaro Palm Springs",
+      "brand": "Independent",
+      "city": "Palm Springs",
+      "state": "CA",
+      "region": "West",
+      "status": "Unverified",
+      "opened": "",
+      "redesign": "Colorful conversion (covered 2012); facelift 2018",
+      "architect": "Peter Stamberg and Paul Aferiat",
+      "interiorDesigner": "",
+      "primaryStyle": "Retro / Pop",
+      "secondaryStyle": "Desert Modern / Southwestern",
+      "era": "",
+      "genre": "Desert Retreat",
+      "palette": "Rainbow-striped exterior using 12 tones taken from local wildflowers (paraphrase).",
+      "keyFamilies": [],
+      "photoOp": "Rainbow facade",
+      "media": "Metropolis 'Deluxe Paint Job'; Dunn-Edwards case study",
+      "rooms": null,
+      "stdRoomSqft": null,
+      "meetingSqft": null,
+      "distinctiveness": 5,
+      "researchStatus": "Desk researched (partial)",
+      "wave": "Wave 2 (candidate)",
+      "notes": "No 2025-2026 coverage found: confirm it is still open and still The Saguaro before planning a shoot. The 12 tones are not individually named, so no swatches.",
+      "sources": [
+        {
+          "label": "Dunn-Edwards: wildflowers inspire the facelift",
+          "url": "https://www.dunnedwards.com/pros/blog/california-wildflowers-inspire-the-saguaro-facelift/"
+        },
+        {
+          "label": "Metropolis: Deluxe Paint Job",
+          "url": "https://metropolismag.com/programs/deluxe-paint-job/"
+        }
+      ],
+      "spaces": []
+    },
+    {
+      "id": "HOU-JWGL",
+      "name": "JW Marriott Houston by The Galleria",
+      "brand": "JW Marriott (Marriott International)",
+      "city": "Houston",
+      "state": "TX",
+      "region": "Texas",
+      "status": "Unverified",
+      "researchStatus": "Not started",
+      "wave": "Backlog",
+      "notes": "Alternate for 'JW Marriott Houston'. Only a renovation headline found (date unknown).",
+      "sources": [
+        {
+          "label": "Lodging: completes renovations",
+          "url": "https://lodgingmagazine.com/jw-marriott-houston-by-the-galleria-completes-renovations/"
+        }
+      ],
+      "spaces": []
+    },
+    {
+      "id": "BH-BHH",
+      "name": "The Beverly Hills Hotel",
+      "city": "Beverly Hills",
+      "state": "CA",
+      "region": "West",
+      "status": "Unverified",
+      "researchStatus": "Not started",
+      "wave": "Backlog",
+      "notes": "Candidate from research leads (name and city from memory). Verify status and design story before shooting.",
+      "sources": [],
+      "spaces": []
+    },
+    {
+      "id": "WV-GRNB",
+      "name": "The Greenbrier",
+      "city": "White Sulphur Springs",
+      "state": "WV",
+      "region": "Southeast",
+      "status": "Unverified",
+      "researchStatus": "Not started",
+      "wave": "Backlog",
+      "notes": "Candidate from research leads (name and city from memory). Verify before shooting.",
+      "sources": [],
+      "spaces": []
+    },
+    {
+      "id": "PB-COLO",
+      "name": "The Colony Hotel",
+      "city": "Palm Beach",
+      "state": "FL",
+      "region": "Southeast",
+      "status": "Unverified",
+      "researchStatus": "Not started",
+      "wave": "Backlog",
+      "notes": "Candidate from research leads (name and city from memory). Verify before shooting.",
+      "sources": [],
+      "spaces": []
+    },
+    {
+      "id": "MIA-FAEN",
+      "name": "Faena Hotel Miami Beach",
+      "city": "Miami Beach",
+      "state": "FL",
+      "region": "Southeast",
+      "status": "Unverified",
+      "researchStatus": "Not started",
+      "wave": "Backlog",
+      "notes": "Candidate from research leads (name and city from memory). Verify before shooting.",
+      "sources": [],
+      "spaces": []
+    },
+    {
+      "id": "ATX-AMOT",
+      "name": "Austin Motel",
+      "city": "Austin",
+      "state": "TX",
+      "region": "Texas",
+      "status": "Unverified",
+      "researchStatus": "Not started",
+      "wave": "Backlog",
+      "notes": "Candidate from research leads (name and city from memory). Verify before shooting.",
+      "sources": [],
+      "spaces": []
+    },
+    {
+      "id": "NOLA-PP",
+      "name": "Hotel Peter & Paul",
+      "city": "New Orleans",
+      "state": "LA",
+      "region": "Southeast",
+      "status": "Unverified",
+      "researchStatus": "Not started",
+      "wave": "Backlog",
+      "notes": "Candidate from research leads (name and city from memory). Verify before shooting.",
+      "sources": [],
+      "spaces": []
+    },
+    {
+      "id": "SD-HDEL",
+      "name": "Hotel del Coronado",
+      "city": "Coronado",
+      "state": "CA",
+      "region": "West",
+      "status": "Unverified",
+      "researchStatus": "Not started",
+      "wave": "Backlog",
+      "notes": "Candidate from research leads (name and city from memory). Verify before shooting.",
+      "sources": [],
+      "spaces": []
+    },
+    {
+      "id": "DET-SIRN",
+      "name": "The Siren Hotel",
+      "city": "Detroit",
+      "state": "MI",
+      "region": "Midwest",
+      "status": "Unverified",
+      "researchStatus": "Not started",
+      "wave": "Backlog",
+      "notes": "Candidate from research leads (name and city from memory). Verify before shooting.",
+      "sources": [],
+      "spaces": []
+    },
+    {
+      "id": "LA-FIGU",
+      "name": "Hotel Figueroa",
+      "city": "Los Angeles",
+      "state": "CA",
+      "region": "West",
+      "status": "Unverified",
+      "researchStatus": "Not started",
+      "wave": "Backlog",
+      "notes": "Candidate from research leads (name and city from memory). Verify before shooting.",
+      "sources": [],
+      "spaces": []
+    },
+    {
+      "id": "NYC-CARL",
+      "name": "The Carlyle",
+      "city": "New York",
+      "state": "NY",
+      "region": "Northeast",
+      "status": "Unverified",
+      "researchStatus": "Not started",
+      "wave": "Backlog",
+      "notes": "Candidate from research leads (name and city from memory). Verify before shooting.",
+      "sources": [],
+      "spaces": []
+    },
+    {
+      "id": "PHX-AZBI",
+      "name": "Arizona Biltmore",
+      "city": "Phoenix",
+      "state": "AZ",
+      "region": "Southwest",
+      "status": "Unverified",
+      "researchStatus": "Not started",
+      "wave": "Backlog",
+      "notes": "One of the possible 'Biltmore' picks. Name and city from memory; verify.",
+      "sources": [],
+      "spaces": []
+    },
+    {
+      "id": "MIA-BILT",
+      "name": "The Biltmore Hotel (Coral Gables)",
+      "city": "Coral Gables",
+      "state": "FL",
+      "region": "Southeast",
+      "status": "Unverified",
+      "researchStatus": "Not started",
+      "wave": "Backlog",
+      "notes": "One of the possible 'Biltmore' picks. Name and city from memory; verify.",
+      "sources": [],
+      "spaces": []
+    },
+    {
+      "id": "LA-BILT",
+      "name": "The Biltmore (Los Angeles)",
+      "city": "Los Angeles",
+      "state": "CA",
+      "region": "West",
+      "status": "Unverified",
+      "researchStatus": "Not started",
+      "wave": "Backlog",
+      "notes": "One of the possible 'Biltmore' picks; formerly branded Millennium Biltmore. Verify current name.",
+      "sources": [],
+      "spaces": []
+    },
+    {
+      "id": "SCT-VAHO",
+      "name": "Hotel Valley Ho",
+      "city": "Scottsdale",
+      "state": "AZ",
+      "region": "Southwest",
+      "status": "Unverified",
+      "researchStatus": "Not started",
+      "wave": "Backlog",
+      "notes": "Candidate from research leads (name and city from memory). Verify before shooting.",
+      "sources": [],
+      "spaces": []
+    },
+    {
+      "id": "MI-GRND",
+      "name": "Grand Hotel",
+      "city": "Mackinac Island",
+      "state": "MI",
+      "region": "Midwest",
+      "status": "Unverified",
+      "researchStatus": "Not started",
+      "wave": "Backlog",
+      "notes": "Candidate from research leads (name and city from memory). Verify before shooting.",
+      "sources": [],
+      "spaces": []
+    },
+    {
+      "id": "HNL-ROYH",
+      "name": "The Royal Hawaiian",
+      "city": "Honolulu",
+      "state": "HI",
+      "region": "Hawaii",
+      "status": "Unverified",
+      "researchStatus": "Not started",
+      "wave": "Backlog",
+      "notes": "Candidate from research leads (name and city from memory). Verify before shooting.",
+      "sources": [],
+      "spaces": []
+    },
+    {
+      "id": "ORL-MELI",
+      "name": "Melia Orlando Celebration",
+      "brand": "Melia Hotels International",
+      "city": "Celebration",
+      "state": "FL",
+      "region": "Southeast",
+      "status": "Unverified",
+      "researchStatus": "Not started",
+      "wave": "Backlog",
+      "notes": "Melia lead from memory, not verified. Start from melia.com's U.S. listing.",
+      "sources": [],
+      "spaces": []
+    },
+    {
+      "id": "NYC-INNS",
+      "name": "INNSIDE New York NoMad",
+      "brand": "Melia Hotels International",
+      "city": "New York",
+      "state": "NY",
+      "region": "Northeast",
+      "status": "Unverified",
+      "researchStatus": "Not started",
+      "wave": "Backlog",
+      "notes": "Melia lead from memory, not verified.",
+      "sources": [],
+      "spaces": []
+    }
+  ],
+  "media": [
+    {
+      "hotelId": "LV-FONT",
+      "type": "Magazine editorial",
+      "outlet": "Galerie",
+      "title": "Hotel of the Week: Fontainebleau Las Vegas",
+      "date": "",
+      "url": "https://galeriemagazine.com/hotel-week-fontainebleau-las-vegas/",
+      "spaces": "Lobby; public spaces",
+      "rights": "Reference only (link)"
+    },
+    {
+      "hotelId": "LV-FONT",
+      "type": "Magazine editorial",
+      "outlet": "Hospitality Design",
+      "title": "Best U.S. hotel openings of 2023",
+      "date": "2023",
+      "url": "https://hospitalitydesign.com/projects/best-hotel-openings-us-2023/157345/slideshow/4",
+      "spaces": "",
+      "rights": "Reference only (link)"
+    },
+    {
+      "hotelId": "LV-FONT",
+      "type": "Magazine editorial",
+      "outlet": "The Real Deal",
+      "title": "Soffereignty (cover story)",
+      "date": "2026-04",
+      "url": "https://therealdeal.com/magazine/april-2026/soffereignty/",
+      "spaces": "",
+      "rights": "Reference only (link)"
+    },
+    {
+      "hotelId": "NYC-FS57",
+      "type": "Magazine editorial",
+      "outlet": "Galerie",
+      "title": "Hotel of the Week: Four Seasons Hotel New York",
+      "date": "",
+      "url": "https://galeriemagazine.com/hotel-of-the-week-four-seasons-hotel-new-york/",
+      "spaces": "",
+      "rights": "Reference only (link)"
+    },
+    {
+      "hotelId": "NYC-FS57",
+      "type": "Fashion shoot",
+      "outlet": "Four Seasons press",
+      "title": "Met Gala livestream party and red carpet at TY Bar",
+      "date": "2025-05-05",
+      "url": "https://press.fourseasons.com/newyork/hotel-news/2025/met-gala-at-ty-bar/",
+      "spaces": "Lobby Bar (TY Bar)",
+      "rights": "Reference only (link)"
+    },
+    {
+      "hotelId": "NSH-NOEL",
+      "type": "Magazine editorial",
+      "outlet": "Garden & Gun",
+      "title": "Nashville's Sleeping Beauty",
+      "date": "",
+      "url": "https://gardenandgun.com/nashvilles-sleeping-beauty",
+      "spaces": "Lobby; Guest Room",
+      "rights": "Reference only (link)"
+    },
+    {
+      "hotelId": "NSH-NOEL",
+      "type": "Magazine editorial",
+      "outlet": "Metropolis",
+      "title": "Noelle hotel design",
+      "date": "",
+      "url": "https://metropolismag.com/projects/nashville-noelle-hotel-design/",
+      "spaces": "",
+      "rights": "Reference only (link)"
+    },
+    {
+      "hotelId": "SLO-MADO",
+      "type": "Film / TV",
+      "outlet": "PBS SoCal Artbound",
+      "title": "Think Pink: The Madonna Inn, San Luis Obispo's Kitsch Castle",
+      "date": "",
+      "url": "https://www.pbssocal.org/shows/artbound/think-pink-the-madonna-inn-san-luis-obispos-kitsch-castle",
+      "spaces": "Signature Restaurant",
+      "rights": "Reference only (link)"
+    },
+    {
+      "hotelId": "SLO-MADO",
+      "type": "Magazine editorial",
+      "outlet": "National Geographic",
+      "title": "Best retro motels in California",
+      "date": "",
+      "url": "https://www.nationalgeographic.com/travel/article/best-retro-motels-california",
+      "spaces": "",
+      "rights": "Reference only (link)"
+    },
+    {
+      "hotelId": "HOU-POAK",
+      "type": "Film / TV",
+      "outlet": "Good Morning America",
+      "title": "Texas-size luxury: The Post Oak Hotel",
+      "date": "",
+      "url": "https://ws.goodmorningamerica.com/travel/story/texas-size-luxury-post-oak-hotel-uptown-houston-58443519",
+      "spaces": "",
+      "rights": "Reference only (link)"
+    },
+    {
+      "hotelId": "PSP-PARK",
+      "type": "Magazine editorial",
+      "outlet": "Dwell",
+      "title": "Jonathan Adler reveals his redesign of the Parker Palm Springs",
+      "date": "",
+      "url": "https://dwell.com/amp/article/jonathan-adler-reveals-his-redesign-of-the-parker-palm-springs-392094f6",
+      "spaces": "Lobby",
+      "rights": "Reference only (link)"
+    }
+  ]
+}

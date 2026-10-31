@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Colorways: hotel color index (prototype)</title>
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <header class="masthead">
+    <div class="brand">
+      <a class="wordmark" href="#index">Colorways</a>
+      <span class="tagline">Find a stay by the colors of its spaces</span>
+    </div>
+    <nav class="tabs" aria-label="Sections">
+      <a href="#index" data-view="index">Index</a>
+      <a href="#search" data-view="search">Search by color</a>
+      <a href="#analyze" data-view="analyze">Analyze photos</a>
+      <a href="#barcode" data-view="barcode">Walkthrough barcode</a>
+      <a href="#method" data-view="method">Method</a>
+    </nav>
+  </header>
+
+  <p class="notice" id="notice">
+    <strong>Prototype.</strong> Seed colors are <em>Described</em>: hex values approximated from cited
+    written descriptions, not measurements. Measure real palettes from your own photos in
+    <a href="#analyze">Analyze photos</a>. Photos and videos are processed in your browser and never uploaded.
+  </p>
+
+  <main>
+    <!-- INDEX -->
+    <section id="view-index" class="view" aria-labelledby="h-index">
+      <h1 id="h-index" class="sr-only">Hotel color index</h1>
+      <div class="filters" id="index-filters">
+        <label class="grow">Search <input type="search" id="f-q" placeholder="Hotel, city, brand"></label>
+        <label>Region <select id="f-region"></select></label>
+        <label>Style <select id="f-style"></select></label>
+        <label>Era <select id="f-era"></select></label>
+        <label>Genre <select id="f-genre"></select></label>
+        <label>Data <select id="f-data">
+          <option value="">All hotels</option>
+          <option value="colors">Has colors</option>
+          <option value="measured">Has measured colors</option>
+        </select></label>
+        <div class="seg" role="radiogroup" aria-label="Stripe width by">
+          <span class="seg-label">Width by</span>
+          <button type="button" role="radio" data-mode="area" aria-checked="true">Area</button>
+          <button type="button" role="radio" data-mode="time" aria-checked="false">Time</button>
+          <button type="button" role="radio" data-mode="equal" aria-checked="false">Equal</button>
+        </div>
+      </div>
+      <p class="mode-help" id="mode-help"></p>
+      <p class="count" id="index-count" aria-live="polite"></p>
+      <div class="grid" id="hotel-grid"></div>
+    </section>
+
+    <!-- SEARCH -->
+    <section id="view-search" class="view" hidden aria-labelledby="h-search">
+      <h1 id="h-search">Search by color</h1>
+      <p class="lede">Pick up to five colors, or a whole color family, and choose which spaces should match.
+        Results rank hotels by how closely and how prominently those colors appear (CIEDE2000 distance).</p>
+      <div class="panel">
+        <div class="targets" id="targets"></div>
+        <div class="row">
+          <button type="button" id="add-target" class="btn">Add a color</button>
+          <label class="btn file">Match an inspiration image
+            <input type="file" id="inspo" accept="image/*"></label>
+          <button type="button" id="clear-targets" class="btn ghost">Clear</button>
+        </div>
+        <h2 class="small">Or tap a family</h2>
+        <div class="family-chips" id="family-chips"></div>
+        <h2 class="small">In these spaces</h2>
+        <div class="space-filter" id="space-filter"></div>
+      </div>
+      <ol class="results" id="results" aria-live="polite"></ol>
+    </section>
+
+    <!-- ANALYZE -->
+    <section id="view-analyze" class="view" hidden aria-labelledby="h-analyze">
+      <h1 id="h-analyze">Analyze photos</h1>
+      <p class="lede">Measure a space from your own photos. Colorways clusters every pixel in CIELAB color space
+        into a palette with shares, then you mark the photo-op regions by dragging on a photo. Saved spaces
+        appear in the Index as <em>Measured</em>. For accurate color, shoot with a gray card (see the capture protocol).</p>
+      <div class="panel form-grid" id="an-form">
+        <label>Hotel <select id="an-hotel"></select></label>
+        <label class="newhotel" hidden>New hotel name <input id="an-new-name" placeholder="e.g. The Example Hotel"></label>
+        <label class="newhotel" hidden>City <input id="an-new-city"></label>
+        <label class="newhotel" hidden>State <input id="an-new-state" maxlength="2" placeholder="TX"></label>
+        <label>Space <select id="an-type"></select></label>
+        <label>Venue name <input id="an-venue" placeholder="e.g. Lobby Bar name"></label>
+        <label>Area (sq ft) <input id="an-sqft" type="number" min="0" step="10" placeholder="blank = type default"></label>
+        <label>Area source <select id="an-sqft-src"></select></label>
+        <label>Photo-op score <select id="an-photo"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></label>
+        <label>Lighting <select id="an-light"></select></label>
+        <label>Detail <input id="an-k" type="range" min="4" max="12" value="8"> <output id="an-k-out">8 colors</output></label>
+        <label class="check"><input type="checkbox" id="an-extremes" checked> Ignore blown highlights and deep shadows</label>
+      </div>
+      <div class="dropzone" id="an-drop">
+        <p>Drop photos of one space here, or</p>
+        <label class="btn file">Choose photos <input type="file" id="an-files" accept="image/*" multiple></label>
+      </div>
+      <p class="hint">Drag across a photo to mark a photo-op region. Its colors become key swatches.</p>
+      <div class="an-images" id="an-images"></div>
+      <div class="row">
+        <button type="button" class="btn primary" id="an-run" disabled>Extract palette</button>
+      </div>
+      <div id="an-result"></div>
+
+      <div class="panel data-tools">
+        <h2 class="small">Your measured data</h2>
+        <p id="user-summary" class="muted"></p>
+        <div class="row">
+          <button type="button" class="btn" id="exp-hotels">Hotels CSV</button>
+          <button type="button" class="btn" id="exp-spaces">Spaces CSV</button>
+          <button type="button" class="btn" id="exp-swatches">Swatches CSV</button>
+          <button type="button" class="btn" id="exp-json">JSON backup</button>
+          <label class="btn file">Import JSON <input type="file" id="imp-json" accept="application/json,.json"></label>
+          <button type="button" class="btn ghost danger" id="clear-user">Clear my data</button>
+        </div>
+        <p class="muted small-print">CSV columns match the input columns of the Colorways workbook (Hotels, Spaces, Swatches tabs), so you can paste them in.</p>
+      </div>
+    </section>
+
+    <!-- BARCODE -->
+    <section id="view-barcode" class="view" hidden aria-labelledby="h-barcode">
+      <h1 id="h-barcode">Walkthrough barcode</h1>
+      <p class="lede">Film one continuous walk from the curb to your room (and on to the pool or bar). Colorways
+        samples frames across the video and lays their colors side by side, the way film color barcodes
+        compress a whole movie into one strip. Time runs left to right.</p>
+      <div class="panel form-grid">
+        <div class="row tight"><label class="btn file">Choose video <input type="file" id="bc-file" accept="video/*"></label>
+          <span id="bc-name" class="muted">MP4 (H.264) or WebM</span></div>
+        <label>Bars <select id="bc-bars"><option>120</option><option selected>240</option><option>480</option></select></label>
+        <label>Color per frame <select id="bc-mode">
+          <option value="average">Average light (smooth, classic)</option>
+          <option value="dominant">Dominant color (punchier)</option>
+        </select></label>
+        <button type="button" class="btn primary" id="bc-run" disabled>Generate barcode</button>
+      </div>
+      <progress id="bc-progress" max="1" value="0" hidden></progress>
+      <div class="bc-out" id="bc-out" hidden>
+        <canvas id="bc-canvas" width="1200" height="200" aria-label="Walkthrough color barcode"></canvas>
+        <h2 class="small">Key swatch from the walkthrough</h2>
+        <div class="keyrow large" id="bc-keys"></div>
+        <div class="row">
+          <button type="button" class="btn" id="bc-download">Download PNG</button>
+          <label>Attach to hotel <select id="bc-hotel"></select></label>
+          <button type="button" class="btn" id="bc-save">Save to hotel</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- METHOD -->
+    <section id="view-method" class="view" hidden aria-labelledby="h-method">
+      <h1 id="h-method">Method</h1>
+      <div class="prose">
+        <h2>Reading a hotel stripe</h2>
+        <p>Like climate warming stripes (one stripe per year) or a film color barcode (one sliver per frame),
+          a Colorways stripe compresses a whole stay into one band. It reads left to right as a stay:
+          arrival, lobby, room, bath, morning, pool, spa, dinner, drinks, night out.</p>
+        <ul>
+          <li><strong>Each block is a key space.</strong> Blocks are separated by a thin gap.</li>
+          <li><strong>Block width</strong> follows the weighting you choose. <em>Area</em> uses square feet
+            (published, measured, or a labeled default for that space type). <em>Time</em> uses typical hours a
+            guest spends there. <em>Equal</em> gives every space the same width.</li>
+          <li><strong>Inside a block,</strong> each color gets width in proportion to its share of that space.</li>
+          <li><strong>The key swatch</strong> (five chips) is the simplified read: the most striking colors,
+            weighted toward photo-op regions, vivid colors, and spaces with high photo-op scores.</li>
+        </ul>
+        <h2>Why three weightings</h2>
+        <p>Square footage measures the building, not the experience. A 60,000 sq ft casino would drown a
+          450 sq ft guest room, even though guests spend most of their stay in the room. Time weighting
+          corrects for that; equal weighting is the cleanest comparison between hotels.</p>
+        <h2>Where colors come from</h2>
+        <div id="m-sources"></div>
+        <h2>Color families</h2>
+        <p>Every hex is converted to CIELAB (a perceptual color space) and sorted into one of 15 families
+          by lightness (L*), chroma (C*, how colorful) and hue angle (h). The same rules run in this app and
+          in the Excel workbook.</p>
+        <div class="table-wrap"><table class="data" id="m-families"></table></div>
+        <h2>Space types and default assumptions</h2>
+        <p>Defaults are planning assumptions used only when a space has no published or measured area or
+          dwell time. They are labeled "Type default" everywhere.</p>
+        <div class="table-wrap"><table class="data" id="m-spaces"></table></div>
+        <h2>Limits</h2>
+        <ul>
+          <li>Photos measure what the camera saw: framing, white balance, and time of day all shift color.
+            Pixel share is visual share as photographed, not literal surface area.</li>
+          <li>Described colors are estimates of real, sourced colors. They are placeholders until measured.</li>
+          <li>Search uses CIEDE2000, the current standard for perceived color difference; under about 2 most
+            people see no difference, above about 10 colors read as different.</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="detail" aria-labelledby="d-title"></dialog>
+  <div id="tooltip" class="tooltip" role="tooltip" hidden></div>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+  <script src="data/seed.js"></script>
+  <script src="js/color.js"></script>
+  <script src="js/kmeans.js"></script>
+  <script src="js/model.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

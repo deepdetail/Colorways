@@ -1,0 +1,417 @@
+[
+[
+"#000000",
+"Black",
+"black"
+],
+[
+"#111111",
+"Black",
+"near black"
+],
+[
+"#1C1C1C",
+"Black",
+"soot"
+],
+[
+"#808080",
+"Gray",
+"gray"
+],
+[
+"#A9A9A9",
+"Gray",
+"dark gray"
+],
+[
+"#36454F",
+"Gray",
+"charcoal"
+],
+[
+"#B2BEB5",
+"Gray",
+"ash gray"
+],
+[
+"#FFFFFF",
+"White",
+"white"
+],
+[
+"#F8F8FF",
+"White",
+"ghost white"
+],
+[
+"#F5F5F5",
+"White",
+"white smoke"
+],
+[
+"#FFFFF0",
+"Cream & Ivory",
+"ivory"
+],
+[
+"#FFFDD0",
+"Cream & Ivory",
+"cream"
+],
+[
+"#F7E7CE",
+"Cream & Ivory",
+"champagne"
+],
+[
+"#FAF0E6",
+"Cream & Ivory",
+"linen"
+],
+[
+"#D2B48C",
+"Beige & Taupe",
+"tan"
+],
+[
+"#C2B280",
+"Beige & Taupe",
+"sand"
+],
+[
+"#8B7D6B",
+"Beige & Taupe",
+"taupe"
+],
+[
+"#C3B091",
+"Beige & Taupe",
+"khaki"
+],
+[
+"#DCAE96",
+"Beige & Taupe",
+"desert sand"
+],
+[
+"#5D4037",
+"Brown & Wood",
+"walnut"
+],
+[
+"#C19A6B",
+"Brown & Wood",
+"camel / oak"
+],
+[
+"#6B4423",
+"Brown & Wood",
+"brown"
+],
+[
+"#9A463D",
+"Brown & Wood",
+"cognac leather"
+],
+[
+"#483C32",
+"Brown & Wood",
+"dark taupe"
+],
+[
+"#A0522D",
+"Brown & Wood",
+"sienna"
+],
+[
+"#FF0000",
+"Red & Burgundy",
+"red"
+],
+[
+"#800020",
+"Red & Burgundy",
+"burgundy"
+],
+[
+"#800000",
+"Red & Burgundy",
+"maroon"
+],
+[
+"#DC143C",
+"Red & Burgundy",
+"crimson"
+],
+[
+"#722F37",
+"Red & Burgundy",
+"wine"
+],
+[
+"#FFC0CB",
+"Pink & Blush",
+"pink"
+],
+[
+"#FF69B4",
+"Pink & Blush",
+"hot pink"
+],
+[
+"#F4C2C2",
+"Pink & Blush",
+"blush"
+],
+[
+"#B76E79",
+"Pink & Blush",
+"rose gold"
+],
+[
+"#DE5D83",
+"Pink & Blush",
+"blush rose"
+],
+[
+"#E2725B",
+"Orange & Terracotta",
+"terracotta"
+],
+[
+"#B7410E",
+"Orange & Terracotta",
+"rust"
+],
+[
+"#FF7F50",
+"Orange & Terracotta",
+"coral"
+],
+[
+"#FFA500",
+"Orange & Terracotta",
+"orange"
+],
+[
+"#B87333",
+"Orange & Terracotta",
+"copper"
+],
+[
+"#FFD700",
+"Yellow & Gold",
+"gold"
+],
+[
+"#E1AD01",
+"Yellow & Gold",
+"mustard"
+],
+[
+"#D4AF37",
+"Yellow & Gold",
+"metallic gold"
+],
+[
+"#B5A642",
+"Yellow & Gold",
+"brass"
+],
+[
+"#FFF44F",
+"Yellow & Gold",
+"lemon"
+],
+[
+"#50C878",
+"Green",
+"emerald"
+],
+[
+"#228B22",
+"Green",
+"forest"
+],
+[
+"#9CAF88",
+"Green",
+"sage"
+],
+[
+"#808000",
+"Green",
+"olive"
+],
+[
+"#355E3B",
+"Green",
+"hunter green"
+],
+[
+"#98FF98",
+"Green",
+"mint"
+],
+[
+"#008080",
+"Teal & Aqua",
+"teal"
+],
+[
+"#40E0D0",
+"Teal & Aqua",
+"turquoise"
+],
+[
+"#00FFFF",
+"Teal & Aqua",
+"aqua"
+],
+[
+"#0ABAB5",
+"Teal & Aqua",
+"tiffany-like blue"
+],
+[
+"#4682B4",
+"Blue",
+"steel blue"
+],
+[
+"#4169E1",
+"Blue",
+"royal blue"
+],
+[
+"#0047AB",
+"Blue",
+"cobalt"
+],
+[
+"#87CEEB",
+"Blue",
+"sky blue"
+],
+[
+"#CCCCFF",
+"Blue",
+"periwinkle"
+],
+[
+"#1F2A44",
+"Navy",
+"interior navy"
+],
+[
+"#000080",
+"Navy",
+"navy"
+],
+[
+"#191970",
+"Navy",
+"midnight blue"
+],
+[
+"#800080",
+"Purple & Plum",
+"purple"
+],
+[
+"#8E4585",
+"Purple & Plum",
+"plum"
+],
+[
+"#C8A2C8",
+"Purple & Plum",
+"lilac"
+],
+[
+"#4B0082",
+"Purple & Plum",
+"indigo"
+],
+[
+"#FF00FF",
+"Purple & Plum",
+"magenta"
+],
+[
+"#FFFF00",
+"Yellow & Gold",
+"yellow"
+],
+[
+"#E9D66B",
+"Yellow & Gold",
+"butter"
+],
+[
+"#6B8E23",
+"Green",
+"olive drab"
+],
+[
+"#2E8B57",
+"Green",
+"sea green"
+],
+[
+"#2F4F4F",
+"Teal & Aqua",
+"dark slate teal"
+],
+[
+"#E0B0FF",
+"Purple & Plum",
+"mauve"
+],
+[
+"#954535",
+"Brown & Wood",
+"chestnut"
+],
+[
+"#CC5500",
+"Orange & Terracotta",
+"burnt orange"
+],
+[
+"#F5DEB3",
+"Cream & Ivory",
+"wheat"
+],
+[
+"#ADD8E6",
+"Blue",
+"light blue"
+],
+[
+"#B0E0E6",
+"Teal & Aqua",
+"powder blue"
+],
+[
+"#0F5E46",
+"Green",
+"deep emerald velvet"
+],
+[
+"#C9A227",
+"Yellow & Gold",
+"antique brass"
+],
+[
+"#E8D5B7",
+"Cream & Ivory",
+"bone"
+],
+[
+"#7B3F00",
+"Brown & Wood",
+"chocolate"
+]
+]
